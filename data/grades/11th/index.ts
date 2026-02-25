@@ -182,5 +182,18 @@ export const TOPICS_11TH: Topic[] = [
         grade: '11th',
         thumbnailUrl: '/images/thumbnails/11th-chemistry/thumb_isothermal_work.png',
         youtubeVideoIds: []
+    },
+    {
+        id: 'extensive-intensive-properties',
+        title: 'Extensive and Intensive Properties',
+        subject: 'Chemistry',
+        unit: 'Unit VI',
+        chapter: 'Thermodynamics',
+        description: 'Explore how thermodynamic properties behave when you divide a system. Insert a partition, pump gas, and discover which properties depend on system size.',
+        thumbnailIcon: 'Activity',
+        branch: 'Physical Chemistry',
+        grade: '11th',
+        thumbnailUrl: '/images/thumbnails/11th-chemistry/thumb_extensive_intensive.png',
+        youtubeVideoIds: []
     }
 ];

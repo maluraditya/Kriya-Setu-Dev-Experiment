@@ -801,6 +801,59 @@ const TextbookContent: React.FC<TextbookContentProps> = ({ topic }) => {
     );
   }
 
+  if (topic?.id === 'extensive-intensive-properties') {
+    return (
+      <div className="prose prose-slate prose-lg max-w-none font-sans" id="tour-content">
+        <h1 className="font-display text-3xl font-bold text-brand-primary mb-6">Extensive &amp; Intensive Properties</h1>
+        <p className="lead text-xl text-slate-600 mb-8">
+          Thermodynamic properties fall into two distinct categories based on how they respond to the <strong>quantity of matter</strong> present in the system.
+        </p>
+
+        <h3 className="text-xl font-display font-bold text-brand-dark mt-8 mb-4">I. Definitions</h3>
+        <div className="my-6 p-4 bg-red-50 rounded-xl border border-red-200">
+          <p className="text-sm text-red-800"><strong>Extensive Properties</strong> depend on the <em>quantity or size</em> of matter. More substance → larger value.</p>
+          <p className="text-sm text-red-700 mt-1">Examples: Mass (m), Volume (V), Internal Energy (U), Enthalpy (H), Heat Capacity (C)</p>
+        </div>
+        <div className="my-6 p-4 bg-blue-50 rounded-xl border border-blue-200">
+          <p className="text-sm text-blue-800"><strong>Intensive Properties</strong> do <em>not</em> depend on the quantity or size of matter. They are inherent characteristics of the substance.</p>
+          <p className="text-sm text-blue-700 mt-1">Examples: Temperature (T), Density (d), Pressure (p), Molar Volume (V<sub>m</sub>)</p>
+        </div>
+
+        <h3 className="text-xl font-display font-bold text-brand-dark mt-8 mb-4">II. The Partition Thought Experiment</h3>
+        <p>
+          Imagine a gas in a container of volume <strong>V</strong> at temperature <strong>T</strong>. Now insert a partition down the middle:
+        </p>
+        <div className="my-6 p-4 bg-slate-100 rounded-xl border border-slate-300">
+          <p className="text-sm text-slate-700 mb-1">🔪 <strong>Volume?</strong> Each half has V/2. Volume <em>changed</em> → <span className="text-red-600 font-bold">Extensive</span></p>
+          <p className="text-sm text-slate-700">🌡️ <strong>Temperature?</strong> Still T in both halves. Temperature <em>didn't change</em> → <span className="text-blue-600 font-bold">Intensive</span></p>
+        </div>
+        <p className="text-sm text-slate-600 italic">The key test: "If I cut this system in half, does this number change?" If yes → extensive. If no → intensive.</p>
+
+        <h3 className="text-xl font-display font-bold text-brand-dark mt-8 mb-4">III. Molar Properties: Extensive → Intensive</h3>
+        <div className="my-6 p-4 bg-purple-50 rounded-xl border border-purple-200">
+          <p className="font-mono text-lg text-purple-700 text-center">χ<sub>m</sub> = χ / n</p>
+          <p className="text-sm text-purple-600 mt-2 text-center"><strong>Extensive ÷ Extensive = Intensive!</strong> Dividing any extensive property by moles gives a molar property that is intensive.</p>
+        </div>
+
+        <h3 className="text-xl font-display font-bold text-brand-dark mt-8 mb-4">IV. Real-World Applications</h3>
+        <div className="bg-sky-50 p-6 rounded-xl border-l-4 border-sky-500 my-4">
+          <h4 className="font-bold text-sky-900 mb-2">☕ Boiling Water Analogy</h4>
+          <p className="text-sm">A teacup and a bathtub of boiling water both read 100°C (intensive). But the bathtub has far more mass, volume, and stored heat energy (all extensive).</p>
+        </div>
+        <div className="bg-amber-50 p-6 rounded-xl border-l-4 border-amber-500 my-4">
+          <h4 className="font-bold text-amber-900 mb-2">✈️ Aerospace Engineering</h4>
+          <p className="text-sm">Engineers select aluminum for aircraft wings based on its density (intensive). A small block and a massive sheet of aluminum share the same low density — it's predictable regardless of size.</p>
+        </div>
+        <div className="bg-red-50 p-6 rounded-xl border-l-4 border-red-500 my-4">
+          <h4 className="font-bold text-red-900 mb-2">🏭 Chemical Manufacturing Risk</h4>
+          <p className="text-sm">Scaling a reaction from a test tube to a 10,000 L reactor means enthalpy (extensive) scales 1,000×. Without proportional cooling, this poses a severe explosion risk.</p>
+        </div>
+
+        <VideoSection />
+      </div>
+    );
+  }
+
   // --- UNIT VI-IX: PHYSICS TOPICS ---
 
   if (topic?.id === 'emi') {
