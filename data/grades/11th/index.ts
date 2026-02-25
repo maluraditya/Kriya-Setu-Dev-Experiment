@@ -169,5 +169,18 @@ export const TOPICS_11TH: Topic[] = [
         grade: '11th',
         thumbnailUrl: '/images/thumbnails/11th-chemistry/thumb_sigma_pi.png',
         youtubeVideoIds: []
+    },
+    {
+        id: 'isothermal-work',
+        title: 'Isothermal Reversible and Irreversible Work',
+        subject: 'Chemistry',
+        unit: 'Unit VI',
+        chapter: 'Thermodynamics',
+        description: 'Simulate piston-cylinder expansion under isothermal conditions. Compare work done in reversible vs irreversible processes with real-time P–V diagrams.',
+        thumbnailIcon: 'Activity',
+        branch: 'Physical Chemistry',
+        grade: '11th',
+        thumbnailUrl: '/images/thumbnails/11th-chemistry/thumb_isothermal_work.png',
+        youtubeVideoIds: []
     }
 ];

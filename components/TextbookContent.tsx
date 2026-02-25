@@ -743,6 +743,64 @@ const TextbookContent: React.FC<TextbookContentProps> = ({ topic }) => {
     );
   }
 
+  if (topic?.id === 'isothermal-work') {
+    return (
+      <div className="prose prose-slate prose-lg max-w-none font-sans" id="tour-content">
+        <h1 className="font-display text-3xl font-bold text-brand-primary mb-6">Isothermal Reversible &amp; Irreversible Work</h1>
+        <p className="lead text-xl text-slate-600 mb-8">
+          When a gas expands or compresses at constant temperature, the amount of work it performs depends crucially on <strong>how</strong> the process is carried out — reversibly (infinitely slowly) or irreversibly (sudden).
+        </p>
+
+        <h3 className="text-xl font-display font-bold text-brand-dark mt-8 mb-4">I. The First Law of Thermodynamics</h3>
+        <div className="my-6 p-4 bg-slate-100 rounded-xl border border-slate-300">
+          <p className="font-mono text-lg text-brand-primary text-center">ΔU = q + W</p>
+          <p className="text-sm text-slate-600 mt-2 text-center">For an isothermal process of an ideal gas: ΔU = 0, so <strong>q = −W</strong></p>
+        </div>
+
+        <h3 className="text-xl font-display font-bold text-brand-dark mt-8 mb-4">II. Reversible Isothermal Expansion</h3>
+        <p>
+          The gas expands in <strong>infinitesimally small steps</strong>, with the external pressure always just slightly less than the gas pressure. At each step, the system is virtually at equilibrium.
+        </p>
+        <div className="my-6 p-4 bg-emerald-50 rounded-xl border border-emerald-200">
+          <p className="font-mono text-lg text-emerald-700 text-center">W<sub>rev</sub> = −nRT ln(V₂/V₁)</p>
+          <p className="text-sm text-emerald-600 mt-2 text-center">This gives the <strong>maximum work</strong> obtainable from expansion.</p>
+        </div>
+
+        <h3 className="text-xl font-display font-bold text-brand-dark mt-8 mb-4">III. Irreversible Isothermal Expansion</h3>
+        <p>
+          The external pressure drops suddenly to a constant value P<sub>ext</sub> (e.g., the final pressure). The gas rushes outward doing less total work than the reversible case.
+        </p>
+        <div className="my-6 p-4 bg-amber-50 rounded-xl border border-amber-200">
+          <p className="font-mono text-lg text-amber-700 text-center">W<sub>irr</sub> = −P<sub>ext</sub>(V₂ − V₁)</p>
+          <p className="text-sm text-amber-600 mt-2 text-center">Always less than reversible work: |W<sub>irr</sub>| &lt; |W<sub>rev</sub>|</p>
+        </div>
+
+        <h3 className="text-xl font-display font-bold text-brand-dark mt-8 mb-4">IV. Why Does It Matter?</h3>
+        <div className="my-6 p-4 bg-blue-50 rounded-xl border border-blue-200">
+          <p className="text-sm text-blue-800 text-center">
+            <strong>Key Insight (P–V Diagram):</strong> The work done equals the <strong>area under the curve</strong> on the P–V graph. The reversible curve (along the isotherm) always encloses more area than the irreversible rectangle.
+          </p>
+        </div>
+
+        <h3 className="text-xl font-display font-bold text-brand-dark mt-8 mb-4">V. Real-World Applications</h3>
+        <div className="bg-sky-50 p-6 rounded-xl border-l-4 border-sky-500 my-4">
+          <h4 className="font-bold text-sky-900 mb-2">🚗 Automobile Engines</h4>
+          <p className="text-sm">
+            Internal combustion engines approximate thermodynamic cycles. Engineers strive to make expansion strokes as close to reversible as possible to extract maximum useful work from fuel combustion.
+          </p>
+        </div>
+        <div className="bg-purple-50 p-6 rounded-xl border-l-4 border-purple-500 my-4">
+          <h4 className="font-bold text-purple-900 mb-2">🔋 Fuel Cells</h4>
+          <p className="text-sm">
+            Fuel cells convert chemical energy to electrical energy nearly reversibly, which is why they can achieve much higher efficiencies (60–80%) compared to combustion engines (25–40%).
+          </p>
+        </div>
+
+        <VideoSection />
+      </div>
+    );
+  }
+
   // --- UNIT VI-IX: PHYSICS TOPICS ---
 
   if (topic?.id === 'emi') {
