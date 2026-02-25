@@ -854,6 +854,63 @@ const TextbookContent: React.FC<TextbookContentProps> = ({ topic }) => {
     );
   }
 
+  if (topic?.id === 'buffer-solutions') {
+    return (
+      <div className="prose prose-slate prose-lg max-w-none font-sans" id="tour-content">
+        <h1 className="font-display text-3xl font-bold text-brand-primary mb-6">Buffer Solutions &amp; Designing Buffers</h1>
+        <p className="lead text-xl text-slate-600 mb-8">
+          Solutions that <strong>resist changes in pH</strong> upon dilution or addition of small amounts of acid or alkali are called <strong>buffer solutions</strong>. They are critical in biology, medicine, and industry.
+        </p>
+
+        <h3 className="text-xl font-display font-bold text-brand-dark mt-8 mb-4">I. Types of Buffer Solutions</h3>
+        <div className="my-6 p-4 bg-orange-50 rounded-xl border border-orange-200">
+          <p className="text-sm text-orange-800"><strong>Acidic Buffer:</strong> Weak acid + its salt with a strong base.</p>
+          <p className="text-sm text-orange-700 mt-1">Example: CH₃COOH + CH₃COONa → buffers around pH 4.75</p>
+        </div>
+        <div className="my-6 p-4 bg-blue-50 rounded-xl border border-blue-200">
+          <p className="text-sm text-blue-800"><strong>Basic Buffer:</strong> Weak base + its salt with a strong acid.</p>
+          <p className="text-sm text-blue-700 mt-1">Example: NH₄OH + NH₄Cl → buffers around pH 9.25</p>
+        </div>
+
+        <h3 className="text-xl font-display font-bold text-brand-dark mt-8 mb-4">II. How Buffer Action Works</h3>
+        <p className="text-sm">
+          In an acidic buffer (CH₃COOH / CH₃COO⁻):
+        </p>
+        <div className="my-4 p-4 bg-slate-100 rounded-xl border border-slate-300">
+          <p className="text-sm text-slate-700 mb-2">🔴 <strong>Add HCl:</strong> Extra H⁺ is consumed by CH₃COO⁻ → CH₃COOH. pH barely changes.</p>
+          <p className="text-sm text-slate-700">🔵 <strong>Add NaOH:</strong> Extra OH⁻ is consumed by CH₃COOH → CH₃COO⁻ + H₂O. pH barely changes.</p>
+        </div>
+
+        <h3 className="text-xl font-display font-bold text-brand-dark mt-8 mb-4">III. Henderson-Hasselbalch Equation</h3>
+        <div className="my-6 p-4 bg-purple-50 rounded-xl border border-purple-200">
+          <p className="font-mono text-lg text-purple-700 text-center">pH = pK<sub>a</sub> + log([Salt] / [Acid])</p>
+          <p className="text-sm text-purple-600 mt-2 text-center">When [Salt] = [Acid], log(1) = 0, so <strong>pH = pK<sub>a</sub></strong> (maximum buffer capacity).</p>
+        </div>
+        <div className="my-6 p-4 bg-indigo-50 rounded-xl border border-indigo-200">
+          <p className="font-mono text-lg text-indigo-700 text-center">pOH = pK<sub>b</sub> + log([Base] / [Conjugate Acid])</p>
+          <p className="text-sm text-indigo-600 mt-2 text-center">For basic buffers. Use pH + pOH = 14 to find pH.</p>
+        </div>
+
+        <h3 className="text-xl font-display font-bold text-brand-dark mt-8 mb-4">IV. Buffer Capacity &amp; Limits</h3>
+        <div className="my-4 p-4 bg-red-50 rounded-xl border border-red-200">
+          <p className="text-sm text-red-800">A buffer has a <strong>finite capacity</strong>. If enough acid is added to completely consume the conjugate base (A⁻), the buffer <strong>breaks</strong> and pH crashes.</p>
+        </div>
+
+        <h3 className="text-xl font-display font-bold text-brand-dark mt-8 mb-4">V. Real-World Applications</h3>
+        <div className="bg-red-50 p-6 rounded-xl border-l-4 border-red-500 my-4">
+          <h4 className="font-bold text-red-900 mb-2">🩸 Human Blood</h4>
+          <p className="text-sm">Blood is buffered at pH 7.4 by the H₂CO₃/HCO₃⁻ system. Deviations below 7.0 or above 7.8 are fatal. The bicarbonate buffer neutralizes lactic acid from exercise.</p>
+        </div>
+        <div className="bg-sky-50 p-6 rounded-xl border-l-4 border-sky-500 my-4">
+          <h4 className="font-bold text-sky-900 mb-2">🧴 Cosmetics &amp; Skincare</h4>
+          <p className="text-sm">Shampoos and baby lotions are buffered to pH ~5.5 to match the skin's acid mantle, preventing bacterial growth and irritation.</p>
+        </div>
+
+        <VideoSection />
+      </div>
+    );
+  }
+
   // --- UNIT VI-IX: PHYSICS TOPICS ---
 
   if (topic?.id === 'emi') {

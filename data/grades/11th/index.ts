@@ -195,5 +195,18 @@ export const TOPICS_11TH: Topic[] = [
         grade: '11th',
         thumbnailUrl: '/images/thumbnails/11th-chemistry/thumb_extensive_intensive.png',
         youtubeVideoIds: []
+    },
+    {
+        id: 'buffer-solutions',
+        title: 'Buffer Solutions & Designing Buffer Solutions',
+        subject: 'Chemistry',
+        unit: 'Unit VII',
+        chapter: 'Equilibrium',
+        description: 'Build buffer solutions and test their resistance to pH change. Compare buffered vs unbuffered water and discover when buffers break.',
+        thumbnailIcon: 'Activity',
+        branch: 'Physical Chemistry',
+        grade: '11th',
+        thumbnailUrl: '/images/thumbnails/11th-chemistry/thumb_buffer_solutions.png',
+        youtubeVideoIds: []
     }
 ];

@@ -22,6 +22,7 @@ import VSEPRTheoryLab from './components/grade-11/chemistry/VSEPRTheoryLab';
 import SigmaPiBondsLab from './components/grade-11/chemistry/SigmaPiBondsLab';
 import IsothermalWorkLab from './components/grade-11/chemistry/IsothermalWorkLab';
 import ExtensiveIntensivePropertiesLab from './components/grade-11/chemistry/ExtensiveIntensivePropertiesLab';
+import BufferSolutionsLab from './components/grade-11/chemistry/BufferSolutionsLab';
 
 // Grade 12 - Physics
 import ElectromagneticInductionCanvas from './components/grade-12/physics/ElectromagneticInductionCanvas';
@@ -331,6 +332,12 @@ const App: React.FC = () => {
         Topic: Extensive and Intensive Properties (NCERT Class 11, Unit 5 Thermodynamics)
         Concept: Extensive properties (V, m, U, H) depend on amount of matter. Intensive properties (T, P, d) do not. Molar properties (χm=χ/n) convert extensive to intensive. Partition test: divide system in half - extensive halves, intensive stays same.
         Simulation: Property Lab with gas container, partition toggle, gas pump slider, and molar property derivation.
+      `;
+    } else if (activeTopicId === 'buffer-solutions') {
+      return `
+        Topic: Buffer Solutions & Designing Buffer Solutions (NCERT Class 11, Unit 7 Equilibrium)
+        Concept: Buffers resist pH changes on adding acid/base. Acidic buffer = weak acid + salt. Basic buffer = weak base + salt. Henderson-Hasselbalch: pH = pKa + log([Salt]/[Acid]). Buffer capacity is finite — breaks when conjugate base/acid exhausted.
+        Simulation: Dual beaker lab (water vs buffer), Henderson-Hasselbalch overlay, titration buttons, buffer breaking demo.
       `;
     }
     return "User is on the curriculum dashboard.";
@@ -962,6 +969,41 @@ const App: React.FC = () => {
                 </div>
                 <div className={`relative bg-slate-900 flex flex-col ${isSimulationFullscreen ? 'flex-1' : 'h-[550px]'}`}>
                   <ExtensiveIntensivePropertiesLab />
+                </div>
+              </div>
+            </div>
+            <div className="lg:col-span-5 relative">
+              <div className="sticky top-24 h-[calc(100vh-8rem)] overflow-y-auto pr-2 custom-scrollbar">
+                <div className="bg-white p-8 rounded-2xl shadow-sm border border-slate-200 min-h-full">
+                  <TextbookContent topic={currentTopics.find(t => t.id === activeTopicId)} />
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* ================== BUFFER SOLUTIONS ================== */}
+        {currentScreen === 'TOPIC_VIEW' && activeTopicId === 'buffer-solutions' && (
+          <div className="p-6 grid grid-cols-1 lg:grid-cols-12 gap-8 animate-in fade-in duration-500">
+            <div className="lg:col-span-7 flex flex-col gap-6" id="tour-simulation">
+              <div className="flex items-center gap-2 mb-2 text-brand-primary/60 hover:text-brand-primary cursor-pointer w-fit" onClick={goHome}>
+                <ArrowLeft size={18} /> <span className="text-sm font-medium">Back to Curriculum</span>
+              </div>
+              <div className={isSimulationFullscreen ? "fixed inset-0 z-[100] bg-slate-900 flex flex-col" : "bg-white rounded-2xl shadow-md border border-slate-200 overflow-hidden"}>
+                <div className="bg-slate-900 px-6 py-3 flex items-center justify-between border-b border-slate-700 shrink-0">
+                  <h3 className="font-display font-bold text-white flex items-center gap-2">
+                    <Activity size={18} className="text-brand-secondary" /> Buffer Lab
+                  </h3>
+                  <button
+                    onClick={() => setIsSimulationFullscreen(!isSimulationFullscreen)}
+                    className="p-1.5 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors cursor-pointer ml-auto"
+                    title={isSimulationFullscreen ? "Minimize" : "Maximize"}
+                  >
+                    {isSimulationFullscreen ? <Minimize2 size={20} /> : <Maximize2 size={20} />}
+                  </button>
+                </div>
+                <div className={`relative bg-slate-900 flex flex-col ${isSimulationFullscreen ? 'flex-1' : 'h-[550px]'}`}>
+                  <BufferSolutionsLab />
                 </div>
               </div>
             </div>
