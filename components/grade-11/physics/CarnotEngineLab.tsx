@@ -1,8 +1,9 @@
 import React, { useRef, useEffect, useState, useCallback } from 'react';
+import TopicLayoutContainer from '../../TopicLayoutContainer';
 
 interface CarnotEngineLabProps {
-    t1: number;
-    t2: number;
+    topic: any;
+    onExit: () => void;
 }
 
 const R = 8.314;
@@ -41,7 +42,9 @@ const STEP_INFO = [
     },
 ];
 
-const CarnotEngineLab: React.FC<CarnotEngineLabProps> = ({ t1, t2 }) => {
+const CarnotEngineLab: React.FC<CarnotEngineLabProps> = ({ topic, onExit }) => {
+    const [t1, setT1] = useState(800);
+    const [t2, setT2] = useState(300);
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const animRef = useRef<number>(0);
 
@@ -464,8 +467,56 @@ const CarnotEngineLab: React.FC<CarnotEngineLabProps> = ({ t1, t2 }) => {
 
     useEffect(() => { resetCycle(); }, [t1, t2, resetCycle]);
 
+    const simulationCombo = (
+        <div className="w-full h-full relative bg-slate-900 rounded-2xl overflow-hidden border border-slate-700 shadow-xl">
+            <canvas ref={canvasRef} width={800} height={480} className="w-full h-full block cursor-pointer" onClick={handleClick} />
+        </div>
+    );
+
+    const controlsCombo = (
+        <div className="flex flex-col gap-4 w-full text-slate-200">
+            <div className="grid md:grid-cols-2 gap-6">
+                <div className="space-y-2 p-4 bg-slate-900/50 rounded-xl border border-slate-700/50">
+                    <label className="text-xs font-bold text-slate-400 uppercase flex justify-between">
+                        <span>Hot Source Temperature (T₁)</span> <span className="text-red-400 font-mono text-sm">{t1} K</span>
+                    </label>
+                    <input
+                        type="range" min="400" max="1000" step="10"
+                        value={t1}
+                        onChange={(e) => setT1(Math.max(Number(e.target.value), t2 + 50))}
+                        className="w-full accent-red-500 h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer"
+                    />
+                </div>
+                <div className="space-y-2 p-4 bg-slate-900/50 rounded-xl border border-slate-700/50">
+                    <label className="text-xs font-bold text-slate-400 uppercase flex justify-between">
+                        <span>Cold Sink Temperature (T₂)</span> <span className="text-blue-400 font-mono text-sm">{t2} K</span>
+                    </label>
+                    <input
+                        type="range" min="100" max="600" step="10"
+                        value={t2}
+                        onChange={(e) => setT2(Math.min(Number(e.target.value), t1 - 50))}
+                        className="w-full accent-blue-500 h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer"
+                    />
+                </div>
+            </div>
+
+            <div className="p-3 bg-slate-900/80 rounded-xl border border-slate-700/50 text-center flex items-center justify-center gap-4">
+                <span className="text-sm font-bold text-slate-400">Carnot Efficiency:</span>
+                <span className="text-xl font-bold text-emerald-500 font-mono shadow-inner bg-emerald-500/10 px-3 py-1 rounded">
+                    {((1 - t2 / t1) * 100).toFixed(1)}%
+                </span>
+                <span className="text-xs font-mono text-slate-500 bg-slate-800 px-2 py-1 rounded">η = 1 − T₂/T₁</span>
+            </div>
+        </div>
+    );
+
     return (
-        <canvas ref={canvasRef} width={800} height={480} className="w-full h-full cursor-pointer" onClick={handleClick} />
+        <TopicLayoutContainer
+            topic={topic}
+            onExit={onExit}
+            SimulationComponent={simulationCombo}
+            ControlsComponent={controlsCombo}
+        />
     );
 };
 

@@ -1,7 +1,13 @@
-import React, { useRef, useState, useEffect, useMemo } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { Slice, Eye, HelpCircle } from 'lucide-react';
+import TopicLayoutContainer from '../../TopicLayoutContainer';
 
-const AtomicOrbitalsLab: React.FC = () => {
+interface AtomicOrbitalsProps {
+    topic: any;
+    onExit: () => void;
+}
+
+const AtomicOrbitalsLab: React.FC<AtomicOrbitalsProps> = ({ topic, onExit }) => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const containerRef = useRef<HTMLDivElement>(null);
 
@@ -267,142 +273,119 @@ const AtomicOrbitalsLab: React.FC = () => {
 
     }, [n, l, m, sliceOpen, highlightNodes, dimensions]);
 
-    return (
-        <div className="w-full flex-1 flex flex-col lg:flex-row h-full bg-slate-900 border-x border-b border-slate-700 rounded-b-xl text-slate-200 font-sans relative overflow-hidden">
-
-            {/* 2D Visualizer Area */}
-            <div ref={containerRef} className="flex-1 relative bg-black min-h-[600px] overflow-hidden">
-                <canvas
-                    ref={canvasRef}
-                    className="absolute top-0 left-0 block cursor-crosshair"
-                />
-
-                {/* Realtime Badges */}
-                <div className="absolute top-6 left-6 flex flex-col gap-2 pointer-events-none z-10 w-fit">
-                    <div className="bg-slate-800/80 backdrop-blur border border-slate-700 px-4 py-2 rounded-lg inline-flex items-center shadow-xl">
-                        <span className="font-display font-bold text-3xl text-white tracking-widest">
-                            {n}{getOrbitalLetter(l)}<sub className="text-sm text-brand-secondary ml-1 font-sans">{getSubscript(l, m)}</sub>
-                        </span>
-                    </div>
-
-                    <div className="bg-slate-800/80 backdrop-blur border border-slate-700 px-4 py-3 rounded-lg shadow-xl text-sm space-y-2 mt-2 w-64">
-                        <div className="flex justify-between items-center group">
-                            <span className="text-slate-400 group-hover:text-white transition-colors">Radial Nodes (n-l-1):</span>
-                            <span className="text-red-400 font-bold bg-red-400/10 px-2 py-0.5 rounded">{radialNodes}</span>
-                        </div>
-                        <div className="flex justify-between items-center group">
-                            <span className="text-slate-400 group-hover:text-white transition-colors">Angular Nodes (l):</span>
-                            <span className="text-blue-400 font-bold bg-blue-400/10 px-2 py-0.5 rounded">{angularNodes}</span>
-                        </div>
-                        <div className="flex justify-between items-center border-t border-slate-700 pt-2 mt-2">
-                            <span className="text-slate-300 font-semibold">Total Nodes (n-1):</span>
-                            <span className="text-white font-bold bg-white/10 px-2 py-0.5 rounded">{totalNodes}</span>
-                        </div>
-                    </div>
-                </div>
-
-                {/* View Tools */}
-                <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex gap-4 bg-slate-800/80 backdrop-blur p-2 rounded-xl border border-slate-700 shadow-2xl z-10 w-fit">
-                    <button
-                        onClick={() => setSliceOpen(!sliceOpen)}
-                        className={`flex items-center gap-2 px-5 py-2.5 rounded-lg font-bold transition-all border whitespace-nowrap ${sliceOpen
-                            ? 'bg-amber-500 text-slate-900 border-amber-400 shadow-[0_0_20px_rgba(245,158,11,0.4)]'
-                            : 'bg-slate-800 text-slate-300 border-slate-600 hover:bg-slate-700 hover:text-white'
-                            }`}
-                    >
-                        <Slice size={18} />
-                        Cross-Section View
-                    </button>
-
-                    <button
-                        onClick={() => setHighlightNodes(!highlightNodes)}
-                        className={`flex items-center gap-2 px-5 py-2.5 rounded-lg font-bold transition-all border whitespace-nowrap ${highlightNodes
-                            ? 'bg-emerald-500 text-slate-900 border-emerald-400 shadow-[0_0_20px_rgba(16,185,129,0.4)]'
-                            : 'bg-slate-800 text-slate-300 border-slate-600 hover:bg-slate-700 hover:text-white'
-                            }`}
-                    >
-                        <Eye size={18} />
-                        Highlight Nodes
-                    </button>
-                </div>
-            </div>
-
-            {/* Controls Panel */}
-            <div className="w-full lg:w-96 shrink-0 bg-slate-800 border-l border-slate-700 flex flex-col z-20 shadow-[-10px_0_30px_rgba(0,0,0,0.5)]">
-
-                <div className="p-6 border-b border-slate-700 bg-slate-800/50">
-                    <h3 className="font-bold text-xl text-white mb-2 flex items-center gap-2">
-                        <HelpCircle size={20} className="text-brand-primary" />
-                        Quantum Controls
-                    </h3>
-                    <p className="text-sm text-slate-400">
-                        Adjust the quantum numbers to observe the exact geometrical solutions to the Schrödinger wave equation.
-                    </p>
-                </div>
-
-                <div className="p-6 space-y-8 flex-1 overflow-y-auto custom-scrollbar">
-
-                    {/* Principal Quantum Number (n) */}
-                    <div className="bg-slate-900/50 p-5 rounded-xl border border-slate-700/50">
-                        <div className="flex justify-between items-center mb-4">
-                            <label className="text-sm font-bold text-slate-200">Principal (n)</label>
-                            <div className="bg-brand-primary/20 text-brand-primary border border-brand-primary/30 px-3 py-1 rounded-md font-mono text-xl font-bold shadow-inner">
-                                {n}
-                            </div>
-                        </div>
-                        <input type="range" min="1" max="5" step="1" value={n} onChange={(e) => setN(parseInt(e.target.value))} className="w-full accent-brand-primary h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer" />
-                        <p className="text-xs text-slate-500 mt-3 leading-relaxed">Determines the overall size (energy level) of the orbital. As <strong>n</strong> increases, the electron cloud expands further from the nucleus.</p>
-                    </div>
-
-                    {/* Azimuthal Quantum Number (l) */}
-                    <div className="bg-slate-900/50 p-5 rounded-xl border border-slate-700/50">
-                        <div className="flex justify-between items-center mb-4">
-                            <label className="text-sm font-bold text-slate-200">Azimuthal (l)</label>
-                            <div className="bg-brand-secondary/20 text-brand-secondary border border-brand-secondary/30 px-3 py-1 rounded-md font-mono text-xl font-bold shadow-inner flex items-center gap-2">
-                                {l}
-                                <span className="text-xs bg-brand-secondary text-white px-1.5 py-0.5 rounded font-sans uppercase">({getOrbitalLetter(l)})</span>
-                            </div>
-                        </div>
-                        <input type="range" min="0" max={n - 1} step="1" value={l} onChange={(e) => setL(parseInt(e.target.value))} className="w-full accent-brand-secondary h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer" />
-                        <p className="text-xs text-slate-500 mt-3 leading-relaxed">Determines the <strong>shape</strong> of the orbital. The maximum value is strictly bounded to <span className="font-mono bg-slate-800 px-1 rounded text-slate-300">n - 1</span>.</p>
-                    </div>
-
-                    {/* Magnetic Quantum Number (m) */}
-                    <div className="bg-slate-900/50 p-5 rounded-xl border border-slate-700/50">
-                        <div className="flex justify-between items-center mb-4">
-                            <label className="text-sm font-bold text-slate-200">Magnetic (m<sub>l</sub>)</label>
-                            <div className={`border px-3 py-1 rounded-md font-mono text-xl font-bold shadow-inner ${l === 0 ? 'bg-slate-800 text-slate-500 border-slate-700' : 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30'}`}>
-                                {m > 0 ? `+${m}` : m}
-                            </div>
-                        </div>
-                        <input type="range" min={-l} max={l} step="1" value={m} onChange={(e) => setM(parseInt(e.target.value))} className={`w-full h-2 rounded-lg appearance-none ${l === 0 ? 'bg-slate-800 cursor-not-allowed hidden' : 'accent-emerald-500 bg-slate-700 cursor-pointer'}`} disabled={l === 0} />
-
-                        {l === 0 ? (
-                            <div className="mt-3 p-3 bg-slate-800/80 rounded-lg border border-slate-700 text-xs text-slate-400 flex items-start gap-2">
-                                <HelpCircle size={14} className="shrink-0 mt-0.5" />
-                                <p>For s-orbitals (l=0), the only possible m<sub>l</sub> value is 0. Spherical symmetry means there's no distinct spatial orientation.</p>
-                            </div>
-                        ) : (
-                            <p className="text-xs text-slate-500 mt-3 leading-relaxed">Determines the spatial <strong>orientation</strong> of the orbital along the specific molecular axes.</p>
-                        )}
-                    </div>
-
-                </div>
-
-                {/* Educational Insight Panel */}
-                <div className="bg-slate-900/80 p-6 border-t border-slate-700">
-                    <h4 className="text-sm font-bold text-amber-500 flex items-center gap-2 mb-2">
-                        <Eye size={16} /> What you are seeing
-                    </h4>
-                    <div className="text-xs text-slate-400 space-y-2 leading-relaxed">
-                        <p>In the quantum model, electrons aren't particles moving in tracks, but <strong>probability density clouds (ψ²)</strong>.</p>
-                        <p>Toggle <strong>Cross-Section View</strong> to see the internal probability distributions, and use the <strong>Highlight Nodes</strong> tool to reveal the mathematically empty zones where probability is precisely zero.</p>
-                    </div>
-                </div>
-
-            </div>
-
+    const floatingNav = (
+        <div className="flex items-center gap-2">
+            <Eye size={16} className="text-amber-500" />
+            <span className="text-xs font-medium text-slate-300">
+                Electrons are probability clouds (ψ²), not particles on tracks.
+            </span>
         </div>
+    );
+
+    const simulationCombo = (
+        <div ref={containerRef} className="w-full h-full relative bg-black flex items-center justify-center min-h-0 overflow-hidden shadow-2xl rounded-2xl border border-slate-800">
+            <canvas
+                ref={canvasRef}
+                className="absolute top-0 left-0 block cursor-crosshair"
+            />
+
+            {/* Realtime Badges */}
+            <div className="absolute top-6 left-6 flex flex-col gap-2 pointer-events-none z-10 w-fit">
+                <div className="bg-slate-800/80 backdrop-blur border border-slate-700 px-4 py-2 rounded-lg inline-flex items-center shadow-xl">
+                    <span className="font-display font-bold text-3xl text-white tracking-widest">
+                        {n}{getOrbitalLetter(l)}<sub className="text-sm text-brand-secondary ml-1 font-sans">{getSubscript(l, m)}</sub>
+                    </span>
+                </div>
+
+                <div className="bg-slate-800/80 backdrop-blur border border-slate-700 px-4 py-3 rounded-lg shadow-xl text-sm space-y-2 mt-2 w-64">
+                    <div className="flex justify-between items-center group">
+                        <span className="text-slate-400 group-hover:text-white transition-colors">Radial Nodes (n-l-1):</span>
+                        <span className="text-red-400 font-bold bg-red-400/10 px-2 py-0.5 rounded">{radialNodes}</span>
+                    </div>
+                    <div className="flex justify-between items-center group">
+                        <span className="text-slate-400 group-hover:text-white transition-colors">Angular Nodes (l):</span>
+                        <span className="text-blue-400 font-bold bg-blue-400/10 px-2 py-0.5 rounded">{angularNodes}</span>
+                    </div>
+                    <div className="flex justify-between items-center border-t border-slate-700 pt-2 mt-2">
+                        <span className="text-slate-300 font-semibold">Total Nodes (n-1):</span>
+                        <span className="text-white font-bold bg-white/10 px-2 py-0.5 rounded">{totalNodes}</span>
+                    </div>
+                </div>
+            </div>
+
+            {/* View Tools */}
+            <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex gap-4 bg-slate-800/80 backdrop-blur p-2 rounded-xl border border-slate-700 shadow-2xl z-20 w-fit pointer-events-auto">
+                <button
+                    onClick={() => setSliceOpen(!sliceOpen)}
+                    className={`flex items-center gap-2 px-4 py-2 rounded-lg font-bold transition-all border whitespace-nowrap text-sm ${sliceOpen
+                        ? 'bg-amber-500 text-slate-900 border-amber-400 shadow-[0_0_20px_rgba(245,158,11,0.4)]'
+                        : 'bg-slate-800 text-slate-300 border-slate-600 hover:bg-slate-700 hover:text-white'
+                        }`}
+                >
+                    <Slice size={16} />
+                    Cross-Section View
+                </button>
+
+                <button
+                    onClick={() => setHighlightNodes(!highlightNodes)}
+                    className={`flex items-center gap-2 px-4 py-2 rounded-lg font-bold transition-all border whitespace-nowrap text-sm ${highlightNodes
+                        ? 'bg-emerald-500 text-slate-900 border-emerald-400 shadow-[0_0_20px_rgba(16,185,129,0.4)]'
+                        : 'bg-slate-800 text-slate-300 border-slate-600 hover:bg-slate-700 hover:text-white'
+                        }`}
+                >
+                    <Eye size={16} />
+                    Highlight Nodes
+                </button>
+            </div>
+        </div>
+    );
+
+    const controlsCombo = (
+        <div className="flex flex-col md:flex-row gap-4 w-full">
+            {/* Principal Quantum Number (n) */}
+            <div className="flex-1 bg-slate-950/50 p-3 rounded-xl border border-slate-700/50">
+                <div className="flex justify-between items-center mb-2">
+                    <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Principal (n)</label>
+                    <div className="bg-brand-primary/20 text-brand-primary border border-brand-primary/30 px-2 rounded-sm font-mono text-sm font-bold shadow-inner">
+                        {n}
+                    </div>
+                </div>
+                <input type="range" min="1" max="5" step="1" value={n} onChange={(e) => setN(parseInt(e.target.value))} className="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-brand-primary" />
+            </div>
+
+            {/* Azimuthal Quantum Number (l) */}
+            <div className="flex-1 bg-slate-950/50 p-3 rounded-xl border border-slate-700/50">
+                <div className="flex justify-between items-center mb-2">
+                    <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Azimuthal (l)</label>
+                    <div className="bg-brand-secondary/20 text-brand-secondary border border-brand-secondary/30 px-2 rounded-sm font-mono text-sm font-bold shadow-inner flex items-center gap-1">
+                        {l} <span className="text-[8px] bg-brand-secondary text-white px-1 rounded font-sans uppercase">({getOrbitalLetter(l)})</span>
+                    </div>
+                </div>
+                <input type="range" min="0" max={n - 1} step="1" value={l} onChange={(e) => setL(parseInt(e.target.value))} className="w-full h-1.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-brand-secondary" />
+            </div>
+
+            {/* Magnetic Quantum Number (m) */}
+            <div className="flex-1 bg-slate-950/50 p-3 rounded-xl border border-slate-700/50">
+                <div className="flex justify-between items-center mb-2">
+                    <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Magnetic (m<sub>l</sub>)</label>
+                    <div className={`border px-2 rounded-sm font-mono text-sm font-bold shadow-inner ${l === 0 ? 'bg-slate-800 text-slate-500 border-slate-700' : 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30'}`}>
+                        {m > 0 ? `+${m}` : m}
+                    </div>
+                </div>
+                <input type="range" min={-l} max={l} step="1" value={m} onChange={(e) => setM(parseInt(e.target.value))} className={`w-full h-1.5 rounded-lg appearance-none ${l === 0 ? 'bg-slate-800 cursor-not-allowed hidden' : 'accent-emerald-500 bg-slate-800 cursor-pointer'}`} disabled={l === 0} />
+                {l === 0 && <span className="text-[9px] text-slate-500 italic block mt-1">Spherically symmetric</span>}
+            </div>
+        </div>
+    );
+
+    return (
+        <TopicLayoutContainer
+            topic={topic}
+            onExit={onExit}
+            FloatingNavComponent={floatingNav}
+            SimulationComponent={simulationCombo}
+            ControlsComponent={controlsCombo}
+        />
     );
 };
 

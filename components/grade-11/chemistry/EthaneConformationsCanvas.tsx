@@ -1,7 +1,14 @@
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { RotateCw, Eye, Zap, Play, Pause, RefreshCcw } from 'lucide-react';
+import TopicLayoutContainer from '../../TopicLayoutContainer';
+import { Topic } from '../../../types';
 
-const EthaneConformationsCanvas: React.FC = () => {
+interface EthaneConformationsProps {
+    topic: Topic;
+    onExit: () => void;
+}
+
+const EthaneConformationsCanvas: React.FC<EthaneConformationsProps> = ({ topic, onExit }) => {
     const [dihedralAngle, setDihedralAngle] = useState(60); // degrees
     const [viewMode, setViewMode] = useState<'newman' | 'sawhorse' | '3d'>('newman');
     const [showElectronClouds, setShowElectronClouds] = useState(false);
@@ -413,132 +420,115 @@ const EthaneConformationsCanvas: React.FC = () => {
     const conformationColor = conformationType === 'staggered' ? 'text-emerald-400' : conformationType === 'eclipsed' ? 'text-red-400' : 'text-amber-400';
     const conformationBg = conformationType === 'staggered' ? 'bg-emerald-500/10 border-emerald-500/30' : conformationType === 'eclipsed' ? 'bg-red-500/10 border-red-500/30' : 'bg-amber-500/10 border-amber-500/30';
 
-    return (
-        <div className="w-full h-full flex flex-col text-slate-100 font-sans bg-slate-900 absolute inset-0">
-            {/* Top Bar */}
-            <div className="flex items-center gap-2 p-3 bg-slate-950 border-b border-slate-800 shrink-0 overflow-x-auto">
-                {/* View mode buttons */}
-                {[
-                    { mode: 'newman' as const, label: 'Newman' },
-                    { mode: 'sawhorse' as const, label: 'Sawhorse' },
-                    { mode: '3d' as const, label: '3D Model' }
-                ].map(({ mode, label }) => (
-                    <button key={mode} onClick={() => setViewMode(mode)}
-                        className={`px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all border cursor-pointer ${viewMode === mode ? 'bg-indigo-500/20 border-indigo-500/50 text-indigo-300' : 'bg-slate-800 border-slate-700 text-slate-400 hover:bg-slate-700'
-                            }`}>
-                        {label}
-                    </button>
-                ))}
-
-                <div className="w-px h-5 bg-slate-700 mx-1" />
-
-                {/* Toggles */}
-                <button onClick={() => setShowElectronClouds(!showElectronClouds)}
-                    className={`px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all border cursor-pointer flex items-center gap-1.5 ${showElectronClouds ? 'bg-blue-500/20 border-blue-500/50 text-blue-300' : 'bg-slate-800 border-slate-700 text-slate-400 hover:bg-slate-700'
+    const topBar = (
+        <div className="flex items-center gap-1">
+            {[
+                { mode: 'newman' as const, label: 'Newman' },
+                { mode: 'sawhorse' as const, label: 'Sawhorse' },
+                { mode: '3d' as const, label: '3D Model' }
+            ].map(({ mode, label }) => (
+                <button key={mode} onClick={() => setViewMode(mode)}
+                    className={`px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all border cursor-pointer ${viewMode === mode ? 'bg-indigo-500 shadow-xl shadow-indigo-500/20 text-white border-transparent' : 'bg-transparent border-transparent text-slate-300 hover:bg-white/10'
                         }`}>
-                    <Eye size={12} /> e⁻ Clouds
+                    {label}
                 </button>
+            ))}
 
-                <button onClick={() => { setAutoRotate(!autoRotate); if (!autoRotate) resetTrail(); }}
-                    className={`px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all border cursor-pointer flex items-center gap-1.5 ${autoRotate ? 'bg-purple-500/20 border-purple-500/50 text-purple-300' : 'bg-slate-800 border-slate-700 text-slate-400 hover:bg-slate-700'
-                        }`}>
-                    {autoRotate ? <Pause size={12} /> : <Play size={12} />} Auto-Rotate
-                </button>
+            <div className="w-px h-4 bg-white/20 mx-1" />
+
+            <button onClick={() => setShowElectronClouds(!showElectronClouds)}
+                className={`px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all border cursor-pointer flex items-center gap-1.5 ${showElectronClouds ? 'bg-blue-500 shadow-xl shadow-blue-500/20 text-white border-transparent' : 'bg-transparent border-transparent text-slate-300 hover:bg-white/10'
+                    }`}>
+                <Eye size={12} /> e⁻ Clouds
+            </button>
+
+            <button onClick={() => { setAutoRotate(!autoRotate); if (!autoRotate) resetTrail(); }}
+                className={`px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all border cursor-pointer flex items-center gap-1.5 ${autoRotate ? 'bg-purple-500 shadow-xl shadow-purple-500/20 text-white border-transparent' : 'bg-transparent border-transparent text-slate-300 hover:bg-white/10'
+                    }`}>
+                {autoRotate ? <Pause size={12} /> : <Play size={12} />} Auto
+            </button>
+        </div>
+    );
+
+    const simulationContent = (
+        <div className="w-full h-full relative flex items-center justify-center">
+            {/* Strain vibration effect */}
+            <div className={`w-full max-w-[800px] aspect-square flex items-center justify-center transition-all duration-200 ${conformationType === 'eclipsed' ? 'animate-pulse' : ''}`}
+                style={{ transform: conformationType === 'eclipsed' ? `rotate(${Math.random() * 2 - 1}deg)` : 'none' }}>
+                {viewMode === 'newman' && renderNewman()}
+                {viewMode === 'sawhorse' && renderSawhorse()}
+                {viewMode === '3d' && render3D()}
             </div>
 
-            {/* System Message */}
-            <div className={`p-3 border-b backdrop-blur-sm z-10 transition-all duration-300 ${conformationBg}`}>
-                <p className={`text-xs md:text-sm font-medium text-center leading-relaxed ${conformationColor}`}>
-                    {systemMessage}
-                </p>
-            </div>
-
-            {/* Main Content: Molecule + Energy Graph */}
-            <div className="flex-1 flex flex-col lg:flex-row overflow-hidden">
-                {/* Molecule Viewer */}
-                <div className="flex-1 flex items-center justify-center relative min-h-0 overflow-hidden">
-                    {/* Strain vibration effect */}
-                    <div className={`w-full h-full flex items-center justify-center transition-all duration-200 ${conformationType === 'eclipsed' ? 'animate-pulse' : ''}`}
-                        style={{ transform: conformationType === 'eclipsed' ? `rotate(${Math.random() * 2 - 1}deg)` : 'none' }}>
-                        {viewMode === 'newman' && renderNewman()}
-                        {viewMode === 'sawhorse' && renderSawhorse()}
-                        {viewMode === '3d' && render3D()}
-                    </div>
-
-                    {/* Conformation badge */}
-                    <div className={`absolute top-3 right-3 px-3 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest border ${conformationBg} ${conformationColor}`}>
-                        {conformationType}
-                    </div>
-
-                    {/* Newman projection mini-label */}
-                    <div className="absolute bottom-2 left-3 text-[9px] text-slate-600 uppercase tracking-widest font-bold">
-                        {viewMode === 'newman' ? 'Newman Projection' : viewMode === 'sawhorse' ? 'Sawhorse Projection' : '3D Ball-and-Stick'}
-                    </div>
+            {/* Energy Graph Panel Floating (Desktop only) */}
+            <div className="hidden lg:flex absolute bottom-4 left-4 w-[280px] h-[140px] bg-slate-900/80 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl p-3 flex-col pointer-events-auto">
+                <div className="text-[9px] text-slate-400 uppercase tracking-widest font-bold mb-1 flex items-center gap-1.5">
+                    <Zap size={10} className="text-amber-400" /> Potential Energy (kJ/mol)
                 </div>
-
-                {/* Energy Graph Panel */}
-                <div className="lg:w-[35%] w-full h-[140px] lg:h-full bg-slate-950 border-t lg:border-t-0 lg:border-l border-slate-800 p-3 flex flex-col shrink-0">
-                    <div className="text-[9px] text-slate-500 uppercase tracking-widest font-bold mb-1 flex items-center gap-1.5">
-                        <Zap size={10} /> Potential Energy vs Dihedral Angle
-                    </div>
-                    <div className="flex-1 min-h-0">
-                        {renderEnergyGraph()}
-                    </div>
-                    <div className="flex justify-between items-center text-[9px] mt-1">
-                        <span className="text-emerald-500 font-bold">S = Staggered (stable)</span>
-                        <span className="text-red-400 font-bold">E = Eclipsed (unstable)</span>
-                    </div>
-                </div>
-            </div>
-
-            {/* Bottom Controls */}
-            <div className="bg-slate-950 border-t border-slate-800 p-4 shrink-0">
-                <div className="max-w-3xl mx-auto">
-                    {/* Dihedral angle slider */}
-                    <div className="flex items-center gap-4">
-                        <div className="flex items-center gap-2 shrink-0">
-                            <RotateCw size={14} className="text-slate-500" />
-                            <span className="text-xs text-slate-400 font-bold whitespace-nowrap">Dihedral Angle</span>
-                        </div>
-                        <input
-                            type="range"
-                            min="0"
-                            max="360"
-                            step="1"
-                            value={dihedralAngle}
-                            onChange={e => { setDihedralAngle(Number(e.target.value)); setAutoRotate(false); }}
-                            className="flex-1 h-2 bg-slate-800 rounded-full appearance-none cursor-pointer accent-amber-500"
-                            style={{
-                                background: `linear-gradient(to right, #10b981 0%, #ef4444 ${(dihedralAngle / 360) * 100}%, #1e293b ${(dihedralAngle / 360) * 100}%)`
-                            }}
-                        />
-                        <div className="font-mono text-sm text-amber-400 font-bold w-12 text-right shrink-0">{dihedralAngle.toFixed(0)}°</div>
-                    </div>
-
-                    {/* Quick-jump buttons */}
-                    <div className="flex items-center gap-2 mt-3 justify-center flex-wrap">
-                        <span className="text-[9px] text-slate-500 uppercase tracking-widest mr-1">Jump to:</span>
-                        {[
-                            { angle: 0, label: '0° (Eclipsed)', color: 'text-red-400 border-red-500/30 hover:bg-red-500/10' },
-                            { angle: 60, label: '60° (Staggered)', color: 'text-emerald-400 border-emerald-500/30 hover:bg-emerald-500/10' },
-                            { angle: 120, label: '120° (Eclipsed)', color: 'text-red-400 border-red-500/30 hover:bg-red-500/10' },
-                            { angle: 180, label: '180° (Staggered)', color: 'text-emerald-400 border-emerald-500/30 hover:bg-emerald-500/10' },
-                            { angle: 240, label: '240° (Eclipsed)', color: 'text-red-400 border-red-500/30 hover:bg-red-500/10' },
-                            { angle: 300, label: '300° (Staggered)', color: 'text-emerald-400 border-emerald-500/30 hover:bg-emerald-500/10' },
-                        ].map(({ angle, label, color }) => (
-                            <button key={angle} onClick={() => { setDihedralAngle(angle); setAutoRotate(false); }}
-                                className={`px-2 py-1 rounded-md text-[9px] md:text-[10px] font-bold border cursor-pointer transition-all whitespace-nowrap ${color}`}>
-                                {label}
-                            </button>
-                        ))}
-                        <button onClick={handleReset}
-                            className="px-2 py-1 rounded-md text-[10px] font-bold border border-slate-600 text-slate-400 cursor-pointer hover:bg-slate-800 flex items-center gap-1 ml-1">
-                            <RefreshCcw size={10} /> Reset
-                        </button>
-                    </div>
+                <div className="flex-1 min-h-0">
+                    {renderEnergyGraph()}
                 </div>
             </div>
         </div>
+    );
+
+    const statusBadge = (
+        <div className={`px-4 py-2 rounded-2xl backdrop-blur-xl border flex flex-col items-center gap-1 text-sm font-bold shadow-2xl transition-all duration-300 ${conformationBg}`}>
+            <div className="flex items-center gap-2">
+                <span className={`uppercase tracking-wider text-[11px] ${conformationColor}`}>{conformationType}</span>
+            </div>
+            <span className={`text-[10px] sm:text-xs font-medium md:max-w-xs text-center ${conformationColor}`}>{systemMessage}</span>
+        </div>
+    );
+
+    const bottomControls = (
+        <>
+            <div className="flex items-center gap-4">
+                <div className="flex items-center gap-2 shrink-0">
+                    <RotateCw size={14} className="text-slate-500 hidden sm:block" />
+                    <span className="text-[10px] sm:text-xs text-slate-400 font-bold whitespace-nowrap">Dihedral Angle</span>
+                </div>
+                <input
+                    type="range" min="0" max="360" step="1"
+                    value={dihedralAngle}
+                    onChange={e => { setDihedralAngle(Number(e.target.value)); setAutoRotate(false); }}
+                    className="flex-1 h-2 bg-slate-950 rounded-full appearance-none cursor-pointer"
+                    style={{ background: `linear-gradient(to right, #10b981 0%, #ef4444 ${(dihedralAngle / 360) * 100}%, #0f172a ${(dihedralAngle / 360) * 100}%)` }}
+                />
+                <div className="font-mono text-xs sm:text-sm text-amber-400 font-bold w-8 sm:w-12 text-right shrink-0">{dihedralAngle.toFixed(0)}°</div>
+            </div>
+            <div className="flex items-center gap-2 justify-center flex-wrap pt-2 sm:pt-0">
+                <span className="text-[9px] text-slate-500 uppercase tracking-widest mr-1 hidden sm:block">Jump to:</span>
+                {[
+                    { angle: 0, label: '0°' },
+                    { angle: 60, label: '60°' },
+                    { angle: 120, label: '120°' },
+                    { angle: 180, label: '180°' },
+                    { angle: 240, label: '240°' },
+                    { angle: 300, label: '300°' }
+                ].map(({ angle, label }) => {
+                    const isEclipsed = [0, 120, 240, 360].includes(angle);
+                    const color = isEclipsed ? 'text-red-400 border-red-500/30 hover:bg-red-500/10' : 'text-emerald-400 border-emerald-500/30 hover:bg-emerald-500/10';
+                    return (
+                        <button key={angle} onClick={() => { setDihedralAngle(angle); setAutoRotate(false); }}
+                            className={`px-2 py-1 rounded-md text-[9px] font-bold border cursor-pointer transition-all ${color}`}>
+                            {label}
+                        </button>
+                    );
+                })}
+            </div>
+        </>
+    );
+
+    return (
+        <TopicLayoutContainer
+            topic={topic}
+            onExit={onExit}
+            FloatingNavComponent={topBar}
+            StatusBadgeComponent={statusBadge}
+            SimulationComponent={simulationContent}
+            ControlsComponent={bottomControls}
+        />
     );
 
     function handleReset() {

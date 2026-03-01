@@ -1,10 +1,17 @@
 import React, { useState, useMemo } from 'react';
 import { RefreshCcw, FlipHorizontal } from 'lucide-react';
+import TopicLayoutContainer from '../../TopicLayoutContainer';
+import { Topic } from '../../../types';
 
 type OrbitalType = '1s' | '2pz' | '2px' | '2py';
 type BondResult = 'sigma' | 'pi' | 'zero' | 'destructive' | 'none';
 
-const SigmaPiBondsLab: React.FC = () => {
+interface Props {
+    topic: Topic;
+    onExit: () => void;
+}
+
+const SigmaPiBondsLab: React.FC<Props> = ({ topic, onExit }) => {
     const [orbitalA, setOrbitalA] = useState<OrbitalType>('1s');
     const [orbitalB, setOrbitalB] = useState<OrbitalType>('1s');
     const [distance, setDistance] = useState(100);
@@ -224,142 +231,139 @@ const SigmaPiBondsLab: React.FC = () => {
         { value: '2py', label: '2py', desc: 'Depth (⊥ z)' },
     ];
 
-    return (
-        <div className="w-full h-full flex flex-col text-slate-100 font-sans">
-            {/* ===== SIMULATION AREA ===== */}
-            <div className="flex-1 relative bg-slate-900 overflow-hidden min-h-0">
-                {/* Grid background */}
-                <div className="absolute inset-0" style={{
-                    backgroundImage: 'linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px)',
-                    backgroundSize: '50px 50px',
-                }} />
+    const statusBadge = (
+        <div className="flex flex-col items-center bg-slate-900/80 p-2 px-6 rounded-2xl border border-white/10 shadow-xl backdrop-blur-md"
+            style={{ borderColor: bondInfo.color, boxShadow: `0 0 20px ${bondInfo.color}30` }}>
+            <div className="text-[12px] uppercase font-bold tracking-widest text-slate-400 mb-0.5">Interaction Type</div>
+            <div className="text-xl font-bold whitespace-nowrap" style={{ color: bondInfo.color }}>
+                {bondInfo.text}
+            </div>
+            <div className="text-[10px] text-slate-400 mt-1 uppercase tracking-widest bg-black/20 px-2 py-0.5 rounded-full">{bondInfo.sub}</div>
+        </div>
+    );
 
-                {/* Internuclear axis */}
-                <div className="absolute left-8 right-8 top-1/2 h-px border-t border-dashed border-white/10" />
-                <div className="absolute bottom-3 left-1/2 -translate-x-1/2 text-[10px] text-white/20 font-mono">z-axis (internuclear)</div>
+    const controlsCombo = (
+        <div className="w-full flex justify-between gap-4">
+            <div className="flex-1 bg-slate-950/50 p-3 rounded-xl border border-slate-700/50">
+                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-2">Atom A Orbital</label>
+                <select value={orbitalA} onChange={e => setOrbitalA(e.target.value as OrbitalType)}
+                    className="w-full bg-slate-900 border border-slate-600 text-sm text-white rounded-lg px-3 py-2 text-center font-bold focus:outline-none focus:border-blue-500 cursor-pointer">
+                    {orbitalOptions.map(o => <option key={o.value} value={o.value}>{o.label} — {o.desc}</option>)}
+                </select>
+            </div>
+            <div className="flex-1 bg-slate-950/50 p-3 rounded-xl border border-slate-700/50">
+                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-2">Atom B Orbital</label>
+                <select value={orbitalB} onChange={e => setOrbitalB(e.target.value as OrbitalType)}
+                    className="w-full bg-slate-900 border border-slate-600 text-sm text-white rounded-lg px-3 py-2 text-center font-bold focus:outline-none focus:border-blue-500 cursor-pointer">
+                    {orbitalOptions.map(o => <option key={o.value} value={o.value}>{o.label} — {o.desc}</option>)}
+                </select>
+            </div>
+            <div className="flex-[1.5] bg-slate-950/50 p-3 rounded-xl border border-slate-700/50">
+                <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest flex justify-between mb-2">
+                    <span>Internuclear Distance</span>
+                    <span className="text-emerald-400 font-mono text-xs">{distance} pm</span>
+                </label>
+                <input type="range" min="20" max="200" step="2" value={distance}
+                    onChange={e => setDistance(Number(e.target.value))}
+                    className="w-full accent-emerald-400 h-1.5 bg-slate-700 rounded-lg cursor-pointer" />
+                <div className="flex justify-between text-[9px] text-slate-500 mt-1 uppercase font-bold tracking-widest">
+                    <span>Close</span><span>Far</span>
+                </div>
+            </div>
+            <div className="flex gap-2 items-center px-2">
+                <button onClick={() => setFlipB(!flipB)}
+                    className={`h-full py-2 px-4 rounded-xl text-xs font-bold flex flex-col items-center justify-center gap-1 border transition-all cursor-pointer ${flipB ? 'bg-red-500/20 border-red-500/40 text-red-300 shadow-[0_0_15px_rgba(239,68,68,0.3)]' : 'bg-slate-800 border-slate-600 text-slate-300 hover:bg-slate-700'}`}>
+                    <FlipHorizontal size={16} />
+                    {flipB ? 'Flipped ✕' : 'Flip B Orbital'}
+                </button>
+                <button onClick={handleReset}
+                    className="h-full py-2 px-4 bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded-xl flex flex-col items-center justify-center gap-1 text-[10px] uppercase tracking-widest font-bold text-slate-300 transition-colors cursor-pointer" title="Reset">
+                    <RefreshCcw size={16} />
+                    Reset
+                </button>
+            </div>
+        </div>
+    );
 
-                {/* Atoms container */}
-                <div className="absolute inset-0 flex items-center justify-center">
-                    {/* Atom A */}
-                    <div className="flex flex-col items-center absolute transition-all duration-300"
-                        style={{ left: `calc(50% - ${sep / 2 + 56}px)` }}>
-                        {/* Nucleus */}
-                        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-30">
-                            <div className="w-3 h-3 rounded-full bg-white shadow-[0_0_12px_rgba(255,255,255,0.9)]" />
-                        </div>
-                        {renderAtomOrbital(orbitalA, false)}
-                        <div className="mt-3 text-center">
-                            <div className="text-xs font-bold text-white/80">Atom A</div>
-                            <div className="text-[10px] text-white/40 font-mono">{orbitalA}</div>
-                        </div>
+    const simulationCombo = (
+        <div className="w-full h-full flex flex-col relative bg-transparent overflow-hidden rounded-3xl">
+            {/* Grid background */}
+            <div className="absolute inset-0 transition-opacity duration-1000" style={{
+                backgroundImage: 'linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px)',
+                backgroundSize: '80px 80px',
+                maskImage: 'radial-gradient(ellipse at center, black 20%, transparent 80%)'
+            }} />
+
+            {/* Internuclear axis */}
+            <div className="absolute left-1/4 right-1/4 top-1/2 h-px border-t border-dashed border-white/20" />
+            <div className="absolute bottom-[20%] left-1/2 -translate-x-1/2 text-[10px] uppercase tracking-widest text-white/20 font-mono">z-axis (internuclear)</div>
+
+            {/* Atoms container */}
+            <div className="absolute inset-0 flex items-center justify-center scale-150">
+                {/* Atom A */}
+                <div className="flex flex-col items-center absolute transition-all duration-300"
+                    style={{ left: `calc(50% - ${sep / 2 + 56}px)` }}>
+                    {/* Nucleus */}
+                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-30">
+                        <div className="w-2 h-2 rounded-full bg-white shadow-[0_0_15px_rgba(255,255,255,1)]" />
                     </div>
-
-                    {/* Overlap glow */}
-                    {renderOverlapGlow()}
-
-                    {/* Atom B */}
-                    <div className="flex flex-col items-center absolute transition-all duration-300"
-                        style={{ left: `calc(50% + ${sep / 2 - 56}px)` }}>
-                        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-30">
-                            <div className="w-3 h-3 rounded-full bg-white shadow-[0_0_12px_rgba(255,255,255,0.9)]" />
-                        </div>
-                        {renderAtomOrbital(orbitalB, flipB)}
-                        <div className="mt-3 text-center">
-                            <div className="text-xs font-bold text-white/80">Atom B</div>
-                            <div className="text-[10px] text-white/40 font-mono">{orbitalB}{flipB ? ' (flipped)' : ''}</div>
-                        </div>
-                    </div>
+                    {renderAtomOrbital(orbitalA, false)}
                 </div>
 
-                {/* Energy mini-graph (top-right) */}
-                <div className="absolute top-3 right-3 w-44 bg-slate-900/80 backdrop-blur-sm border border-white/10 rounded-lg p-3">
-                    <div className="text-[10px] font-bold text-white/50 mb-2">Potential Energy</div>
-                    <svg width="100%" height="50" viewBox="0 0 150 50">
-                        {/* Axis */}
-                        <line x1="20" y1="0" x2="20" y2="45" stroke="rgba(255,255,255,0.15)" strokeWidth="1" />
-                        <line x1="20" y1="25" x2="145" y2="25" stroke="rgba(255,255,255,0.15)" strokeWidth="1" />
-                        <text x="16" y="27" fill="rgba(255,255,255,0.3)" fontSize="7" textAnchor="end">0</text>
-                        <text x="140" y="44" fill="rgba(255,255,255,0.3)" fontSize="7" textAnchor="end">r →</text>
-                        {/* Curve */}
-                        <path d={(() => {
-                            let d = 'M 22 25';
-                            for (let i = 0; i <= 120; i++) {
-                                const r = 200 * (1 - i / 120);
-                                let e = 0;
-                                if (r < 130 && (bondResult === 'sigma' || bondResult === 'none')) e = -90 * (1 - r / 130);
-                                else if (r < 130 && bondResult === 'pi') e = -45 * (1 - r / 130);
-                                else if (r < 130 && bondResult === 'destructive') e = (1 - r / 130) * 50;
-                                const py = 25 - e * 20 / 90;
-                                d += ` L ${22 + i} ${py}`;
-                            }
-                            return d;
-                        })()} fill="none" stroke="rgba(148,163,184,0.4)" strokeWidth="1.5" />
-                        {/* Current position */}
-                        <circle
-                            cx={22 + 120 * (1 - distance / 200)}
-                            cy={25 - energy * 20 / 90}
-                            r="4"
-                            fill={energy < 0 ? '#34d399' : energy > 0 ? '#f87171' : '#94a3b8'}
-                            style={{ filter: `drop-shadow(0 0 4px ${energy < 0 ? '#34d399' : energy > 0 ? '#f87171' : '#94a3b8'})` }}
-                        />
-                        <text
-                            x={22 + 120 * (1 - distance / 200)}
-                            y={25 - energy * 20 / 90 - 8}
-                            fill={energy < 0 ? '#34d399' : energy > 0 ? '#f87171' : '#94a3b8'}
-                            fontSize="8" fontWeight="bold" textAnchor="middle" fontFamily="monospace"
-                        >{energy > 0 ? '+' : ''}{energy.toFixed(0)} kJ</text>
-                    </svg>
-                </div>
+                {/* Overlap glow */}
+                {renderOverlapGlow()}
 
-                {/* Bond Result Badge */}
-                <div className="absolute bottom-4 left-1/2 -translate-x-1/2 px-6 py-3 rounded-xl backdrop-blur-md border border-white/10 text-center z-10"
-                    style={{ backgroundColor: bondInfo.bg }}>
-                    <div className="text-sm font-bold" style={{ color: bondInfo.color }}>{bondInfo.text}</div>
-                    <div className="text-[11px] text-slate-400 mt-0.5">{bondInfo.sub}</div>
+                {/* Atom B */}
+                <div className="flex flex-col items-center absolute transition-all duration-300"
+                    style={{ left: `calc(50% + ${sep / 2 - 56}px)` }}>
+                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-30">
+                        <div className="w-2 h-2 rounded-full bg-white shadow-[0_0_15px_rgba(255,255,255,1)]" />
+                    </div>
+                    {renderAtomOrbital(orbitalB, flipB)}
                 </div>
             </div>
 
-            {/* ===== CONTROLS ===== */}
-            <div className="bg-slate-800 border-t border-slate-700 px-5 py-4 shrink-0">
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 items-end max-w-4xl mx-auto">
-                    <div>
-                        <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest block mb-1.5">Atom A Orbital</label>
-                        <select value={orbitalA} onChange={e => setOrbitalA(e.target.value as OrbitalType)}
-                            className="w-full bg-slate-900 border border-slate-600 text-sm text-white rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 cursor-pointer">
-                            {orbitalOptions.map(o => <option key={o.value} value={o.value}>{o.label} — {o.desc}</option>)}
-                        </select>
-                    </div>
-                    <div>
-                        <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest block mb-1.5">Atom B Orbital</label>
-                        <select value={orbitalB} onChange={e => setOrbitalB(e.target.value as OrbitalType)}
-                            className="w-full bg-slate-900 border border-slate-600 text-sm text-white rounded-lg px-3 py-2 focus:outline-none focus:border-blue-500 cursor-pointer">
-                            {orbitalOptions.map(o => <option key={o.value} value={o.value}>{o.label} — {o.desc}</option>)}
-                        </select>
-                    </div>
-                    <div>
-                        <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest flex justify-between mb-1.5">
-                            <span>Internuclear Distance</span>
-                            <span className="text-emerald-400 font-mono">{distance} pm</span>
-                        </label>
-                        <input type="range" min="20" max="200" step="2" value={distance}
-                            onChange={e => setDistance(Number(e.target.value))}
-                            className="w-full accent-emerald-400 h-2 bg-slate-700 rounded-lg cursor-pointer" />
-                        <div className="flex justify-between text-[9px] text-slate-500 mt-1">
-                            <span>Close</span><span>Far</span>
-                        </div>
-                    </div>
-                    <div className="flex gap-2">
-                        <button onClick={() => setFlipB(!flipB)}
-                            className={`flex-1 py-2.5 px-3 rounded-lg text-xs font-bold flex items-center justify-center gap-1.5 border transition-all cursor-pointer ${flipB ? 'bg-red-500/20 border-red-500/40 text-red-300 shadow-[0_0_10px_rgba(239,68,68,0.2)]' : 'bg-slate-700 border-slate-600 text-slate-300 hover:bg-slate-600'}`}>
-                            <FlipHorizontal size={14} />
-                            {flipB ? 'Flipped ✕' : 'Flip B'}
-                        </button>
-                        <button onClick={handleReset}
-                            className="py-2.5 px-3 bg-slate-700 hover:bg-slate-600 border border-slate-600 rounded-lg text-xs text-slate-300 transition-colors cursor-pointer" title="Reset">
-                            <RefreshCcw size={14} />
-                        </button>
-                    </div>
+            {/* Energy mini-graph (top-left) */}
+            <div className="absolute top-6 left-6 w-56 bg-slate-900/80 backdrop-blur-xl border border-white/10 rounded-2xl p-4 shadow-2xl">
+                <div className="text-[10px] uppercase font-bold text-white/50 mb-3 tracking-widest flex items-center gap-2">
+                    <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                    Potential Energy Chart
                 </div>
+                <svg width="100%" height="60" viewBox="0 0 150 60">
+                    {/* Axis */}
+                    <line x1="20" y1="0" x2="20" y2="55" stroke="rgba(255,255,255,0.15)" strokeWidth="1" />
+                    <line x1="20" y1="30" x2="145" y2="30" stroke="rgba(255,255,255,0.15)" strokeWidth="1" />
+                    <text x="16" y="32" fill="rgba(255,255,255,0.3)" fontSize="7" textAnchor="end">0</text>
+                    <text x="140" y="52" fill="rgba(255,255,255,0.3)" fontSize="7" textAnchor="end">r →</text>
+                    {/* Curve */}
+                    <path d={(() => {
+                        let d = 'M 22 30';
+                        for (let i = 0; i <= 120; i++) {
+                            const r = 200 * (1 - i / 120);
+                            let e = 0;
+                            if (r < 130 && (bondResult === 'sigma' || bondResult === 'none')) e = -90 * (1 - r / 130);
+                            else if (r < 130 && bondResult === 'pi') e = -45 * (1 - r / 130);
+                            else if (r < 130 && bondResult === 'destructive') e = (1 - r / 130) * 50;
+                            const py = 30 - e * 25 / 90;
+                            d += ` L ${22 + i} ${py}`;
+                        }
+                        return d;
+                    })()} fill="none" stroke="rgba(148,163,184,0.4)" strokeWidth="1.5" />
+                    {/* Current position */}
+                    <circle
+                        cx={22 + 120 * (1 - distance / 200)}
+                        cy={30 - energy * 25 / 90}
+                        r="4.5"
+                        fill={energy < 0 ? '#34d399' : energy > 0 ? '#f87171' : '#94a3b8'}
+                        style={{ filter: `drop-shadow(0 0 6px ${energy < 0 ? '#34d399' : energy > 0 ? '#f87171' : '#94a3b8'})` }}
+                    />
+                    <text
+                        x={22 + 120 * (1 - distance / 200)}
+                        y={30 - energy * 25 / 90 - 10}
+                        fill={energy < 0 ? '#34d399' : energy > 0 ? '#f87171' : '#94a3b8'}
+                        fontSize="9" fontWeight="bold" textAnchor="middle" fontFamily="monospace"
+                    >{energy > 0 ? '+' : ''}{energy.toFixed(0)} kJ</text>
+                </svg>
             </div>
 
             {/* Keyframe animations */}
@@ -375,6 +379,16 @@ const SigmaPiBondsLab: React.FC = () => {
                 }
             `}} />
         </div>
+    );
+
+    return (
+        <TopicLayoutContainer
+            topic={topic}
+            onExit={onExit}
+            StatusBadgeComponent={statusBadge}
+            SimulationComponent={simulationCombo}
+            ControlsComponent={controlsCombo}
+        />
     );
 };
 

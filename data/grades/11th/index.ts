@@ -273,5 +273,18 @@ export const TOPICS_11TH: Topic[] = [
         grade: '11th',
         thumbnailUrl: '/images/thumbnails/11th-chemistry/thumb_geometrical_isomerism.png',
         youtubeVideoIds: []
+    },
+    {
+        id: 'responsive-prototype',
+        title: '🧪 RESPONSIVE UI PROTOTYPE (Sandbox)',
+        subject: 'Chemistry',
+        unit: 'Unit IX',
+        chapter: 'Hydrocarbons',
+        description: 'A sandbox testing environment for a new full-screen, mobile-first, glassmorphism UI container.',
+        thumbnailIcon: 'Activity',
+        branch: 'Organic Chemistry',
+        grade: '11th',
+        thumbnailUrl: '/images/thumbnails/11th-chemistry/thumb_ethane_conformations.png',
+        youtubeVideoIds: []
     }
 ];

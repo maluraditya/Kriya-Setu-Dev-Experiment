@@ -1,9 +1,16 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { RefreshCcw, FlaskConical, TestTube, Flame, Droplet, ArrowRight, ShieldAlert, CheckCircle2 } from 'lucide-react';
+import TopicLayoutContainer from '../../TopicLayoutContainer';
+import { Topic } from '../../../types';
 
 type Phase = 1 | 2 | 3 | 4 | 5;
 
-const QualitativeAnalysisCanvas: React.FC = () => {
+interface Props {
+    topic: Topic;
+    onExit: () => void;
+}
+
+const QualitativeAnalysisCanvas: React.FC<Props> = ({ topic, onExit }) => {
     const [phase, setPhase] = useState<Phase>(1);
     const [systemMessage, setSystemMessage] = useState('Welcome to Qualitative Analysis. We have an Unknown Organic Compound (contains C, H, N, S, Cl). Try testing directly for Chlorine (Cl) using AgNO₃.');
 
@@ -380,64 +387,61 @@ const QualitativeAnalysisCanvas: React.FC = () => {
         }
     };
 
-    return (
-        <div className="w-full h-full flex flex-col text-slate-100 font-sans bg-slate-900 absolute inset-0">
-            {/* Top Navigation / Progress */}
-            <div className="flex border-b border-slate-800 p-4 gap-2 bg-slate-950 shrink-0 overflow-x-auto">
-                {[
-                    { p: 1, label: 'Trap' },
-                    { p: 2, label: 'Lassaigne\'s' },
-                    { p: 3, label: 'Nitrogen' },
-                    { p: 4, label: 'Sulphur' },
-                    { p: 5, label: 'Halogens' }
-                ].map(({ p, label }) => (
-                    <button key={p} onClick={() => { if (p < phase) setPhase(p as Phase); }}
-                        disabled={p > phase}
-                        className={`px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap transition-colors border ${phase === p ? 'bg-emerald-500/20 border-emerald-500/50 text-emerald-400' :
-                            p < phase ? 'bg-slate-800 border-slate-700 text-slate-400 cursor-pointer hover:bg-slate-700' :
-                                'bg-slate-900 border-slate-800 text-slate-600 cursor-not-allowed'
-                            }`}>
-                        Phase {p}: {label}
-                    </button>
-                ))}
+    const statusBadge = (
+        <div className="flex gap-1 overflow-x-auto custom-scrollbar pr-2 max-w-lg lg:max-w-none">
+            {[
+                { p: 1, label: 'Trap' },
+                { p: 2, label: 'Lassaigne\'s' },
+                { p: 3, label: 'Nitrogen' },
+                { p: 4, label: 'Sulphur' },
+                { p: 5, label: 'Halogens' }
+            ].map(({ p, label }) => (
+                <button key={p} onClick={() => { if (p < phase) setPhase(p as Phase); }}
+                    disabled={p > phase}
+                    className={`px-3 py-1.5 rounded-full text-[10px] font-bold whitespace-nowrap transition-colors border ${phase === p ? 'bg-emerald-500/20 border-emerald-500/50 text-emerald-400' :
+                        p < phase ? 'bg-slate-800 border-slate-700 text-slate-400 cursor-pointer hover:bg-slate-700' :
+                            'bg-slate-900 border-slate-800 text-slate-600 cursor-not-allowed'
+                        }`}>
+                    Phase {p}: {label}
+                </button>
+            ))}
+        </div>
+    );
+
+    const controlsCombo = (
+        <div className="w-full flex justify-center pb-2">
+            {renderControls()}
+        </div>
+    );
+
+    const simulationCombo = (
+        <div className="w-full h-full flex flex-col relative bg-slate-950/50 overflow-hidden min-h-0 md:rounded-3xl border border-slate-800">
+            {/* System Message Banner */}
+            <div className="px-4 py-3 bg-slate-800/80 border-b border-slate-700 backdrop-blur-sm z-10 flex items-center justify-center text-center shadow-lg shrink-0">
+                <p className="text-[11px] md:text-sm font-medium text-slate-200 leading-relaxed max-w-3xl">
+                    {systemMessage}
+                </p>
             </div>
 
-            {/* Main Content Area */}
-            <div className="flex-1 relative flex flex-col overflow-hidden">
-                {/* System Message Banner */}
-                <div className="p-4 bg-slate-800/80 border-b border-slate-700 backdrop-blur-sm z-10 min-h-[80px] flex items-center justify-center text-center shadow-lg">
-                    <p className="text-sm md:text-base font-medium text-slate-200 leading-relaxed max-w-3xl">
-                        {systemMessage}
-                    </p>
-                </div>
+            {/* Central Visualization */}
+            <div className="flex-1 relative flex items-center justify-center p-4 min-h-0">
+                {/* Workbench background gradient */}
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 to-transparent pointer-events-none" />
 
-                {/* Central Visualization */}
-                <div className="flex-1 relative bg-slate-900 flex items-center justify-center p-8">
-                    {/* Workbench background gradient */}
-                    <div className="absolute bottom-0 w-full h-1/4 bg-gradient-to-t from-slate-950 to-transparent pointer-events-none" />
+                {/* The current visualization */}
+                <div className="relative z-10 w-full max-w-2xl aspect-video lg:aspect-[21/9] bg-slate-900/80 rounded-2xl border border-slate-700/50 shadow-[0_0_40px_rgba(0,0,0,0.5)] overflow-hidden flex items-center justify-center backdrop-blur-md">
+                    {renderLabVisualization()}
 
-                    {/* The current visualization */}
-                    <div className="relative z-10 w-full max-w-2xl aspect-video bg-slate-950 rounded-2xl border border-slate-800 shadow-2xl overflow-hidden flex items-center justify-center">
-                        {renderLabVisualization()}
-
-                        {/* Molecular Lens Overlay */}
-                        {showMoleculeLens && (
-                            <div className="absolute inset-x-8 bottom-8 md:top-8 md:bottom-auto p-4 bg-slate-900/95 border border-slate-700 rounded-xl shadow-2xl backdrop-blur-md z-50 animate-in fade-in zoom-in duration-300 text-center">
-                                <div className="text-[10px] font-bold text-emerald-400 uppercase tracking-widest mb-3 flex items-center justify-center gap-1.5">
-                                    <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                                    Molecular Lens Active
-                                </div>
-                                {lensContent}
+                    {/* Molecular Lens Overlay */}
+                    {showMoleculeLens && (
+                        <div className="absolute inset-x-4 bottom-4 md:inset-x-8 md:top-8 md:bottom-auto p-4 bg-slate-900/95 border border-slate-700 rounded-xl shadow-2xl backdrop-blur-md z-50 animate-in fade-in zoom-in duration-300 text-center">
+                            <div className="text-[10px] font-bold text-emerald-400 uppercase tracking-widest mb-3 flex items-center justify-center gap-1.5">
+                                <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                                Molecular Lens Active
                             </div>
-                        )}
-                    </div>
-                </div>
-            </div>
-
-            {/* Bottom Controls Area */}
-            <div className="bg-slate-950 border-t border-slate-800 p-4 md:p-6 shrink-0">
-                <div className="max-w-3xl mx-auto block">
-                    {renderControls()}
+                            {lensContent}
+                        </div>
+                    )}
                 </div>
             </div>
 
@@ -462,6 +466,16 @@ const QualitativeAnalysisCanvas: React.FC = () => {
              `
             }} />
         </div>
+    );
+
+    return (
+        <TopicLayoutContainer
+            topic={topic}
+            onExit={onExit}
+            StatusBadgeComponent={statusBadge}
+            SimulationComponent={simulationCombo}
+            ControlsComponent={controlsCombo}
+        />
     );
 };
 

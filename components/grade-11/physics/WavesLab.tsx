@@ -1,6 +1,12 @@
-import React, { useRef, useEffect, useCallback } from 'react';
+import React, { useRef, useEffect, useState, useCallback } from 'react';
+import TopicLayoutContainer from '../../TopicLayoutContainer';
 
-const WavesLab: React.FC = () => {
+interface WavesLabProps {
+    topic: any;
+    onExit: () => void;
+}
+
+const WavesLab: React.FC<WavesLabProps> = ({ topic, onExit }) => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const animRef = useRef(0);
     const stateRef = useRef({
@@ -330,7 +336,7 @@ const WavesLab: React.FC = () => {
 
     // ===== MOUSE HANDLERS =====
     const draggingRef = useRef('');
-    const getCoords = useCallback((e: React.MouseEvent<HTMLCanvasElement>) => {
+    const getCoords = useCallback((e: MouseEvent | Touch) => {
         const c = canvasRef.current;
         if (!c) return { x: 0, y: 0 };
         const r = c.getBoundingClientRect();
@@ -388,11 +394,76 @@ const WavesLab: React.FC = () => {
 
     const handleMouseUp = useCallback(() => { draggingRef.current = ''; }, []);
 
+    // ===== TOUCH HANDLERS =====
+    const handleTouchStart = useCallback((e: React.TouchEvent<HTMLCanvasElement>) => {
+        e.preventDefault(); // Prevent scrolling
+        if (e.touches.length === 0) return;
+        const { x, y } = getCoords(e.touches[0]);
+        const dx = 505, dw = 285, dy = 20, slW = dw - 20;
+        const ctrlY = dy + 100;
+
+        // Freq slider
+        if (x >= dx + 2 && x <= dx + dw && y >= ctrlY + 10 && y <= ctrlY + 34) {
+            draggingRef.current = 'freq';
+            const val = Math.max(0, Math.min(1, (x - (dx + 10)) / slW));
+            stateRef.current.freq = 1 + val * 49;
+            return;
+        }
+        // Tension slider
+        const tslY = ctrlY + 38;
+        if (x >= dx + 2 && x <= dx + dw && y >= tslY + 10 && y <= tslY + 34) {
+            draggingRef.current = 'tension';
+            const val = Math.max(0, Math.min(1, (x - (dx + 10)) / slW));
+            stateRef.current.tension = 10 + val * 190;
+            return;
+        }
+        // Boundary toggle
+        const bndY = tslY + 40;
+        if (y >= bndY && y <= bndY + 26) {
+            if (x >= dx + 10 && x <= dx + 10 + slW / 2 - 3) { stateRef.current.fixedEnd = true; return; }
+            if (x >= dx + 10 + slW / 2 + 3 && x <= dx + 10 + slW) { stateRef.current.fixedEnd = false; return; }
+        }
+        // Play/Pause
+        const pbY = bndY + 34;
+        if (x >= dx + 10 && x <= dx + 10 + slW && y >= pbY && y <= pbY + 26) {
+            stateRef.current.running = !stateRef.current.running;
+            return;
+        }
+
+        // Reset
+        const rstY = pbY + 34;
+        if (x >= dx + 10 && x <= dx + 10 + slW && y >= rstY && y <= rstY + 26) {
+            stateRef.current = { freq: 5.0, tension: 50, mu: 0.01, amplitude: 30, fixedEnd: true, running: true, time: 0 };
+        }
+    }, [getCoords]);
+
+    const handleTouchMove = useCallback((e: React.TouchEvent<HTMLCanvasElement>) => {
+        e.preventDefault(); // Prevent scrolling
+        if (!draggingRef.current || e.touches.length === 0) return;
+        const { x } = getCoords(e.touches[0]);
+        const dx = 505, dw = 285, slW = dw - 20;
+        const val = Math.max(0, Math.min(1, (x - (dx + 10)) / slW));
+        if (draggingRef.current === 'freq') stateRef.current.freq = 1 + val * 49;
+        else if (draggingRef.current === 'tension') stateRef.current.tension = 10 + val * 190;
+    }, [getCoords]);
+
+    const simulationCombo = (
+        <div className="w-full h-full relative bg-slate-900 rounded-2xl overflow-hidden shadow-xl border border-slate-700">
+            <canvas ref={canvasRef} width={800} height={400}
+                className="w-full h-full cursor-pointer block"
+                onMouseDown={handleMouseDown} onMouseMove={handleMouseMove}
+                onMouseUp={handleMouseUp} onMouseLeave={handleMouseUp}
+                onTouchStart={handleTouchStart} onTouchMove={handleTouchMove}
+                onTouchEnd={handleMouseUp}
+            />
+        </div>
+    );
+
     return (
-        <canvas ref={canvasRef} width={800} height={480}
-            className="w-full h-full cursor-pointer"
-            onMouseDown={handleMouseDown} onMouseMove={handleMouseMove}
-            onMouseUp={handleMouseUp} onMouseLeave={handleMouseUp}
+        <TopicLayoutContainer
+            topic={topic}
+            onExit={onExit}
+            SimulationComponent={simulationCombo}
         />
     );
 };

@@ -1,13 +1,21 @@
 import React, { useEffect, useRef, useState, useCallback, useMemo } from 'react';
 import { RefreshCw } from 'lucide-react';
+import TopicLayoutContainer from '../../TopicLayoutContainer';
 
 interface TensileTestProps {
     materialType?: 'ductile' | 'brittle' | 'elastomer';
 }
 
-const TensileTestCanvas: React.FC<TensileTestProps> = ({ materialType: initialMaterial = 'ductile' }) => {
+interface TensileTestLabProps {
+    topic: any;
+    onExit: () => void;
+}
+
+const TensileTestCanvas: React.FC<TensileTestLabProps> = ({ topic, onExit }) => {
+    // The initialMaterial prop is no longer passed directly to TensileTestCanvas.
+    // We'll use a default value for the material state.
     const canvasRef = useRef<HTMLCanvasElement>(null);
-    const [material, setMaterial] = useState<'ductile' | 'brittle' | 'elastomer'>(initialMaterial);
+    const [material, setMaterial] = useState<'ductile' | 'brittle' | 'elastomer'>('ductile'); // Default to 'ductile'
 
     const [force, setForce] = useState(0);
     const [radius, setRadius] = useState(2);
@@ -351,7 +359,7 @@ const TensileTestCanvas: React.FC<TensileTestProps> = ({ materialType: initialMa
     }, [draw]);
 
 
-    return (
+    const simulationCombo = (
         <div className="flex flex-col h-full bg-slate-50">
             {/* Canvas */}
             <div className="relative flex-grow min-h-[350px]">
@@ -369,7 +377,7 @@ const TensileTestCanvas: React.FC<TensileTestProps> = ({ materialType: initialMa
                         <div className="col-span-2 h-px bg-slate-200 my-0.5"></div>
 
                         <span className="text-slate-400 font-semibold uppercase tracking-wide">Stress σ</span>
-                        <span className={`font-mono font-bold text-right ${physics.fractured ? 'text-red-500' : 'text-red-500'}`}>{physics.stress.toFixed(1)} MPa</span>
+                        <span className={`font - mono font - bold text - right ${physics.fractured ? 'text-red-500' : 'text-red-500'} `}>{physics.stress.toFixed(1)} MPa</span>
 
                         <span className="text-slate-400 font-semibold uppercase tracking-wide">Strain ε</span>
                         <span className="font-mono font-bold text-right text-blue-500">{physics.strain.toFixed(4)}</span>
@@ -392,10 +400,10 @@ const TensileTestCanvas: React.FC<TensileTestProps> = ({ materialType: initialMa
                                 <button
                                     key={m}
                                     onClick={() => { setMaterial(m); setForce(0); }}
-                                    className={`flex-1 py-2 px-1 text-xs font-bold rounded-md transition-all duration-200 ${material === m
-                                        ? 'bg-white shadow-sm text-slate-800 ring-1 ring-slate-200'
-                                        : 'text-slate-400 hover:text-slate-600 hover:bg-white/50'
-                                        }`}
+                                    className={`flex - 1 py - 2 px - 1 text - xs font - bold rounded - md transition - all duration - 200 ${material === m
+                                            ? 'bg-white shadow-sm text-slate-800 ring-1 ring-slate-200'
+                                            : 'text-slate-400 hover:text-slate-600 hover:bg-white/50'
+                                        } `}
                                 >
                                     {materials[m].emoji} {materials[m].name}
                                 </button>
@@ -407,7 +415,7 @@ const TensileTestCanvas: React.FC<TensileTestProps> = ({ materialType: initialMa
                     <div className="space-y-1.5 sm:col-span-1 lg:col-span-2">
                         <div className="flex justify-between items-center">
                             <label className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Applied Force</label>
-                            <span className={`text-sm font-mono font-bold ${physics.fractured ? 'text-red-500' : 'text-slate-700'}`}>
+                            <span className={`text - sm font - mono font - bold ${physics.fractured ? 'text-red-500' : 'text-slate-700'} `}>
                                 {physics.fractured ? '⚠ SNAP!' : `${Math.round(force)} N`}
                             </span>
                         </div>
@@ -456,6 +464,14 @@ const TensileTestCanvas: React.FC<TensileTestProps> = ({ materialType: initialMa
                 </div>
             </div>
         </div>
+    );
+
+    return (
+        <TopicLayoutContainer
+            topic={topic}
+            onExit={onExit}
+            SimulationComponent={simulationCombo}
+        />
     );
 };
 

@@ -1,9 +1,14 @@
 import React, { useState, useMemo } from 'react';
 import { RefreshCcw, Plus, Minus, Type, Zap } from 'lucide-react';
+import TopicLayoutContainer from '../../TopicLayoutContainer';
+import { Topic } from '../../../types';
 
-interface VSEPRTheoryLabProps { }
+interface Props {
+    topic: Topic;
+    onExit: () => void;
+}
 
-const VSEPRTheoryLab: React.FC<VSEPRTheoryLabProps> = () => {
+const VSEPRTheoryLab: React.FC<Props> = ({ topic, onExit }) => {
     const [bondPairs, setBondPairs] = useState(2);
     const [lonePairs, setLonePairs] = useState(0);
 
@@ -200,110 +205,76 @@ const VSEPRTheoryLab: React.FC<VSEPRTheoryLabProps> = () => {
         );
     };
 
-    return (
-        <div className="w-full h-full flex items-stretch text-slate-100 font-sans">
-
-            {/* LEFT PANEL: 3D SANDBOX */}
-            <div className="flex-1 relative overflow-hidden flex flex-col items-center justify-center">
-                {/* Background Grid Elements */}
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.05)_0%,transparent_70%)] pointer-events-none"></div>
-
-                {renderMolecule()}
-
-                {/* Floating Protractor / Angle Info */}
-                <div className="absolute bottom-10 bg-black/50 backdrop-blur-md px-6 py-3 rounded-full border border-white/10 flex items-center gap-3">
-                    <Zap className="text-yellow-400" size={20} />
-                    <span className="text-xl font-mono text-emerald-400 font-bold">{geometryData.angle}</span>
-                    <span className="text-sm font-medium text-slate-400 uppercase tracking-wider">Bond Angle</span>
-                </div>
+    const statusBadge = (
+        <div className="flex flex-col items-center bg-slate-900/80 p-2 px-6 rounded-2xl border border-white/10 shadow-xl backdrop-blur-md">
+            <div className="text-[10px] uppercase font-bold tracking-widest text-slate-400 mb-0.5">Geometry</div>
+            <div className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-indigo-400 whitespace-nowrap">
+                {geometryData.shape}
             </div>
+        </div>
+    );
 
-            {/* RIGHT PANEL: DASHBOARD & CONTROLS */}
-            <div className="w-80 bg-slate-800/80 backdrop-blur-sm border-l border-slate-700 flex flex-col overflow-y-auto">
-                <div className="p-5 border-b border-slate-700 flex justify-between items-center bg-slate-900/50">
-                    <h3 className="font-bold text-lg text-white">Geometry Dashboard</h3>
-                    <button onClick={handleReset} className="p-2 bg-slate-700 hover:bg-slate-600 rounded-lg transition-colors text-slate-300 hover:text-white" title="Reset Molecule">
-                        <RefreshCcw size={16} />
+    const floatingNav = (
+        <div className="flex items-center gap-3 bg-slate-900/80 backdrop-blur-md rounded-full px-5 py-2 border border-white/10 shadow-xl">
+            <Zap className="text-yellow-400" size={16} />
+            <span className="text-sm font-mono text-emerald-400 font-bold">{geometryData.angle}</span>
+            <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Bond Angle</span>
+        </div>
+    );
+
+    const controlsCombo = (
+        <div className="w-full flex flex-col md:flex-row gap-4">
+            {/* Build Controls */}
+            <div className="flex-1 bg-slate-950/50 p-3 flex flex-col gap-2 rounded-xl border border-slate-700/50">
+                <div className="flex justify-between items-center mb-1">
+                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Pairs ({totalPairs}/6)</span>
+                    <button onClick={handleReset} className="text-[10px] bg-slate-800 hover:bg-slate-700 text-slate-300 px-2 py-0.5 rounded border border-slate-600 transition-colors flex items-center gap-1">
+                        <RefreshCcw size={10} /> Reset
                     </button>
                 </div>
-
-                <div className="p-5 space-y-6">
-                    {/* Primary Data */}
-                    <div>
-                        <div className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-1">Total Pairs</div>
-                        <div className="text-2xl font-bold text-white">{totalPairs} <span className="text-sm font-normal text-slate-400">(Max 6)</span></div>
-                    </div>
-
-                    <div>
-                        <div className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-1">Molecular Shape</div>
-                        <div className="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-400">
-                            {geometryData.shape}
-                        </div>
-                    </div>
-
-                    <div className="h-px bg-slate-700 my-4"></div>
-
-                    {/* Repulsion Meter */}
-                    <div>
-                        <div className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3">Repulsion Meter</div>
-                        <div className="space-y-3">
-                            <div>
-                                <div className="flex justify-between text-xs mb-1">
-                                    <span className="text-slate-300">Bond Pair - Bond Pair (bp-bp)</span>
-                                    <span className="text-blue-400 font-mono">{geometryData.bpRepulsion}%</span>
-                                </div>
-                                <div className="h-2 w-full bg-slate-900 rounded-full overflow-hidden">
-                                    <div className="h-full bg-blue-500 rounded-full transition-all duration-500" style={{ width: `${geometryData.bpRepulsion}%` }}></div>
-                                </div>
-                            </div>
-                            <div>
-                                <div className="flex justify-between text-xs mb-1">
-                                    <span className="text-slate-300">Lone Pair Effect (lp-lp & lp-bp)</span>
-                                    <span className="text-yellow-400 font-mono">{geometryData.lpRepulsion}%</span>
-                                </div>
-                                <div className="h-2 w-full bg-slate-900 rounded-full overflow-hidden">
-                                    <div className="h-full bg-yellow-400 rounded-full transition-all duration-500 shadow-[0_0_10px_rgba(250,204,21,0.5)]" style={{ width: `${geometryData.lpRepulsion}%` }}></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="h-px bg-slate-700 my-4"></div>
-
-                    {/* Controls */}
-                    <div className="space-y-3">
-                        <div className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Build Controls</div>
-
-                        <button
-                            onClick={handleAddBp}
-                            disabled={totalPairs >= 6}
-                            className="w-full py-2.5 px-4 bg-blue-600/20 hover:bg-blue-600/40 border border-blue-500/30 rounded-lg text-blue-300 font-medium flex items-center justify-between transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                        >
-                            <span>Add Bond Pair</span>
-                            <Plus size={16} />
-                        </button>
-
-                        <button
-                            onClick={handleAddLp}
-                            disabled={totalPairs >= 6}
-                            className="w-full py-2.5 px-4 bg-yellow-600/20 hover:bg-yellow-600/40 border border-yellow-500/30 rounded-lg text-yellow-300 font-medium flex items-center justify-between transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                        >
-                            <span>Add Lone Pair</span>
-                            <Plus size={16} />
-                        </button>
-
-                        <button
-                            onClick={handleMorphLp}
-                            disabled={bondPairs === 0}
-                            className="w-full py-2.5 px-4 bg-purple-600/20 hover:bg-purple-600/40 border border-purple-500/30 rounded-lg text-purple-300 font-medium flex items-center justify-between transition-colors disabled:opacity-50 disabled:cursor-not-allowed mt-4"
-                        >
-                            <span>Morph BP → LP</span>
-                            <Type size={16} />
-                        </button>
-                    </div>
+                <div className="grid grid-cols-2 gap-2">
+                    <button onClick={handleAddBp} disabled={totalPairs >= 6} className="py-2 px-2 bg-blue-600/20 hover:bg-blue-600/40 border border-blue-500/30 rounded-lg text-blue-300 text-[10px] font-bold uppercase tracking-wider flex items-center justify-center gap-1 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                        <Plus size={12} /> Bond Pair
+                    </button>
+                    <button onClick={handleAddLp} disabled={totalPairs >= 6} className="py-2 px-2 bg-yellow-600/20 hover:bg-yellow-600/40 border border-yellow-500/30 rounded-lg text-yellow-300 text-[10px] font-bold uppercase tracking-wider flex items-center justify-center gap-1 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                        <Plus size={12} /> Lone Pair
+                    </button>
+                    <button onClick={handleMorphLp} disabled={bondPairs === 0} className="col-span-2 py-2 px-2 bg-purple-600/20 hover:bg-purple-600/40 border border-purple-500/30 rounded-lg text-purple-300 text-[10px] font-bold uppercase tracking-wider flex items-center justify-center gap-1 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                        <Type size={12} /> Morph Bond → Lone Pair
+                    </button>
                 </div>
             </div>
 
+            {/* Repulsion Meters */}
+            <div className="flex-[1.5] bg-slate-950/50 p-4 flex flex-col justify-center rounded-xl border border-slate-700/50 gap-4">
+                <div>
+                    <div className="flex justify-between items-end mb-1.5">
+                        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Bond Pair Repulsion (bp-bp)</span>
+                        <span className="text-blue-400 font-mono text-xs">{geometryData.bpRepulsion}%</span>
+                    </div>
+                    <div className="h-1.5 w-full bg-slate-900 rounded-full overflow-hidden">
+                        <div className="h-full bg-blue-500 rounded-full transition-all duration-500" style={{ width: `${geometryData.bpRepulsion}%` }}></div>
+                    </div>
+                </div>
+                <div>
+                    <div className="flex justify-between items-end mb-1.5">
+                        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Lone Pair Effect (lp-lp & lp-bp)</span>
+                        <span className="text-yellow-400 font-mono text-xs">{geometryData.lpRepulsion}%</span>
+                    </div>
+                    <div className="h-1.5 w-full bg-slate-900 rounded-full overflow-hidden">
+                        <div className="h-full bg-yellow-400 rounded-full transition-all duration-500 shadow-[0_0_10px_rgba(250,204,21,0.5)]" style={{ width: `${geometryData.lpRepulsion}%` }}></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+
+    const simulationCombo = (
+        <div className="w-full h-full relative bg-black flex items-center justify-center min-h-0 overflow-hidden">
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.05)_0%,transparent_70%)] pointer-events-none"></div>
+            {renderMolecule()}
+
+            {/* Global Styles for the CSS 3D */}
             <style dangerouslySetInnerHTML={{
                 __html: `
                 .preserve-3d { transform-style: preserve-3d; }
@@ -317,6 +288,17 @@ const VSEPRTheoryLab: React.FC<VSEPRTheoryLabProps> = () => {
                 }
             `}} />
         </div>
+    );
+
+    return (
+        <TopicLayoutContainer
+            topic={topic}
+            onExit={onExit}
+            FloatingNavComponent={floatingNav}
+            StatusBadgeComponent={statusBadge}
+            SimulationComponent={simulationCombo}
+            ControlsComponent={controlsCombo}
+        />
     );
 };
 

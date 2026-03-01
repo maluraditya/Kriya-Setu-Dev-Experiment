@@ -32,6 +32,9 @@ const getSeriesName = (finalN: number) => {
     }
 };
 
+import TopicLayoutContainer from '../../TopicLayoutContainer';
+import { Topic } from '../../../types';
+
 interface SpectralLine {
     id: number;
     wavelength: number;
@@ -41,7 +44,12 @@ interface SpectralLine {
     finalN: number;
 }
 
-const HydrogenSpectrumLab: React.FC = () => {
+interface Props {
+    topic: Topic;
+    onExit: () => void;
+}
+
+const HydrogenSpectrumLab: React.FC<Props> = ({ topic, onExit }) => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const [currentN, setCurrentN] = useState<number>(1);
     const [targetEnergy, setTargetEnergy] = useState<string>('');
@@ -213,157 +221,106 @@ const HydrogenSpectrumLab: React.FC = () => {
 
     const clearSpectrum = () => setSpectralLines([]);
 
-    return (
-        <div className="w-full flex-1 flex flex-col h-full bg-slate-900 text-slate-200 font-sans relative overflow-hidden">
-
-            {isAlertVisible && (
-                <div className="absolute top-4 left-1/2 -translate-x-1/2 z-50 bg-red-500/90 text-white px-6 py-3 rounded-lg shadow-xl backdrop-blur flex items-center gap-3 animate-in fade-in slide-in-from-top-4">
-                    <Zap size={20} />
-                    <span className="font-semibold text-sm">{alertMessage}</span>
+    const statusBadge = (
+        <div className="flex flex-col items-center justify-center px-4 py-2 bg-slate-900/80 backdrop-blur-xl border border-white/10 rounded-2xl shadow-xl">
+            <div className="text-[10px] uppercase font-bold text-slate-400 tracking-widest mb-1">Electron State</div>
+            <div className="flex gap-4 items-end">
+                <div className="text-center">
+                    <span className="text-2xl font-mono font-bold text-white">n={currentN}</span>
                 </div>
-            )}
-
-            {/* Split Screen Layout */}
-            <div className="flex flex-1 min-h-[400px]">
-                {/* Left Side: Controls & Data HUD */}
-                <div className="w-1/3 bg-slate-800 border-r border-slate-700 p-6 flex flex-col gap-6 overflow-y-auto">
-
-                    <div className="bg-slate-900 p-4 rounded-xl border border-slate-700">
-                        <h3 className="text-brand-primary font-bold text-sm uppercase tracking-wider mb-3 flex items-center gap-2">
-                            Current State
-                        </h3>
-                        <div className="flex justify-between items-end">
-                            <div>
-                                <p className="text-sm text-slate-400">Position</p>
-                                <p className="text-3xl font-mono font-bold text-white">n={currentN}</p>
-                            </div>
-                            <div className="text-right">
-                                <p className="text-sm text-slate-400">Energy (eV)</p>
-                                <p className="text-xl font-mono text-emerald-400">{calculateEnergy(currentN).toFixed(2)}</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Photon Blaster */}
-                    <div className="bg-slate-900 p-4 rounded-xl border border-slate-700">
-                        <h3 className="text-amber-400 font-bold text-sm uppercase tracking-wider mb-3">
-                            Photon Blaster (Absorption)
-                        </h3>
-                        <p className="text-xs text-slate-400 mb-4">
-                            Fire exact energy packets to excite the electron. Try standard gaps like 10.2 eV (n=1→2) or 12.09 eV (n=1→3).
-                        </p>
-                        <div className="flex gap-2">
-                            <input
-                                type="number"
-                                step="0.01"
-                                placeholder="Energy (eV)"
-                                value={targetEnergy}
-                                onChange={(e) => setTargetEnergy(e.target.value)}
-                                className="flex-1 bg-slate-800 border border-slate-600 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-amber-400"
-                            />
-                            <button
-                                onClick={handleFirePhoton}
-                                disabled={isAnimating || currentN === maxN}
-                                className="bg-amber-500 hover:bg-amber-400 text-slate-900 font-bold px-4 py-2 rounded-lg 
-                           disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                                title={currentN === maxN ? "At max energy" : ""}
-                            >
-                                FIRE
-                            </button>
-                        </div>
-                    </div>
-
-                    {/* De-excitation Controls */}
-                    <div className="bg-slate-900 p-4 rounded-xl border border-slate-700 flex-1">
-                        <h3 className="text-brand-secondary font-bold text-sm uppercase tracking-wider mb-3">
-                            De-Excitation (Emission)
-                        </h3>
-                        <p className="text-xs text-slate-400 mb-4">
-                            Drop the electron to a lower level to emit a photon.
-                        </p>
-                        <div className="flex flex-col gap-2">
-                            {[...Array(maxN - 1)].map((_, i) => {
-                                const targetN = i + 1;
-                                if (targetN >= currentN) return null;
-                                const dropE = Math.abs(calculateEnergy(currentN) - calculateEnergy(targetN)).toFixed(2);
-                                return (
-                                    <button
-                                        key={targetN}
-                                        onClick={() => handleDeexcite(targetN)}
-                                        disabled={isAnimating}
-                                        className="flex justify-between items-center group bg-slate-800 hover:bg-slate-700 px-4 py-3 rounded-lg border border-slate-600 transition-all font-mono text-sm"
-                                    >
-                                        <span className="flex items-center gap-2 text-slate-300">
-                                            n={currentN} <ArrowDown size={14} className="group-hover:text-brand-secondary" /> n={targetN}
-                                        </span>
-                                        <span className="text-emerald-400">+{dropE} eV</span>
-                                    </button>
-                                );
-                            })}
-                            {currentN === 1 && (
-                                <p className="text-sm text-slate-500 text-center py-4 italic">Electron is in ground state (stable).</p>
-                            )}
-                        </div>
-                    </div>
-
+                <div className="w-px h-6 bg-slate-700" />
+                <div className="text-center">
+                    <span className="text-lg font-mono font-bold text-emerald-400">{calculateEnergy(currentN).toFixed(2)} eV</span>
                 </div>
+            </div>
+        </div>
+    );
 
-                {/* Right Side: Atomic Canvas */}
-                <div className="w-2/3 relative bg-black flex-1">
-                    {/* Faint grid background */}
-                    <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.05)_1px,transparent_1px)] bg-[size:40px_40px] pointer-events-none opacity-20"></div>
-                    <canvas
-                        ref={canvasRef}
-                        className="w-full h-full block"
+    const controlsCombo = (
+        <div className="w-full flex justify-between gap-4">
+            {/* Blaster */}
+            <div className="flex-1 flex flex-col justify-center">
+                <div className="text-[10px] uppercase font-bold text-amber-500 tracking-widest mb-2 flex items-center gap-1"><Zap size={12} /> Photon Absorption</div>
+                <div className="flex gap-2">
+                    <input
+                        type="number" step="0.01" placeholder="Energy (eV)" value={targetEnergy}
+                        onChange={(e) => setTargetEnergy(e.target.value)}
+                        className="w-full bg-slate-950/50 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-amber-400"
                     />
+                    <button onClick={handleFirePhoton} disabled={isAnimating || currentN === maxN}
+                        className="bg-amber-500 hover:bg-amber-400 text-slate-900 font-bold px-4 py-2 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
+                        FIRE
+                    </button>
                 </div>
             </div>
 
-            {/* Spectrometer Console */}
-            <div className="bg-black border-t-2 border-slate-700 h-32 flex flex-col relative shrink-0">
-                <div className="absolute top-2 right-4 z-10">
-                    <button
-                        onClick={clearSpectrum}
-                        className="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-1 rounded border border-slate-600 shadow-sm"
-                    >
-                        Clear Spectrum
-                    </button>
-                </div>
+            <div className="w-px bg-slate-700/50 hidden md:block" />
 
-                {/* Spectrum display area */}
-                <div className="flex-1 relative mx-[10%] border-x border-slate-800 bg-slate-900/50 mt-4 mb-2 overflow-visible">
-                    {/* Background rainbow guide */}
-                    <div className="absolute inset-0 opacity-20 pointer-events-none"
+            {/* Emission */}
+            <div className="flex-[1.5] flex flex-col justify-center max-w-sm">
+                <div className="text-[10px] uppercase font-bold text-brand-secondary tracking-widest mb-2">Photon Emission (Drop)</div>
+                <div className="flex flex-wrap gap-2">
+                    {currentN === 1 ? (
+                        <span className="text-xs text-slate-500 italic py-2">Ground state reached.</span>
+                    ) : (
+                        [...Array(maxN - 1)].map((_, i) => {
+                            const targetN = i + 1;
+                            if (targetN >= currentN) return null;
+                            const dropE = Math.abs(calculateEnergy(currentN) - calculateEnergy(targetN)).toFixed(2);
+                            return (
+                                <button key={targetN} onClick={() => handleDeexcite(targetN)} disabled={isAnimating}
+                                    className="flex items-center gap-1 bg-slate-800 hover:bg-slate-700 px-3 py-1.5 rounded-lg border border-slate-600 transition-all font-mono text-xs">
+                                    <span className="text-slate-300 flex items-center gap-1">n={currentN} <ArrowDown size={10} className="text-brand-secondary" /> n={targetN}</span>
+                                </button>
+                            );
+                        })
+                    )}
+                </div>
+            </div>
+        </div>
+    );
+
+    const simulationCombo = (
+        <div className="w-full h-full flex flex-col relative">
+            {isAlertVisible && (
+                <div className="absolute top-4 left-1/2 -translate-x-1/2 z-50 bg-red-500/90 text-white px-6 py-3 rounded-lg shadow-xl backdrop-blur flex items-center gap-3 animate-in fade-in slide-in-from-top-4">
+                    <Zap size={20} />
+                    <span className="font-semibold text-sm text-center">{alertMessage}</span>
+                </div>
+            )}
+
+            <div className="flex-1 relative w-full flex items-center justify-center min-h-0">
+                <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.05)_1px,transparent_1px)] bg-[size:40px_40px] pointer-events-none opacity-20 rounded-t-3xl mask-image:linear-gradient(to_bottom,black,transparent)"></div>
+                <canvas ref={canvasRef} className="w-full h-full block" />
+            </div>
+
+            <div className="h-28 lg:h-32 w-full bg-slate-950/80 backdrop-blur-md border-t border-white/10 relative shrink-0 rounded-b-3xl">
+                <button onClick={clearSpectrum} className="absolute top-2 right-4 z-10 text-[10px] bg-slate-800 hover:bg-slate-700 text-slate-300 px-2 py-1 rounded border border-slate-600 shadow-sm cursor-pointer">
+                    Clear Spectrometer
+                </button>
+                <div className="absolute right-4 bottom-2 text-[9px] text-slate-600 font-bold uppercase tracking-widest"><Zap size={10} className="inline mr-1" />Spectrometer Array</div>
+
+                <div className="flex-1 relative mx-[5%] border-x border-slate-800 bg-black/50 mt-4 mb-3 h-16 lg:h-20 overflow-visible rounded-sm pt-4">
+                    <div className="absolute inset-0 opacity-20 pointer-events-none rounded-sm"
                         style={{ background: 'linear-gradient(to right, transparent 0%, #a855f7 15%, #3b82f6 30%, #22c55e 50%, #eab308 65%, #ef4444 80%, transparent 100%)' }}>
                     </div>
 
-                    {/* Ticks and labels */}
-                    <div className="absolute bottom-0 w-full flex justify-between px-2 text-[10px] text-slate-500 pb-1">
-                        <span>Ultraviolet (~100nm)</span>
-                        <span>Visible (~400-700nm)</span>
-                        <span>Infrared (~1000nm+)</span>
+                    <div className="absolute bottom-0 w-full flex justify-between px-2 text-[9px] text-slate-500 pb-1 font-bold tracking-widest uppercase">
+                        <span>UV (100nm)</span>
+                        <span>Visible (400-700nm)</span>
+                        <span>IR (1000nm+)</span>
                     </div>
 
-                    {spectralLines.map((line, idx) => {
-                        // Rough mapping of wavelength to percentage position for UI effect (100nm to 1200nm)
-                        let leftPos = 0;
+                    {spectralLines.map((line) => {
                         const minWl = 90;
                         const maxWl = 1500;
-                        leftPos = ((Math.max(minWl, Math.min(maxWl, line.wavelength)) - minWl) / (maxWl - minWl)) * 100;
-
+                        const leftPos = ((Math.max(minWl, Math.min(maxWl, line.wavelength)) - minWl) / (maxWl - minWl)) * 100;
                         return (
-                            <div
-                                key={line.id}
-                                className="absolute top-0 bottom-0 w-1 pt-1 opacity-100 z-10 animate-pulse"
-                                style={{
-                                    left: `${leftPos}%`,
-                                    backgroundColor: line.color,
-                                    boxShadow: `0 0 10px ${line.color}, 0 0 15px ${line.color}`
-                                }}
-                            >
-                                <div className="absolute top-0 -translate-x-1/2 -mt-6 bg-slate-900 border border-slate-700 px-2 py-0.5 rounded text-[10px] font-mono whitespace-nowrap" style={{ color: line.color }}>
+                            <div key={line.id} className="absolute top-0 bottom-0 w-1 pt-1 opacity-100 z-10 animate-pulse"
+                                style={{ left: `${leftPos}%`, backgroundColor: line.color, boxShadow: `0 0 10px ${line.color}, 0 0 15px ${line.color}` }}>
+                                <div className="absolute top-0 -translate-x-1/2 -mt-7 bg-slate-900 border border-slate-700 px-2 py-0.5 rounded text-[9px] font-mono whitespace-nowrap shadow-xl" style={{ color: line.color }}>
                                     {line.wavelength}nm
-                                    <span className="block text-[8px] text-slate-400 text-center">{line.series}</span>
+                                    <span className="block text-[7px] text-slate-400 text-center uppercase tracking-widest">{line.series}</span>
                                 </div>
                             </div>
                         )
@@ -371,6 +328,16 @@ const HydrogenSpectrumLab: React.FC = () => {
                 </div>
             </div>
         </div>
+    );
+
+    return (
+        <TopicLayoutContainer
+            topic={topic}
+            onExit={onExit}
+            SimulationComponent={simulationCombo}
+            ControlsComponent={controlsCombo}
+            StatusBadgeComponent={statusBadge}
+        />
     );
 };
 

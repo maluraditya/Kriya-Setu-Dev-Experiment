@@ -1,4 +1,10 @@
 import React, { useRef, useEffect, useCallback } from 'react';
+import TopicLayoutContainer from '../../TopicLayoutContainer';
+
+interface KineticTheoryLabProps {
+    topic: any;
+    onExit: () => void;
+}
 
 // Speed mapping: temperature → canvas px/frame (not real units — this is a visualization)
 function tempToSpeed(T: number) { return 1.0 + (T - 100) / 900 * 4.0; } // 1–5 px/frame
@@ -6,7 +12,7 @@ function tempToSpeed(T: number) { return 1.0 + (T - 100) / 900 * 4.0; } // 1–5
 interface Molecule { x: number; y: number; vx: number; vy: number; }
 interface Flash { x: number; y: number; t: number; wall: string; }
 
-const KineticTheoryLab: React.FC = () => {
+const KineticTheoryLab: React.FC<KineticTheoryLabProps> = ({ topic, onExit }) => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const animRef = useRef(0);
     const stateRef = useRef({
@@ -441,13 +447,79 @@ const KineticTheoryLab: React.FC = () => {
         handleSliderDrag(x, y);
     }, [getCoords, handleSliderDrag]);
 
+    const handleTouchStart = useCallback((e: React.TouchEvent<HTMLCanvasElement>) => {
+        e.preventDefault(); // Prevent scrolling
+        const { x, y } = getCoords({ clientX: e.touches[0].clientX, clientY: e.touches[0].clientY } as React.MouseEvent<HTMLCanvasElement>);
+        const dx = 500, dw = 290, slW = dw - 20;
+        const ctrlY = 20 + 92;
+
+        // Check sliders first
+        if (y >= ctrlY + 10 && y <= ctrlY + 34 && x >= dx + 2 && x <= dx + dw) {
+            draggingRef.current = 'temp';
+            handleSliderDrag(x, y);
+            return;
+        }
+        const vslY = ctrlY + 40;
+        if (y >= vslY + 10 && y <= vslY + 34 && x >= dx + 2 && x <= dx + dw) {
+            draggingRef.current = 'vol';
+            handleSliderDrag(x, y);
+            return;
+        }
+
+        // Molecule buttons: mbY = vslY + 42
+        const mbY = vslY + 42;
+        const bhW = slW / 2 - 5;
+        // - button
+        if (x >= dx + 10 && x <= dx + 10 + bhW && y >= mbY + 16 && y <= mbY + 46) {
+            stateRef.current.N = Math.max(5, stateRef.current.N - 20);
+            rescaleMols();
+            return;
+        }
+        // + button
+        const pbx = dx + 10 + slW / 2 + 5;
+        if (x >= pbx && x <= pbx + bhW && y >= mbY + 16 && y <= mbY + 46) {
+            stateRef.current.N = Math.min(200, stateRef.current.N + 20);
+            rescaleMols();
+            return;
+        }
+
+        // Reset
+        const rstY = mbY + 56;
+        if (x >= dx + 10 && x <= dx + 10 + slW && y >= rstY && y <= rstY + 28) {
+            stateRef.current = { T: 400, volFrac: 1.0, N: 60 };
+            molRef.current = initMols(60, 400, 1.0);
+            graphRef.current = [];
+            pressureRef.current = 0;
+            collCountRef.current = 0;
+        }
+    }, [getCoords, handleSliderDrag, rescaleMols, initMols]);
+
+    const handleTouchMove = useCallback((e: React.TouchEvent<HTMLCanvasElement>) => {
+        e.preventDefault(); // Prevent scrolling
+        if (!draggingRef.current) return;
+        const { x, y } = getCoords({ clientX: e.touches[0].clientX, clientY: e.touches[0].clientY } as React.MouseEvent<HTMLCanvasElement>);
+        handleSliderDrag(x, y);
+    }, [getCoords, handleSliderDrag]);
+
     const handleMouseUp = useCallback(() => { draggingRef.current = ''; }, []);
 
+    const simulationCombo = (
+        <div className="w-full h-full relative bg-slate-900 overflow-hidden shadow-2xl rounded-2xl flex items-center justify-center">
+            <canvas ref={canvasRef} width={800} height={480}
+                className="w-full h-full cursor-pointer max-w-[1000px]"
+                onMouseDown={handleMouseDown} onMouseMove={handleMouseMove}
+                onMouseUp={handleMouseUp} onMouseLeave={handleMouseUp}
+                onTouchStart={handleTouchStart} onTouchMove={handleTouchMove}
+                onTouchEnd={handleMouseUp}
+            />
+        </div>
+    );
+
     return (
-        <canvas ref={canvasRef} width={800} height={480}
-            className="w-full h-full cursor-pointer"
-            onMouseDown={handleMouseDown} onMouseMove={handleMouseMove}
-            onMouseUp={handleMouseUp} onMouseLeave={handleMouseUp}
+        <TopicLayoutContainer
+            topic={topic}
+            onExit={onExit}
+            SimulationComponent={simulationCombo}
         />
     );
 };

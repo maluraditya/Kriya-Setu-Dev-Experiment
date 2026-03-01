@@ -3,6 +3,7 @@ import { Screen, SimulationConfig, Subject, Grade } from './types';
 import { getTopics, ALL_TOPICS } from './data';
 import Dashboard from './components/Dashboard';
 import TextbookContent from './components/TextbookContent';
+import TopicLayoutContainer from './components/TopicLayoutContainer';
 
 // Grade 11 - Physics
 import TensileTestCanvas from './components/grade-11/physics/TensileTestCanvas';
@@ -28,6 +29,7 @@ import QualitativeAnalysisCanvas from './components/grade-11/chemistry/Qualitati
 import QuantitativeAnalysisCanvas from './components/grade-11/chemistry/QuantitativeAnalysisCanvas';
 import EthaneConformationsCanvas from './components/grade-11/chemistry/EthaneConformationsCanvas';
 import GeometricalIsomerismCanvas from './components/grade-11/chemistry/GeometricalIsomerismCanvas';
+import ResponsivePrototypeCanvas from './components/grade-11/chemistry/ResponsivePrototypeCanvas';
 
 // Grade 12 - Physics
 import ElectromagneticInductionCanvas from './components/grade-12/physics/ElectromagneticInductionCanvas';
@@ -151,15 +153,8 @@ const App: React.FC = () => {
   });
   const [defectMode, setDefectMode] = useState<'schottky' | 'frenkel'>('schottky');
 
-  // --- PHYSICS STATE ---
-  const [fluidDynamicsConfig, setFluidDynamicsConfig] = useState({ flowRate: 50, area: 100 });
-  const [hydraulicConfig, setHydraulicConfig] = useState<{ force1: number, area1: number, area2: number, fluidType: 'liquid' | 'gas' }>({
-    force1: 100,
-    area1: 10,
-    area2: 100,
-    fluidType: 'liquid'
-  });
-  const [carnotConfig, setCarnotConfig] = useState({ t1: 800, t2: 300 });
+
+
   const [emiSpeed, setEmiSpeed] = useState(2);
   const [transformerConfig, setTransformerConfig] = useState({ np: 100, ns: 200 });
   const [opticsDevice, setOpticsDevice] = useState<'convex_lens' | 'concave_lens' | 'prism'>('convex_lens');
@@ -246,19 +241,18 @@ const App: React.FC = () => {
     } else if (activeTopicId === 'fluid-dynamics') {
       return `
         Topic: Mechanical Properties of Fluids (Bernoulli's Principle)
-        State: Flow Rate ${fluidDynamicsConfig.flowRate}, Constriction Area ${fluidDynamicsConfig.area}.
+        State: Flow Rate controls fluid velocity; Constriction Area creates pressure drop.
         Concept: Continuity equation (A*v=const) and Bernoulli's Principle (P + 0.5*rho*v^2 = const). As area decreases, velocity increases and pressure drops.
       `;
     } else if (activeTopicId === 'pascals-law') {
       return `
         Topic: Pascal's Law and Hydraulic Machines
-        State: Force In ${hydraulicConfig.force1}N, Area In ${hydraulicConfig.area1}, Area Out ${hydraulicConfig.area2}, Fluid: ${hydraulicConfig.fluidType}.
+        State: Force and Area dictate output force according to Pascal's Law.
         Concept: F2 = F1 * (A2/A1). Demonstrates force multiplication and volume conservation (Distance out is less than distance in). If gas is used, compression wastes energy.
       `;
     } else if (activeTopicId === 'carnot-engine') {
       return `
         Topic: Carnot Engine and Carnot Cycle (NCERT Class 11, Chapter 11)
-        State: T1=${carnotConfig.t1}K, T2=${carnotConfig.t2}K, Efficiency=${((1 - carnotConfig.t2 / carnotConfig.t1) * 100).toFixed(1)}%.
         Concept: Carnot cycle has 4 steps: isothermal expansion, adiabatic expansion, isothermal compression, adiabatic compression. Efficiency = 1 - T2/T1. No engine can exceed Carnot efficiency.
       `;
     } else if (activeTopicId === 'thermodynamic-processes') {
@@ -374,6 +368,12 @@ const App: React.FC = () => {
         Concept: Restricted rotation around C=C double bond (π bond prevents rotation). Cis = identical groups on same side (polar, μ>0, higher BP). Trans = identical groups on opposite sides (non-polar, μ=0, higher MP due to crystal packing). Physical properties differ due to dipole moment vector addition/cancellation.
         Simulation: 4-phase simulation — Phase1: free rotation in alkanes (single σ bond). Phase2: restricted rotation in alkenes (π bond barrier). Phase3: cis-isomer with dipole vectors adding. Phase4: trans-isomer with dipole vectors cancelling. Property dashboard shows real dipole, BP, MP data.
       `;
+    } else if (activeTopicId === 'responsive-prototype') {
+      return `
+      Topic: Responsive UI Sandbox
+      Concept: Exploring a completely new layout container for future modules.
+        Simulation: Edge - to - edge canvas with floating glassmorphic sidebars on desktop and native - feeling bottom sheets on mobile.
+      `;
     }
     return "User is on the curriculum dashboard.";
   }, [activeTopicId, kineticsConfig, reactionCount, externalVoltage, isomerConfig, selectedIon, haloConfig, polyMode, solidClassConfig, unitCellConfig, defectMode]);
@@ -411,13 +411,13 @@ const App: React.FC = () => {
             <div className="flex bg-brand-dark/30 rounded-lg p-1 border border-white/10" id="tour-grade-selector">
               <button
                 onClick={() => { setActiveGrade('11th'); setActiveTopicId(null); setCurrentScreen('DASHBOARD'); }}
-                className={`px-3 py-1 rounded-md text-xs transition-colors ${activeGrade === '11th' ? 'bg-brand-secondary text-brand-dark font-bold' : 'text-slate-300 hover:text-white'}`}
+                className={`px - 3 py - 1 rounded - md text - xs transition - colors ${activeGrade === '11th' ? 'bg-brand-secondary text-brand-dark font-bold' : 'text-slate-300 hover:text-white'} `}
               >
                 Class 11
               </button>
               <button
                 onClick={() => { setActiveGrade('12th'); setActiveTopicId(null); setCurrentScreen('DASHBOARD'); }}
-                className={`px-3 py-1 rounded-md text-xs transition-colors ${activeGrade === '12th' ? 'bg-brand-secondary text-brand-dark font-bold' : 'text-slate-300 hover:text-white'}`}
+                className={`px - 3 py - 1 rounded - md text - xs transition - colors ${activeGrade === '12th' ? 'bg-brand-secondary text-brand-dark font-bold' : 'text-slate-300 hover:text-white'} `}
               >
                 Class 12
               </button>
@@ -465,730 +465,154 @@ const App: React.FC = () => {
 
         {/* ================== FLUID DYNAMICS ================== */}
         {currentScreen === 'TOPIC_VIEW' && activeTopicId === 'fluid-dynamics' && (
-          <div className="p-6 grid grid-cols-1 lg:grid-cols-12 gap-8 animate-in fade-in duration-500">
-            <div className="lg:col-span-7 flex flex-col gap-6" id="tour-simulation">
-              <div className="flex items-center gap-2 mb-2 text-brand-primary/60 hover:text-brand-primary cursor-pointer w-fit" onClick={goHome}>
-                <ArrowLeft size={18} /> <span className="text-sm font-medium">Back to Curriculum</span>
-              </div>
-              <div className={isSimulationFullscreen ? "fixed inset-0 z-[100] bg-slate-900 flex flex-col overflow-y-auto" : "bg-white rounded-2xl shadow-md border border-slate-200 overflow-hidden"}>
-                <div className="bg-slate-900 px-6 py-3 flex items-center justify-between border-b border-slate-700">
-                  <h3 className="font-display font-bold text-white flex items-center gap-2">
-                    <Activity size={18} className="text-brand-secondary" /> Virtual Wind Tunnel
-                  </h3>
-                  <button
-                    onClick={() => setIsSimulationFullscreen(!isSimulationFullscreen)}
-                    className="p-1.5 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors cursor-pointer ml-auto"
-                    title={isSimulationFullscreen ? "Minimize" : "Maximize"}
-                  >
-                    {isSimulationFullscreen ? <Minimize2 size={20} /> : <Maximize2 size={20} />}
-                  </button>
-                </div>
-                <div className="relative h-[550px] bg-slate-100 flex flex-col">
-                  <FluidDynamicsLab
-                    flowRate={fluidDynamicsConfig.flowRate}
-                    constrictionArea={fluidDynamicsConfig.area}
-                    onFlowRateChange={() => { }}
-                    onAreaChange={() => { }}
-                  />
-                </div>
-                <div className="p-6 bg-slate-50 border-t border-slate-200">
-                  <div className="grid md:grid-cols-2 gap-6">
-                    <div className="space-y-2">
-                      <label className="text-xs font-bold text-slate-500 uppercase flex justify-between">
-                        <span>Flow Rate (Volume Flux)</span> <span className="text-brand-primary">{fluidDynamicsConfig.flowRate} units/s</span>
-                      </label>
-                      <input
-                        type="range" min="10" max="500" step="10"
-                        value={fluidDynamicsConfig.flowRate}
-                        onChange={(e) => setFluidDynamicsConfig(p => ({ ...p, flowRate: Number(e.target.value) }))}
-                        className="w-full accent-brand-secondary h-2 bg-slate-200 rounded-lg cursor-pointer"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <label className="text-xs font-bold text-slate-500 uppercase flex justify-between">
-                        <span>Constriction Area (A₂)</span> <span className="text-brand-primary">{fluidDynamicsConfig.area} units²</span>
-                      </label>
-                      <input
-                        type="range" min="20" max="100" step="5"
-                        value={fluidDynamicsConfig.area}
-                        onChange={(e) => setFluidDynamicsConfig(p => ({ ...p, area: Number(e.target.value) }))}
-                        className="w-full accent-blue-500 h-2 bg-slate-200 rounded-lg cursor-pointer"
-                      />
-                      <div className="flex justify-between text-[10px] text-slate-400 font-bold uppercase mt-1">
-                        <span>Narrow</span>
-                        <span>Wide (A₁ = 100)</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="lg:col-span-5 relative">
-              <div className="sticky top-24 h-[calc(100vh-8rem)] overflow-y-auto pr-2 custom-scrollbar">
-                <div className="bg-white p-8 rounded-2xl shadow-sm border border-slate-200 min-h-full">
-                  <TextbookContent topic={currentTopics.find(t => t.id === activeTopicId)} />
-                </div>
-              </div>
-            </div>
-          </div>
+          <FluidDynamicsLab
+            topic={currentTopics.find(t => t.id === activeTopicId)!}
+            onExit={goHome}
+          />
         )}
 
         {/* ================== PASCAL'S LAW ================== */}
         {currentScreen === 'TOPIC_VIEW' && activeTopicId === 'pascals-law' && (
-          <div className="p-6 grid grid-cols-1 lg:grid-cols-12 gap-8 animate-in fade-in duration-500">
-            <div className="lg:col-span-7 flex flex-col gap-6" id="tour-simulation">
-              <div className="flex items-center gap-2 mb-2 text-brand-primary/60 hover:text-brand-primary cursor-pointer w-fit" onClick={goHome}>
-                <ArrowLeft size={18} /> <span className="text-sm font-medium">Back to Curriculum</span>
-              </div>
-              <div className={isSimulationFullscreen ? "fixed inset-0 z-[100] bg-slate-900 flex flex-col overflow-y-auto" : "bg-white rounded-2xl shadow-md border border-slate-200 overflow-hidden"}>
-                <div className="bg-slate-900 px-6 py-3 flex items-center justify-between border-b border-slate-700">
-                  <h3 className="font-display font-bold text-white flex items-center gap-2">
-                    <Activity size={18} className="text-brand-secondary" /> Hydraulic Brake Interactor
-                  </h3>
-                  <button
-                    onClick={() => setIsSimulationFullscreen(!isSimulationFullscreen)}
-                    className="p-1.5 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors cursor-pointer ml-auto"
-                    title={isSimulationFullscreen ? "Minimize" : "Maximize"}
-                  >
-                    {isSimulationFullscreen ? <Minimize2 size={20} /> : <Maximize2 size={20} />}
-                  </button>
-                </div>
-                <div className="relative h-[550px] bg-slate-900 flex flex-col">
-                  <HydraulicBrakeLab
-                    force1={hydraulicConfig.force1}
-                    area1={hydraulicConfig.area1}
-                    area2={hydraulicConfig.area2}
-                    fluidType={hydraulicConfig.fluidType}
-                    isApplyingText={false}
-                  />
-                </div>
-                <div className="p-6 bg-slate-50 border-t border-slate-200">
-                  <div className="grid md:grid-cols-2 gap-6">
-                    <div className="space-y-4">
-                      <div className="space-y-2">
-                        <label className="text-xs font-bold text-slate-500 uppercase flex justify-between">
-                          <span>Master Piston Area (A₁)</span> <span className="text-brand-primary">{hydraulicConfig.area1} cm²</span>
-                        </label>
-                        <input
-                          type="range" min="5" max="50" step="5"
-                          value={hydraulicConfig.area1}
-                          onChange={(e) => setHydraulicConfig(p => ({ ...p, area1: Number(e.target.value) }))}
-                          className="w-full accent-brand-secondary h-2 bg-slate-200 rounded-lg cursor-pointer"
-                        />
-                      </div>
-                      <div className="space-y-2">
-                        <label className="text-xs font-bold text-slate-500 uppercase flex justify-between">
-                          <span>Wheel Piston Area (A₂)</span> <span className="text-brand-primary">{hydraulicConfig.area2} cm²</span>
-                        </label>
-                        <input
-                          type="range" min="50" max="500" step="10"
-                          value={hydraulicConfig.area2}
-                          onChange={(e) => setHydraulicConfig(p => ({ ...p, area2: Number(e.target.value) }))}
-                          className="w-full accent-blue-500 h-2 bg-slate-200 rounded-lg cursor-pointer"
-                        />
-                      </div>
-                    </div>
-                    <div className="space-y-4">
-                      <div className="space-y-2">
-                        <label className="text-xs font-bold text-slate-500 uppercase flex justify-between">
-                          <span>Input Force (Foot Pedal)</span> <span className="text-amber-500">{hydraulicConfig.force1} N</span>
-                        </label>
-                        <input
-                          type="range" min="10" max="500" step="10"
-                          value={hydraulicConfig.force1}
-                          onChange={(e) => setHydraulicConfig(p => ({ ...p, force1: Number(e.target.value) }))}
-                          className="w-full accent-amber-500 h-2 bg-slate-200 rounded-lg cursor-pointer"
-                        />
-                      </div>
-                      <div className="space-y-2 pt-2">
-                        <label className="text-xs font-bold text-slate-500 uppercase">Fluid Type</label>
-                        <div className="flex bg-slate-200 p-1 rounded-lg">
-                          <button
-                            className={`flex-1 text-sm py-1 rounded-md font-bold transition-colors ${hydraulicConfig.fluidType === 'liquid' ? 'bg-white text-emerald-600 shadow' : 'text-slate-500 hover:bg-white/50'}`}
-                            onClick={() => setHydraulicConfig(p => ({ ...p, fluidType: 'liquid' }))}
-                          >
-                            Liquid (Incompressible)
-                          </button>
-                          <button
-                            className={`flex-1 text-sm py-1 rounded-md font-bold transition-colors ${hydraulicConfig.fluidType === 'gas' ? 'bg-white text-yellow-600 shadow' : 'text-slate-500 hover:bg-white/50'}`}
-                            onClick={() => setHydraulicConfig(p => ({ ...p, fluidType: 'gas' }))}
-                          >
-                            Gas (Compressible)
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="lg:col-span-5 relative">
-              <div className="sticky top-24 h-[calc(100vh-8rem)] overflow-y-auto pr-2 custom-scrollbar">
-                <div className="bg-white p-8 rounded-2xl shadow-sm border border-slate-200 min-h-full">
-                  <TextbookContent topic={currentTopics.find(t => t.id === activeTopicId)} />
-                </div>
-              </div>
-            </div>
-          </div>
+          <HydraulicBrakeLab
+            topic={currentTopics.find(t => t.id === activeTopicId)!}
+            onExit={goHome}
+          />
         )}
 
         {/* ================== CARNOT ENGINE ================== */}
         {currentScreen === 'TOPIC_VIEW' && activeTopicId === 'carnot-engine' && (
-          <div className="p-6 grid grid-cols-1 lg:grid-cols-12 gap-8 animate-in fade-in duration-500">
-            <div className="lg:col-span-7 flex flex-col gap-6" id="tour-simulation">
-              <div className="flex items-center gap-2 mb-2 text-brand-primary/60 hover:text-brand-primary cursor-pointer w-fit" onClick={goHome}>
-                <ArrowLeft size={18} /> <span className="text-sm font-medium">Back to Curriculum</span>
-              </div>
-              <div className={isSimulationFullscreen ? "fixed inset-0 z-[100] bg-slate-900 flex flex-col overflow-y-auto" : "bg-white rounded-2xl shadow-md border border-slate-200 overflow-hidden"}>
-                <div className="bg-slate-900 px-6 py-3 flex items-center justify-between border-b border-slate-700">
-                  <h3 className="font-display font-bold text-white flex items-center gap-2">
-                    <Activity size={18} className="text-brand-secondary" /> Carnot Engine P-V Diagram Builder
-                  </h3>
-                  <button
-                    onClick={() => setIsSimulationFullscreen(!isSimulationFullscreen)}
-                    className="p-1.5 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors cursor-pointer ml-auto"
-                    title={isSimulationFullscreen ? "Minimize" : "Maximize"}
-                  >
-                    {isSimulationFullscreen ? <Minimize2 size={20} /> : <Maximize2 size={20} />}
-                  </button>
-                </div>
-                <div className="relative h-[500px] bg-slate-900">
-                  <CarnotEngineLab t1={carnotConfig.t1} t2={carnotConfig.t2} />
-                </div>
-                <div className="p-6 bg-slate-50 border-t border-slate-200">
-                  <div className="grid md:grid-cols-2 gap-6">
-                    <div className="space-y-2">
-                      <label className="text-xs font-bold text-slate-500 uppercase flex justify-between">
-                        <span>Hot Source Temperature (T₁)</span> <span className="text-red-500">{carnotConfig.t1} K</span>
-                      </label>
-                      <input
-                        type="range" min="400" max="1000" step="10"
-                        value={carnotConfig.t1}
-                        onChange={(e) => setCarnotConfig(p => ({ ...p, t1: Math.max(Number(e.target.value), p.t2 + 50) }))}
-                        className="w-full accent-red-500 h-2 bg-slate-200 rounded-lg cursor-pointer"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <label className="text-xs font-bold text-slate-500 uppercase flex justify-between">
-                        <span>Cold Sink Temperature (T₂)</span> <span className="text-blue-500">{carnotConfig.t2} K</span>
-                      </label>
-                      <input
-                        type="range" min="100" max="600" step="10"
-                        value={carnotConfig.t2}
-                        onChange={(e) => setCarnotConfig(p => ({ ...p, t2: Math.min(Number(e.target.value), p.t1 - 50) }))}
-                        className="w-full accent-blue-500 h-2 bg-slate-200 rounded-lg cursor-pointer"
-                      />
-                    </div>
-                  </div>
-                  <div className="mt-4 p-3 bg-white rounded-lg border border-slate-200 text-center">
-                    <span className="text-sm text-slate-500">Carnot Efficiency: </span>
-                    <span className="text-lg font-bold text-emerald-600 font-mono">
-                      {((1 - carnotConfig.t2 / carnotConfig.t1) * 100).toFixed(1)}%
-                    </span>
-                    <span className="text-xs text-slate-400 ml-2">= 1 − {carnotConfig.t2}/{carnotConfig.t1}</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="lg:col-span-5 relative">
-              <div className="sticky top-24 h-[calc(100vh-8rem)] overflow-y-auto pr-2 custom-scrollbar">
-                <div className="bg-white p-8 rounded-2xl shadow-sm border border-slate-200 min-h-full">
-                  <TextbookContent topic={currentTopics.find(t => t.id === activeTopicId)} />
-                </div>
-              </div>
-            </div>
-          </div>
+          <CarnotEngineLab
+            topic={currentTopics.find(t => t.id === activeTopicId)!}
+            onExit={goHome}
+          />
         )}
 
         {/* ================== THERMODYNAMIC PROCESSES ================== */}
         {currentScreen === 'TOPIC_VIEW' && activeTopicId === 'thermodynamic-processes' && (
-          <div className="p-6 grid grid-cols-1 lg:grid-cols-12 gap-8 animate-in fade-in duration-500">
-            <div className="lg:col-span-7 flex flex-col gap-6" id="tour-simulation">
-              <div className="flex items-center gap-2 mb-2 text-brand-primary/60 hover:text-brand-primary cursor-pointer w-fit" onClick={goHome}>
-                <ArrowLeft size={18} /> <span className="text-sm font-medium">Back to Curriculum</span>
-              </div>
-              <div className={isSimulationFullscreen ? "fixed inset-0 z-[100] bg-slate-900 flex flex-col overflow-y-auto" : "bg-white rounded-2xl shadow-md border border-slate-200 overflow-hidden"}>
-                <div className="bg-slate-900 px-6 py-3 flex items-center justify-between border-b border-slate-700">
-                  <h3 className="font-display font-bold text-white flex items-center gap-2">
-                    <Activity size={18} className="text-brand-secondary" /> First Law of Thermodynamics Lab
-                  </h3>
-                  <button
-                    onClick={() => setIsSimulationFullscreen(!isSimulationFullscreen)}
-                    className="p-1.5 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors cursor-pointer ml-auto"
-                    title={isSimulationFullscreen ? "Minimize" : "Maximize"}
-                  >
-                    {isSimulationFullscreen ? <Minimize2 size={20} /> : <Maximize2 size={20} />}
-                  </button>
-                </div>
-                <div className="relative h-[500px] bg-slate-900">
-                  <ThermodynamicProcessesLab />
-                </div>
-              </div>
-            </div>
-            <div className="lg:col-span-5 relative">
-              <div className="sticky top-24 h-[calc(100vh-8rem)] overflow-y-auto pr-2 custom-scrollbar">
-                <div className="bg-white p-8 rounded-2xl shadow-sm border border-slate-200 min-h-full">
-                  <TextbookContent topic={currentTopics.find(t => t.id === activeTopicId)} />
-                </div>
-              </div>
-            </div>
-          </div>
+          <ThermodynamicProcessesLab
+            topic={currentTopics.find(t => t.id === activeTopicId)!}
+            onExit={goHome}
+          />
         )}
 
         {/* ================== KINETIC THEORY ================== */}
         {currentScreen === 'TOPIC_VIEW' && activeTopicId === 'kinetic-theory' && (
-          <div className="p-6 grid grid-cols-1 lg:grid-cols-12 gap-8 animate-in fade-in duration-500">
-            <div className="lg:col-span-7 flex flex-col gap-6" id="tour-simulation">
-              <div className="flex items-center gap-2 mb-2 text-brand-primary/60 hover:text-brand-primary cursor-pointer w-fit" onClick={goHome}>
-                <ArrowLeft size={18} /> <span className="text-sm font-medium">Back to Curriculum</span>
-              </div>
-              <div className={isSimulationFullscreen ? "fixed inset-0 z-[100] bg-slate-900 flex flex-col overflow-y-auto" : "bg-white rounded-2xl shadow-md border border-slate-200 overflow-hidden"}>
-                <div className="bg-slate-900 px-6 py-3 flex items-center justify-between border-b border-slate-700">
-                  <h3 className="font-display font-bold text-white flex items-center gap-2">
-                    <Activity size={18} className="text-brand-secondary" /> Kinetic Theory — Molecular Pressure Lab
-                  </h3>
-                  <button
-                    onClick={() => setIsSimulationFullscreen(!isSimulationFullscreen)}
-                    className="p-1.5 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors cursor-pointer ml-auto"
-                    title={isSimulationFullscreen ? "Minimize" : "Maximize"}
-                  >
-                    {isSimulationFullscreen ? <Minimize2 size={20} /> : <Maximize2 size={20} />}
-                  </button>
-                </div>
-                <div className="relative h-[500px] bg-slate-900">
-                  <KineticTheoryLab />
-                </div>
-              </div>
-            </div>
-            <div className="lg:col-span-5 relative">
-              <div className="sticky top-24 h-[calc(100vh-8rem)] overflow-y-auto pr-2 custom-scrollbar">
-                <div className="bg-white p-8 rounded-2xl shadow-sm border border-slate-200 min-h-full">
-                  <TextbookContent topic={currentTopics.find(t => t.id === activeTopicId)} />
-                </div>
-              </div>
-            </div>
-          </div>
+          <KineticTheoryLab
+            topic={currentTopics.find(t => t.id === activeTopicId)!}
+            onExit={goHome}
+          />
         )}
 
         {/* ================== EQUIPARTITION OF ENERGY ================== */}
         {currentScreen === 'TOPIC_VIEW' && activeTopicId === 'equipartition' && (
-          <div className="p-6 grid grid-cols-1 lg:grid-cols-12 gap-8 animate-in fade-in duration-500">
-            <div className="lg:col-span-7 flex flex-col gap-6" id="tour-simulation">
-              <div className="flex items-center gap-2 mb-2 text-brand-primary/60 hover:text-brand-primary cursor-pointer w-fit" onClick={goHome}>
-                <ArrowLeft size={18} /> <span className="text-sm font-medium">Back to Curriculum</span>
-              </div>
-              <div className={isSimulationFullscreen ? "fixed inset-0 z-[100] bg-slate-900 flex flex-col overflow-y-auto" : "bg-white rounded-2xl shadow-md border border-slate-200 overflow-hidden"}>
-                <div className="bg-slate-900 px-6 py-3 flex items-center justify-between border-b border-slate-700">
-                  <h3 className="font-display font-bold text-white flex items-center gap-2">
-                    <Activity size={18} className="text-brand-secondary" /> Equipartition of Energy Lab
-                  </h3>
-                  <button
-                    onClick={() => setIsSimulationFullscreen(!isSimulationFullscreen)}
-                    className="p-1.5 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors cursor-pointer ml-auto"
-                    title={isSimulationFullscreen ? "Minimize" : "Maximize"}
-                  >
-                    {isSimulationFullscreen ? <Minimize2 size={20} /> : <Maximize2 size={20} />}
-                  </button>
-                </div>
-                <div className="relative h-[500px] bg-slate-900">
-                  <EquipartitionLab />
-                </div>
-              </div>
-            </div>
-            <div className="lg:col-span-5 relative">
-              <div className="sticky top-24 h-[calc(100vh-8rem)] overflow-y-auto pr-2 custom-scrollbar">
-                <div className="bg-white p-8 rounded-2xl shadow-sm border border-slate-200 min-h-full">
-                  <TextbookContent topic={currentTopics.find(t => t.id === activeTopicId)} />
-                </div>
-              </div>
-            </div>
-          </div>
+          <EquipartitionLab
+            topic={currentTopics.find(t => t.id === activeTopicId)!}
+            onExit={goHome}
+          />
         )}
 
         {/* ================== SHM SPRING-MASS ================== */}
         {currentScreen === 'TOPIC_VIEW' && activeTopicId === 'shm-spring' && (
-          <div className="p-6 grid grid-cols-1 lg:grid-cols-12 gap-8 animate-in fade-in duration-500">
-            <div className="lg:col-span-7 flex flex-col gap-6" id="tour-simulation">
-              <div className="flex items-center gap-2 mb-2 text-brand-primary/60 hover:text-brand-primary cursor-pointer w-fit" onClick={goHome}>
-                <ArrowLeft size={18} /> <span className="text-sm font-medium">Back to Curriculum</span>
-              </div>
-              <div className={isSimulationFullscreen ? "fixed inset-0 z-[100] bg-slate-900 flex flex-col overflow-y-auto" : "bg-white rounded-2xl shadow-md border border-slate-200 overflow-hidden"}>
-                <div className="bg-slate-900 px-6 py-3 flex items-center justify-between border-b border-slate-700">
-                  <h3 className="font-display font-bold text-white flex items-center gap-2">
-                    <Activity size={18} className="text-brand-secondary" /> Spring-Mass SHM Lab
-                  </h3>
-                  <button
-                    onClick={() => setIsSimulationFullscreen(!isSimulationFullscreen)}
-                    className="p-1.5 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors cursor-pointer ml-auto"
-                    title={isSimulationFullscreen ? "Minimize" : "Maximize"}
-                  >
-                    {isSimulationFullscreen ? <Minimize2 size={20} /> : <Maximize2 size={20} />}
-                  </button>
-                </div>
-                <div className="relative h-[500px] bg-slate-900">
-                  <SHMLab />
-                </div>
-              </div>
-            </div>
-            <div className="lg:col-span-5 relative">
-              <div className="sticky top-24 h-[calc(100vh-8rem)] overflow-y-auto pr-2 custom-scrollbar">
-                <div className="bg-white p-8 rounded-2xl shadow-sm border border-slate-200 min-h-full">
-                  <TextbookContent topic={currentTopics.find(t => t.id === activeTopicId)} />
-                </div>
-              </div>
-            </div>
-          </div>
+          <SHMLab
+            topic={currentTopics.find(t => t.id === activeTopicId)!}
+            onExit={goHome}
+          />
         )}
 
         {/* ================== STANDING WAVES ================== */}
+        {/* ================== STANDING WAVES ================== */}
         {currentScreen === 'TOPIC_VIEW' && activeTopicId === 'standing-waves' && (
-          <div className="p-6 grid grid-cols-1 lg:grid-cols-12 gap-8 animate-in fade-in duration-500">
-            <div className="lg:col-span-7 flex flex-col gap-6" id="tour-simulation">
-              <div className="flex items-center gap-2 mb-2 text-brand-primary/60 hover:text-brand-primary cursor-pointer w-fit" onClick={goHome}>
-                <ArrowLeft size={18} /> <span className="text-sm font-medium">Back to Curriculum</span>
-              </div>
-              <div className={isSimulationFullscreen ? "fixed inset-0 z-[100] bg-slate-900 flex flex-col" : "bg-white rounded-2xl shadow-md border border-slate-200 overflow-hidden"}>
-                <div className="bg-slate-900 px-6 py-3 flex items-center justify-between border-b border-slate-700">
-                  <h3 className="font-display font-bold text-white flex items-center gap-2">
-                    <Activity size={18} className="text-brand-secondary" /> Standing Waves Lab
-                  </h3>
-                  <button
-                    onClick={() => setIsSimulationFullscreen(!isSimulationFullscreen)}
-                    className="p-1.5 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors cursor-pointer"
-                    title={isSimulationFullscreen ? "Minimize" : "Maximize"}
-                  >
-                    {isSimulationFullscreen ? <Minimize2 size={20} /> : <Maximize2 size={20} />}
-                  </button>
-                </div>
-                <div className={`relative bg-slate-900 flex-1 flex flex-col ${!isSimulationFullscreen ? 'h-[500px]' : ''}`}>
-                  <div className="flex-1 w-full h-full">
-                    <WavesLab />
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="lg:col-span-5 relative">
-              <div className="sticky top-24 h-[calc(100vh-8rem)] overflow-y-auto pr-2 custom-scrollbar">
-                <div className="bg-white p-8 rounded-2xl shadow-sm border border-slate-200 min-h-full">
-                  <TextbookContent topic={currentTopics.find(t => t.id === activeTopicId)} />
-                </div>
-              </div>
-            </div>
-          </div>
+          <WavesLab
+            topic={currentTopics.find(t => t.id === activeTopicId)!}
+            onExit={goHome}
+          />
         )}
 
         {/* ================== VSEPR THEORY ================== */}
         {currentScreen === 'TOPIC_VIEW' && activeTopicId === 'vsepr-theory' && (
-          <div className="p-6 grid grid-cols-1 lg:grid-cols-12 gap-8 animate-in fade-in duration-500">
-            <div className="lg:col-span-7 flex flex-col gap-6" id="tour-simulation">
-              <div className="flex items-center gap-2 mb-2 text-brand-primary/60 hover:text-brand-primary cursor-pointer w-fit" onClick={goHome}>
-                <ArrowLeft size={18} /> <span className="text-sm font-medium">Back to Curriculum</span>
-              </div>
-              <div className={isSimulationFullscreen ? "fixed inset-0 z-[100] bg-slate-900 flex flex-col overflow-y-auto" : "bg-white rounded-2xl shadow-md border border-slate-200 overflow-hidden"}>
-                <div className="bg-slate-900 px-6 py-3 flex items-center justify-between border-b border-slate-700">
-                  <h3 className="font-display font-bold text-white flex items-center gap-2">
-                    <Activity size={18} className="text-brand-secondary" /> 3D Molecular Sandbox
-                  </h3>
-                  <button
-                    onClick={() => setIsSimulationFullscreen(!isSimulationFullscreen)}
-                    className="p-1.5 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors cursor-pointer ml-auto"
-                    title={isSimulationFullscreen ? "Minimize" : "Maximize"}
-                  >
-                    {isSimulationFullscreen ? <Minimize2 size={20} /> : <Maximize2 size={20} />}
-                  </button>
-                </div>
-                <div className="relative h-[650px] bg-slate-900 flex flex-col">
-                  <VSEPRTheoryLab />
-                </div>
-              </div>
-            </div>
-            <div className="lg:col-span-5 relative">
-              <div className="sticky top-24 h-[calc(100vh-8rem)] overflow-y-auto pr-2 custom-scrollbar">
-                <div className="bg-white p-8 rounded-2xl shadow-sm border border-slate-200 min-h-full">
-                  <TextbookContent topic={currentTopics.find(t => t.id === activeTopicId)} />
-                </div>
-              </div>
-            </div>
-          </div>
+          <VSEPRTheoryLab
+            topic={currentTopics.find(t => t.id === activeTopicId)!}
+            onExit={goHome}
+          />
         )}
 
         {/* ================== SIGMA & PI BONDS ================== */}
         {currentScreen === 'TOPIC_VIEW' && activeTopicId === 'sigma-pi-bonds' && (
-          <div className="p-6 grid grid-cols-1 lg:grid-cols-12 gap-8 animate-in fade-in duration-500">
-            <div className="lg:col-span-7 flex flex-col gap-6" id="tour-simulation">
-              <div className="flex items-center gap-2 mb-2 text-brand-primary/60 hover:text-brand-primary cursor-pointer w-fit" onClick={goHome}>
-                <ArrowLeft size={18} /> <span className="text-sm font-medium">Back to Curriculum</span>
-              </div>
-              <div className={isSimulationFullscreen ? "fixed inset-0 z-[100] bg-slate-900 flex flex-col overflow-y-auto" : "bg-white rounded-2xl shadow-md border border-slate-200 overflow-hidden"}>
-                <div className="bg-slate-900 px-6 py-3 flex items-center justify-between border-b border-slate-700">
-                  <h3 className="font-display font-bold text-white flex items-center gap-2">
-                    <Activity size={18} className="text-brand-secondary" /> Orbital Overlap Lab
-                  </h3>
-                  <button
-                    onClick={() => setIsSimulationFullscreen(!isSimulationFullscreen)}
-                    className="p-1.5 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors cursor-pointer ml-auto"
-                    title={isSimulationFullscreen ? "Minimize" : "Maximize"}
-                  >
-                    {isSimulationFullscreen ? <Minimize2 size={20} /> : <Maximize2 size={20} />}
-                  </button>
-                </div>
-                <div className="relative h-[550px] bg-slate-900 flex flex-col">
-                  <SigmaPiBondsLab />
-                </div>
-              </div>
-            </div>
-            <div className="lg:col-span-5 relative">
-              <div className="sticky top-24 h-[calc(100vh-8rem)] overflow-y-auto pr-2 custom-scrollbar">
-                <div className="bg-white p-8 rounded-2xl shadow-sm border border-slate-200 min-h-full">
-                  <TextbookContent topic={currentTopics.find(t => t.id === activeTopicId)} />
-                </div>
-              </div>
-            </div>
-          </div>
+          <SigmaPiBondsLab
+            topic={currentTopics.find(t => t.id === activeTopicId)!}
+            onExit={goHome}
+          />
         )}
 
         {/* ================== ISOTHERMAL WORK ================== */}
         {currentScreen === 'TOPIC_VIEW' && activeTopicId === 'isothermal-work' && (
-          <div className="p-6 grid grid-cols-1 lg:grid-cols-12 gap-8 animate-in fade-in duration-500">
-            <div className="lg:col-span-7 flex flex-col gap-6" id="tour-simulation">
-              <div className="flex items-center gap-2 mb-2 text-brand-primary/60 hover:text-brand-primary cursor-pointer w-fit" onClick={goHome}>
-                <ArrowLeft size={18} /> <span className="text-sm font-medium">Back to Curriculum</span>
-              </div>
-              <div className={isSimulationFullscreen ? "fixed inset-0 z-[100] bg-slate-900 flex flex-col" : "bg-white rounded-2xl shadow-md border border-slate-200 overflow-hidden"}>
-                <div className="bg-slate-900 px-6 py-3 flex items-center justify-between border-b border-slate-700 shrink-0">
-                  <h3 className="font-display font-bold text-white flex items-center gap-2">
-                    <Activity size={18} className="text-brand-secondary" /> Piston-Cylinder Work Lab
-                  </h3>
-                  <button
-                    onClick={() => setIsSimulationFullscreen(!isSimulationFullscreen)}
-                    className="p-1.5 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors cursor-pointer ml-auto"
-                    title={isSimulationFullscreen ? "Minimize" : "Maximize"}
-                  >
-                    {isSimulationFullscreen ? <Minimize2 size={20} /> : <Maximize2 size={20} />}
-                  </button>
-                </div>
-                <div className={`relative bg-slate-900 flex flex-col ${isSimulationFullscreen ? 'flex-1' : 'h-[550px]'}`}>
-                  <IsothermalWorkLab />
-                </div>
-              </div>
-            </div>
-            <div className="lg:col-span-5 relative">
-              <div className="sticky top-24 h-[calc(100vh-8rem)] overflow-y-auto pr-2 custom-scrollbar">
-                <div className="bg-white p-8 rounded-2xl shadow-sm border border-slate-200 min-h-full">
-                  <TextbookContent topic={currentTopics.find(t => t.id === activeTopicId)} />
-                </div>
-              </div>
-            </div>
-          </div>
+          <IsothermalWorkLab
+            topic={currentTopics.find(t => t.id === activeTopicId)!}
+            onExit={goHome}
+          />
         )}
 
         {/* ================== EXTENSIVE & INTENSIVE PROPERTIES ================== */}
         {currentScreen === 'TOPIC_VIEW' && activeTopicId === 'extensive-intensive-properties' && (
-          <div className="p-6 grid grid-cols-1 lg:grid-cols-12 gap-8 animate-in fade-in duration-500">
-            <div className="lg:col-span-7 flex flex-col gap-6" id="tour-simulation">
-              <div className="flex items-center gap-2 mb-2 text-brand-primary/60 hover:text-brand-primary cursor-pointer w-fit" onClick={goHome}>
-                <ArrowLeft size={18} /> <span className="text-sm font-medium">Back to Curriculum</span>
-              </div>
-              <div className={isSimulationFullscreen ? "fixed inset-0 z-[100] bg-slate-900 flex flex-col" : "bg-white rounded-2xl shadow-md border border-slate-200 overflow-hidden"}>
-                <div className="bg-slate-900 px-6 py-3 flex items-center justify-between border-b border-slate-700 shrink-0">
-                  <h3 className="font-display font-bold text-white flex items-center gap-2">
-                    <Activity size={18} className="text-brand-secondary" /> Property Lab
-                  </h3>
-                  <button
-                    onClick={() => setIsSimulationFullscreen(!isSimulationFullscreen)}
-                    className="p-1.5 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors cursor-pointer ml-auto"
-                    title={isSimulationFullscreen ? "Minimize" : "Maximize"}
-                  >
-                    {isSimulationFullscreen ? <Minimize2 size={20} /> : <Maximize2 size={20} />}
-                  </button>
-                </div>
-                <div className={`relative bg-slate-900 flex flex-col ${isSimulationFullscreen ? 'flex-1' : 'h-[550px]'}`}>
-                  <ExtensiveIntensivePropertiesLab />
-                </div>
-              </div>
-            </div>
-            <div className="lg:col-span-5 relative">
-              <div className="sticky top-24 h-[calc(100vh-8rem)] overflow-y-auto pr-2 custom-scrollbar">
-                <div className="bg-white p-8 rounded-2xl shadow-sm border border-slate-200 min-h-full">
-                  <TextbookContent topic={currentTopics.find(t => t.id === activeTopicId)} />
-                </div>
-              </div>
-            </div>
-          </div>
+          <ExtensiveIntensivePropertiesLab
+            topic={currentTopics.find(t => t.id === activeTopicId)!}
+            onExit={goHome}
+          />
         )}
 
         {/* ================== BUFFER SOLUTIONS ================== */}
         {currentScreen === 'TOPIC_VIEW' && activeTopicId === 'buffer-solutions' && (
-          <div className="p-6 grid grid-cols-1 lg:grid-cols-12 gap-8 animate-in fade-in duration-500">
-            <div className="lg:col-span-7 flex flex-col gap-6" id="tour-simulation">
-              <div className="flex items-center gap-2 mb-2 text-brand-primary/60 hover:text-brand-primary cursor-pointer w-fit" onClick={goHome}>
-                <ArrowLeft size={18} /> <span className="text-sm font-medium">Back to Curriculum</span>
-              </div>
-              <div className={isSimulationFullscreen ? "fixed inset-0 z-[100] bg-slate-900 flex flex-col" : "bg-white rounded-2xl shadow-md border border-slate-200 overflow-hidden"}>
-                <div className="bg-slate-900 px-6 py-3 flex items-center justify-between border-b border-slate-700 shrink-0">
-                  <h3 className="font-display font-bold text-white flex items-center gap-2">
-                    <Activity size={18} className="text-brand-secondary" /> Buffer Lab
-                  </h3>
-                  <button
-                    onClick={() => setIsSimulationFullscreen(!isSimulationFullscreen)}
-                    className="p-1.5 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors cursor-pointer ml-auto"
-                    title={isSimulationFullscreen ? "Minimize" : "Maximize"}
-                  >
-                    {isSimulationFullscreen ? <Minimize2 size={20} /> : <Maximize2 size={20} />}
-                  </button>
-                </div>
-                <div className={`relative bg-slate-900 flex flex-col ${isSimulationFullscreen ? 'flex-1' : 'h-[550px]'}`}>
-                  <BufferSolutionsLab />
-                </div>
-              </div>
-            </div>
-            <div className="lg:col-span-5 relative">
-              <div className="sticky top-24 h-[calc(100vh-8rem)] overflow-y-auto pr-2 custom-scrollbar">
-                <div className="bg-white p-8 rounded-2xl shadow-sm border border-slate-200 min-h-full">
-                  <TextbookContent topic={currentTopics.find(t => t.id === activeTopicId)} />
-                </div>
-              </div>
-            </div>
-          </div>
+          <BufferSolutionsLab
+            topic={currentTopics.find(t => t.id === activeTopicId)!}
+            onExit={goHome}
+          />
         )}
 
         {/* ================== LE CHATELIER EQUILIBRIUM ================== */}
         {currentScreen === 'TOPIC_VIEW' && activeTopicId === 'le-chatelier-equilibrium' && (
-          <div className="p-6 grid grid-cols-1 lg:grid-cols-12 gap-8 animate-in fade-in duration-500">
-            <div className="lg:col-span-7 flex flex-col gap-6" id="tour-simulation">
-              <div className="flex items-center gap-2 mb-2 text-brand-primary/60 hover:text-brand-primary cursor-pointer w-fit" onClick={goHome}>
-                <ArrowLeft size={18} /> <span className="text-sm font-medium">Back to Curriculum</span>
-              </div>
-              <div className={isSimulationFullscreen ? "fixed inset-0 z-[100] bg-slate-900 flex flex-col" : "bg-white rounded-2xl shadow-md border border-slate-200 overflow-hidden"}>
-                <div className="bg-slate-900 px-6 py-3 flex items-center justify-between border-b border-slate-700 shrink-0">
-                  <h3 className="font-display font-bold text-white flex items-center gap-2">
-                    <Activity size={18} className="text-brand-secondary" /> Colorimetric Equilibrium Lab
-                  </h3>
-                  <button
-                    onClick={() => setIsSimulationFullscreen(!isSimulationFullscreen)}
-                    className="p-1.5 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors cursor-pointer ml-auto"
-                    title={isSimulationFullscreen ? "Minimize" : "Maximize"}
-                  >
-                    {isSimulationFullscreen ? <Minimize2 size={20} /> : <Maximize2 size={20} />}
-                  </button>
-                </div>
-                <div className={`relative bg-slate-900 flex flex-col ${isSimulationFullscreen ? 'flex-1' : 'h-[550px]'}`}>
-                  <LeChatelierLab />
-                </div>
-              </div>
-            </div>
-            <div className="lg:col-span-5 relative">
-              <div className="sticky top-24 h-[calc(100vh-8rem)] overflow-y-auto pr-2 custom-scrollbar">
-                <div className="bg-white p-8 rounded-2xl shadow-sm border border-slate-200 min-h-full">
-                  <TextbookContent topic={currentTopics.find(t => t.id === activeTopicId)} />
-                </div>
-              </div>
-            </div>
-          </div>
+          <LeChatelierLab
+            topic={currentTopics.find(t => t.id === activeTopicId)!}
+            onExit={goHome}
+          />
         )}
 
         {/* ================== QUALITATIVE ANALYSIS OF ORGANIC COMPOUNDS ================== */}
         {currentScreen === 'TOPIC_VIEW' && activeTopicId === 'qualitative-analysis-organic' && (
-          <div className="p-6 grid grid-cols-1 lg:grid-cols-12 gap-8 animate-in fade-in duration-500">
-            <div className="lg:col-span-7 flex flex-col gap-6" id="tour-simulation">
-              <div className="flex items-center gap-2 mb-2 text-brand-primary/60 hover:text-brand-primary cursor-pointer w-fit" onClick={goHome}>
-                <ArrowLeft size={18} /> <span className="text-sm font-medium">Back to Curriculum</span>
-              </div>
-              <div className={isSimulationFullscreen ? "fixed inset-0 z-[100] bg-slate-900 flex flex-col" : "bg-white rounded-2xl shadow-md border border-slate-200 overflow-hidden"}>
-                <div className="bg-slate-900 px-6 py-3 flex items-center justify-between border-b border-slate-700 shrink-0">
-                  <h3 className="font-display font-bold text-white flex items-center gap-2">
-                    <Activity size={18} className="text-brand-secondary" /> Detection of Elements — Lassaigne's Test
-                  </h3>
-                  <button
-                    onClick={() => setIsSimulationFullscreen(!isSimulationFullscreen)}
-                    className="p-1.5 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors cursor-pointer ml-auto"
-                    title={isSimulationFullscreen ? "Minimize" : "Maximize"}
-                  >
-                    {isSimulationFullscreen ? <Minimize2 size={20} /> : <Maximize2 size={20} />}
-                  </button>
-                </div>
-                <div className={`relative bg-slate-900 flex flex-col ${isSimulationFullscreen ? 'flex-1' : 'h-[550px]'}`}>
-                  <QualitativeAnalysisCanvas />
-                </div>
-              </div>
-            </div>
-            <div className="lg:col-span-5 relative">
-              <div className="sticky top-24 h-[calc(100vh-8rem)] overflow-y-auto pr-2 custom-scrollbar">
-                <div className="bg-white p-8 rounded-2xl shadow-sm border border-slate-200 min-h-full">
-                  <TextbookContent topic={currentTopics.find(t => t.id === activeTopicId)} />
-                </div>
-              </div>
-            </div>
-          </div>
+          <QualitativeAnalysisCanvas
+            topic={currentTopics.find(t => t.id === activeTopicId)!}
+            onExit={goHome}
+          />
         )}
 
         {/* ================== QUANTITATIVE ANALYSIS OF ORGANIC COMPOUNDS ================== */}
         {currentScreen === 'TOPIC_VIEW' && activeTopicId === 'quantitative-analysis-organic' && (
-          <div className="p-6 grid grid-cols-1 lg:grid-cols-12 gap-8 animate-in fade-in duration-500">
-            <div className="lg:col-span-7 flex flex-col gap-6" id="tour-simulation">
-              <div className="flex items-center gap-2 mb-2 text-brand-primary/60 hover:text-brand-primary cursor-pointer w-fit" onClick={goHome}>
-                <ArrowLeft size={18} /> <span className="text-sm font-medium">Back to Curriculum</span>
-              </div>
-              <div className={isSimulationFullscreen ? "fixed inset-0 z-[100] bg-slate-900 flex flex-col" : "bg-white rounded-2xl shadow-md border border-slate-200 overflow-hidden"}>
-                <div className="bg-slate-900 px-6 py-3 flex items-center justify-between border-b border-slate-700 shrink-0">
-                  <h3 className="font-display font-bold text-white flex items-center gap-2">
-                    <Activity size={18} className="text-brand-secondary" /> Estimation of C, H, N, S — Liebig's Lab
-                  </h3>
-                  <button
-                    onClick={() => setIsSimulationFullscreen(!isSimulationFullscreen)}
-                    className="p-1.5 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors cursor-pointer ml-auto"
-                    title={isSimulationFullscreen ? "Minimize" : "Maximize"}
-                  >
-                    {isSimulationFullscreen ? <Minimize2 size={20} /> : <Maximize2 size={20} />}
-                  </button>
-                </div>
-                <div className={`relative bg-slate-900 flex flex-col ${isSimulationFullscreen ? 'flex-1' : 'h-[550px]'}`}>
-                  <QuantitativeAnalysisCanvas />
-                </div>
-              </div>
-            </div>
-            <div className="lg:col-span-5 relative">
-              <div className="sticky top-24 h-[calc(100vh-8rem)] overflow-y-auto pr-2 custom-scrollbar">
-                <div className="bg-white p-8 rounded-2xl shadow-sm border border-slate-200 min-h-full">
-                  <TextbookContent topic={currentTopics.find(t => t.id === activeTopicId)} />
-                </div>
-              </div>
-            </div>
-          </div>
+          <QuantitativeAnalysisCanvas
+            topic={currentTopics.find(t => t.id === activeTopicId)!}
+            onExit={goHome}
+          />
         )}
 
         {/* ================== CONFORMATIONS OF ETHANE ================== */}
         {currentScreen === 'TOPIC_VIEW' && activeTopicId === 'ethane-conformations' && (
-          <div className="p-6 grid grid-cols-1 lg:grid-cols-12 gap-8 animate-in fade-in duration-500">
-            <div className="lg:col-span-7 flex flex-col gap-6" id="tour-simulation">
-              <div className="flex items-center gap-2 mb-2 text-brand-primary/60 hover:text-brand-primary cursor-pointer w-fit" onClick={goHome}>
-                <ArrowLeft size={18} /> <span className="text-sm font-medium">Back to Curriculum</span>
-              </div>
-              <div className={isSimulationFullscreen ? "fixed inset-0 z-[100] bg-slate-900 flex flex-col" : "bg-white rounded-2xl shadow-md border border-slate-200 overflow-hidden"}>
-                <div className="bg-slate-900 px-6 py-3 flex items-center justify-between border-b border-slate-700 shrink-0">
-                  <h3 className="font-display font-bold text-white flex items-center gap-2">
-                    <Activity size={18} className="text-brand-secondary" /> Ethane Conformations — Stereochemistry Sandbox
-                  </h3>
-                  <button
-                    onClick={() => setIsSimulationFullscreen(!isSimulationFullscreen)}
-                    className="p-1.5 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors cursor-pointer ml-auto"
-                    title={isSimulationFullscreen ? "Minimize" : "Maximize"}
-                  >
-                    {isSimulationFullscreen ? <Minimize2 size={20} /> : <Maximize2 size={20} />}
-                  </button>
-                </div>
-                <div className={`relative bg-slate-900 flex flex-col ${isSimulationFullscreen ? 'flex-1' : 'h-[550px]'}`}>
-                  <EthaneConformationsCanvas />
-                </div>
-              </div>
+          <EthaneConformationsCanvas
+            topic={currentTopics.find(t => t.id === activeTopicId)!}
+            onExit={goHome}
+          />
+        )}
+
+        {/* ================== RESPONSIVE UI PROTOTYPE ================== */}
+        {currentScreen === 'TOPIC_VIEW' && activeTopicId === 'responsive-prototype' && (
+          // NO PADDING, full height, absolute inset
+          <div className="fixed inset-0 z-[100] bg-slate-950 animate-in fade-in duration-500 overflow-hidden">
+            {/* Back button sitting on top of the absolute canvas */}
+            <div
+              className="absolute top-4 left-4 z-50 flex items-center gap-2 px-4 py-2 bg-slate-900/60 hover:bg-slate-800/80 backdrop-blur-md rounded-2xl text-white cursor-pointer border border-white/10 shadow-xl transition-all"
+              onClick={goHome}
+            >
+              <ArrowLeft size={18} /> <span className="text-sm font-bold">Exit Sandbox</span>
             </div>
-            <div className="lg:col-span-5 relative">
-              <div className="sticky top-24 h-[calc(100vh-8rem)] overflow-y-auto pr-2 custom-scrollbar">
-                <div className="bg-white p-8 rounded-2xl shadow-sm border border-slate-200 min-h-full">
-                  <TextbookContent topic={currentTopics.find(t => t.id === activeTopicId)} />
-                </div>
-              </div>
-            </div>
+
+            <ResponsivePrototypeCanvas />
           </div>
         )}
 
@@ -1212,7 +636,7 @@ const App: React.FC = () => {
                     {isSimulationFullscreen ? <Minimize2 size={20} /> : <Maximize2 size={20} />}
                   </button>
                 </div>
-                <div className={`relative bg-slate-900 flex flex-col ${isSimulationFullscreen ? 'flex-1' : 'h-[550px]'}`}>
+                <div className={`relative bg - slate - 900 flex flex - col ${isSimulationFullscreen ? 'flex-1' : 'h-[550px]'} `}>
                   <GeometricalIsomerismCanvas />
                 </div>
               </div>
@@ -1279,7 +703,7 @@ const App: React.FC = () => {
                         <button
                           key={t}
                           onClick={() => setSolidClassConfig(p => ({ ...p, type: t as any, action: 'none' }))}
-                          className={`px-4 py-2 rounded-lg text-sm font-bold uppercase ${solidClassConfig.type === t ? 'bg-brand-primary text-white shadow-lg' : 'bg-white border text-slate-500'}`}
+                          className={`px - 4 py - 2 rounded - lg text - sm font - bold uppercase ${solidClassConfig.type === t ? 'bg-brand-primary text-white shadow-lg' : 'bg-white border text-slate-500'} `}
                         >
                           {t}
                         </button>
@@ -1288,13 +712,13 @@ const App: React.FC = () => {
                     <hr className="border-slate-200" />
                     {/* Tools */}
                     <div className="flex justify-center gap-4">
-                      <button onClick={() => setSolidClassConfig(p => ({ ...p, action: 'hammer' }))} className={`flex items-center gap-2 px-4 py-2 rounded-lg font-bold border-2 ${solidClassConfig.action === 'hammer' ? 'border-brand-primary text-brand-primary bg-brand-primary/10' : 'border-slate-300 text-slate-500'}`}>
+                      <button onClick={() => setSolidClassConfig(p => ({ ...p, action: 'hammer' }))} className={`flex items - center gap - 2 px - 4 py - 2 rounded - lg font - bold border - 2 ${solidClassConfig.action === 'hammer' ? 'border-brand-primary text-brand-primary bg-brand-primary/10' : 'border-slate-300 text-slate-500'} `}>
                         Hammer (Stress)
                       </button>
-                      <button onClick={() => setSolidClassConfig(p => ({ ...p, action: 'battery' }))} className={`flex items-center gap-2 px-4 py-2 rounded-lg font-bold border-2 ${solidClassConfig.action === 'battery' ? 'border-brand-primary text-brand-primary bg-brand-primary/10' : 'border-slate-300 text-slate-500'}`}>
+                      <button onClick={() => setSolidClassConfig(p => ({ ...p, action: 'battery' }))} className={`flex items - center gap - 2 px - 4 py - 2 rounded - lg font - bold border - 2 ${solidClassConfig.action === 'battery' ? 'border-brand-primary text-brand-primary bg-brand-primary/10' : 'border-slate-300 text-slate-500'} `}>
                         Battery (Conductivity)
                       </button>
-                      <button onClick={() => setSolidClassConfig(p => ({ ...p, action: 'heat' }))} className={`flex items-center gap-2 px-4 py-2 rounded-lg font-bold border-2 ${solidClassConfig.action === 'heat' ? 'border-brand-primary text-brand-primary bg-brand-primary/10' : 'border-slate-300 text-slate-500'}`}>
+                      <button onClick={() => setSolidClassConfig(p => ({ ...p, action: 'heat' }))} className={`flex items - center gap - 2 px - 4 py - 2 rounded - lg font - bold border - 2 ${solidClassConfig.action === 'heat' ? 'border-brand-primary text-brand-primary bg-brand-primary/10' : 'border-slate-300 text-slate-500'} `}>
                         Burner (Heat)
                       </button>
                     </div>
@@ -1346,7 +770,7 @@ const App: React.FC = () => {
                         <button
                           key={t}
                           onClick={() => setUnitCellConfig(p => ({ ...p, type: t as any }))}
-                          className={`px-6 py-2 rounded-lg font-bold uppercase ${unitCellConfig.type === t ? 'bg-brand-primary text-white shadow-lg' : 'bg-white border text-slate-500'}`}
+                          className={`px - 6 py - 2 rounded - lg font - bold uppercase ${unitCellConfig.type === t ? 'bg-brand-primary text-white shadow-lg' : 'bg-white border text-slate-500'} `}
                         >
                           {t.toUpperCase()}
                         </button>
@@ -1408,7 +832,7 @@ const App: React.FC = () => {
                       <button
                         key={t}
                         onClick={() => setUnitCellConfig(p => ({ ...p, type: t as any }))}
-                        className={`px-6 py-2 rounded-lg font-bold uppercase ${unitCellConfig.type === t ? 'bg-brand-primary text-white shadow-lg' : 'bg-white border text-slate-500'}`}
+                        className={`px - 6 py - 2 rounded - lg font - bold uppercase ${unitCellConfig.type === t ? 'bg-brand-primary text-white shadow-lg' : 'bg-white border text-slate-500'} `}
                       >
                         {t.toUpperCase()}
                       </button>
@@ -1455,10 +879,10 @@ const App: React.FC = () => {
                 </div>
                 <div className="p-6 bg-slate-50 border-t border-slate-200">
                   <div className="flex gap-4 justify-center">
-                    <button onClick={() => setDefectMode('schottky')} className={`px-6 py-3 rounded-xl font-bold border-2 ${defectMode === 'schottky' ? 'border-brand-primary bg-brand-primary/10 text-brand-primary' : 'border-slate-300 text-slate-500'}`}>
+                    <button onClick={() => setDefectMode('schottky')} className={`px - 6 py - 3 rounded - xl font - bold border - 2 ${defectMode === 'schottky' ? 'border-brand-primary bg-brand-primary/10 text-brand-primary' : 'border-slate-300 text-slate-500'} `}>
                       Schottky (Vacancy)
                     </button>
-                    <button onClick={() => setDefectMode('frenkel')} className={`px-6 py-3 rounded-xl font-bold border-2 ${defectMode === 'frenkel' ? 'border-brand-primary bg-brand-primary/10 text-brand-primary' : 'border-slate-300 text-slate-500'}`}>
+                    <button onClick={() => setDefectMode('frenkel')} className={`px - 6 py - 3 rounded - xl font - bold border - 2 ${defectMode === 'frenkel' ? 'border-brand-primary bg-brand-primary/10 text-brand-primary' : 'border-slate-300 text-slate-500'} `}>
                       Frenkel (Dislocation)
                     </button>
                   </div>
@@ -1573,7 +997,7 @@ const App: React.FC = () => {
                   <h3 className="font-display font-bold text-white flex items-center gap-2">
                     <Battery size={18} className="text-brand-secondary" /> Virtual Lab: Electrochemical Cells
                   </h3>
-                  <div className={`text-xs font-mono font-bold px-2 py-1 rounded ${externalVoltage < 1.1 ? 'bg-green-100 text-green-700' : (externalVoltage > 1.1 ? 'bg-red-100 text-red-700' : 'bg-gray-200 text-gray-700')}`}>
+                  <div className={`text - xs font - mono font - bold px - 2 py - 1 rounded ${externalVoltage < 1.1 ? 'bg-green-100 text-green-700' : (externalVoltage > 1.1 ? 'bg-red-100 text-red-700' : 'bg-gray-200 text-gray-700')} `}>
                     {externalVoltage < 1.1 ? 'GALVANIC MODE' : (externalVoltage > 1.1 ? 'ELECTROLYTIC MODE' : 'EQUILIBRIUM')}
                   </div>
 
@@ -1669,19 +1093,19 @@ const App: React.FC = () => {
                   <div className="flex p-1 bg-slate-200 rounded-lg mb-6 max-w-xl mx-auto">
                     <button
                       onClick={() => setIsomerConfig({ type: 'cis-trans-sq', subType: 'A', showMirror: false })}
-                      className={`flex-1 py-2 text-sm font-bold rounded-md transition-all ${isomerConfig.type === 'cis-trans-sq' ? 'bg-white shadow text-brand-primary' : 'text-slate-500 hover:text-slate-700'}`}
+                      className={`flex - 1 py - 2 text - sm font - bold rounded - md transition - all ${isomerConfig.type === 'cis-trans-sq' ? 'bg-white shadow text-brand-primary' : 'text-slate-500 hover:text-slate-700'} `}
                     >
                       Square Planar
                     </button>
                     <button
                       onClick={() => setIsomerConfig({ type: 'fac-mer', subType: 'A', showMirror: false })}
-                      className={`flex-1 py-2 text-sm font-bold rounded-md transition-all ${isomerConfig.type === 'fac-mer' ? 'bg-white shadow text-brand-primary' : 'text-slate-500 hover:text-slate-700'}`}
+                      className={`flex - 1 py - 2 text - sm font - bold rounded - md transition - all ${isomerConfig.type === 'fac-mer' ? 'bg-white shadow text-brand-primary' : 'text-slate-500 hover:text-slate-700'} `}
                     >
                       Octahedral
                     </button>
                     <button
                       onClick={() => setIsomerConfig({ type: 'optical', subType: 'A', showMirror: true })}
-                      className={`flex-1 py-2 text-sm font-bold rounded-md transition-all ${isomerConfig.type === 'optical' ? 'bg-white shadow text-brand-primary' : 'text-slate-500 hover:text-slate-700'}`}
+                      className={`flex - 1 py - 2 text - sm font - bold rounded - md transition - all ${isomerConfig.type === 'optical' ? 'bg-white shadow text-brand-primary' : 'text-slate-500 hover:text-slate-700'} `}
                     >
                       Optical (Chiral)
                     </button>
@@ -1689,14 +1113,14 @@ const App: React.FC = () => {
                   <div className="flex justify-center gap-8 items-center">
                     {isomerConfig.type === 'cis-trans-sq' && (
                       <div className="flex gap-4">
-                        <button onClick={() => setIsomerConfig(p => ({ ...p, subType: 'A' }))} className={`px-4 py-2 rounded-lg font-bold border-2 ${isomerConfig.subType === 'A' ? 'border-brand-primary bg-brand-primary/10 text-brand-primary' : 'border-slate-300 text-slate-500'}`}>Cis Isomer</button>
-                        <button onClick={() => setIsomerConfig(p => ({ ...p, subType: 'B' }))} className={`px-4 py-2 rounded-lg font-bold border-2 ${isomerConfig.subType === 'B' ? 'border-brand-primary bg-brand-primary/10 text-brand-primary' : 'border-slate-300 text-slate-500'}`}>Trans Isomer</button>
+                        <button onClick={() => setIsomerConfig(p => ({ ...p, subType: 'A' }))} className={`px - 4 py - 2 rounded - lg font - bold border - 2 ${isomerConfig.subType === 'A' ? 'border-brand-primary bg-brand-primary/10 text-brand-primary' : 'border-slate-300 text-slate-500'} `}>Cis Isomer</button>
+                        <button onClick={() => setIsomerConfig(p => ({ ...p, subType: 'B' }))} className={`px - 4 py - 2 rounded - lg font - bold border - 2 ${isomerConfig.subType === 'B' ? 'border-brand-primary bg-brand-primary/10 text-brand-primary' : 'border-slate-300 text-slate-500'} `}>Trans Isomer</button>
                       </div>
                     )}
                     {isomerConfig.type === 'fac-mer' && (
                       <div className="flex gap-4">
-                        <button onClick={() => setIsomerConfig(p => ({ ...p, subType: 'A' }))} className={`px-4 py-2 rounded-lg font-bold border-2 ${isomerConfig.subType === 'A' ? 'border-brand-primary bg-brand-primary/10 text-brand-primary' : 'border-slate-300 text-slate-500'}`}>Facial (fac)</button>
-                        <button onClick={() => setIsomerConfig(p => ({ ...p, subType: 'B' }))} className={`px-4 py-2 rounded-lg font-bold border-2 ${isomerConfig.subType === 'B' ? 'border-brand-primary bg-brand-primary/10 text-brand-primary' : 'border-slate-300 text-slate-500'}`}>Meridional (mer)</button>
+                        <button onClick={() => setIsomerConfig(p => ({ ...p, subType: 'A' }))} className={`px - 4 py - 2 rounded - lg font - bold border - 2 ${isomerConfig.subType === 'A' ? 'border-brand-primary bg-brand-primary/10 text-brand-primary' : 'border-slate-300 text-slate-500'} `}>Facial (fac)</button>
+                        <button onClick={() => setIsomerConfig(p => ({ ...p, subType: 'B' }))} className={`px - 4 py - 2 rounded - lg font - bold border - 2 ${isomerConfig.subType === 'B' ? 'border-brand-primary bg-brand-primary/10 text-brand-primary' : 'border-slate-300 text-slate-500'} `}>Meridional (mer)</button>
                       </div>
                     )}
                     {isomerConfig.type === 'optical' && (
@@ -1761,7 +1185,7 @@ const App: React.FC = () => {
                         <button
                           key={ion}
                           onClick={() => setSelectedIon(ion)}
-                          className={`px-4 py-2 rounded-lg font-bold text-sm transition-all border-2 ${selectedIon === ion ? 'border-brand-primary bg-brand-primary text-white shadow-lg scale-105' : 'border-slate-200 bg-white text-slate-600 hover:border-brand-primary/50'}`}
+                          className={`px - 4 py - 2 rounded - lg font - bold text - sm transition - all border - 2 ${selectedIon === ion ? 'border-brand-primary bg-brand-primary text-white shadow-lg scale-105' : 'border-slate-200 bg-white text-slate-600 hover:border-brand-primary/50'} `}
                         >
                           {ion}
                         </button>
@@ -1816,15 +1240,15 @@ const App: React.FC = () => {
                     <div>
                       <label className="text-xs font-bold text-slate-500 uppercase block mb-2">Substrate Type</label>
                       <div className="flex gap-2">
-                        <button onClick={() => setHaloConfig(p => ({ ...p, substrate: 'primary' }))} className={`flex-1 py-2 px-3 rounded text-sm font-bold border-2 ${haloConfig.substrate === 'primary' ? 'border-brand-primary bg-brand-primary/10 text-brand-primary' : 'border-slate-200 text-slate-500'}`}>Primary (1°)</button>
-                        <button onClick={() => setHaloConfig(p => ({ ...p, substrate: 'tertiary' }))} className={`flex-1 py-2 px-3 rounded text-sm font-bold border-2 ${haloConfig.substrate === 'tertiary' ? 'border-brand-primary bg-brand-primary/10 text-brand-primary' : 'border-slate-200 text-slate-500'}`}>Tertiary (3°)</button>
+                        <button onClick={() => setHaloConfig(p => ({ ...p, substrate: 'primary' }))} className={`flex - 1 py - 2 px - 3 rounded text - sm font - bold border - 2 ${haloConfig.substrate === 'primary' ? 'border-brand-primary bg-brand-primary/10 text-brand-primary' : 'border-slate-200 text-slate-500'} `}>Primary (1°)</button>
+                        <button onClick={() => setHaloConfig(p => ({ ...p, substrate: 'tertiary' }))} className={`flex - 1 py - 2 px - 3 rounded text - sm font - bold border - 2 ${haloConfig.substrate === 'tertiary' ? 'border-brand-primary bg-brand-primary/10 text-brand-primary' : 'border-slate-200 text-slate-500'} `}>Tertiary (3°)</button>
                       </div>
                     </div>
                     <div>
                       <label className="text-xs font-bold text-slate-500 uppercase block mb-2">Mechanism</label>
                       <div className="flex gap-2">
-                        <button onClick={() => setHaloConfig(p => ({ ...p, mechanism: 'SN2' }))} className={`flex-1 py-2 px-3 rounded text-sm font-bold border-2 ${haloConfig.mechanism === 'SN2' ? 'border-brand-primary bg-brand-primary/10 text-brand-primary' : 'border-slate-200 text-slate-500'}`}>SN2</button>
-                        <button onClick={() => setHaloConfig(p => ({ ...p, mechanism: 'SN1' }))} className={`flex-1 py-2 px-3 rounded text-sm font-bold border-2 ${haloConfig.mechanism === 'SN1' ? 'border-brand-primary bg-brand-primary/10 text-brand-primary' : 'border-slate-200 text-slate-500'}`}>SN1</button>
+                        <button onClick={() => setHaloConfig(p => ({ ...p, mechanism: 'SN2' }))} className={`flex - 1 py - 2 px - 3 rounded text - sm font - bold border - 2 ${haloConfig.mechanism === 'SN2' ? 'border-brand-primary bg-brand-primary/10 text-brand-primary' : 'border-slate-200 text-slate-500'} `}>SN2</button>
+                        <button onClick={() => setHaloConfig(p => ({ ...p, mechanism: 'SN1' }))} className={`flex - 1 py - 2 px - 3 rounded text - sm font - bold border - 2 ${haloConfig.mechanism === 'SN1' ? 'border-brand-primary bg-brand-primary/10 text-brand-primary' : 'border-slate-200 text-slate-500'} `}>SN1</button>
                       </div>
                     </div>
                   </div>
@@ -1875,14 +1299,14 @@ const App: React.FC = () => {
                   <div className="flex gap-4 justify-center">
                     <button
                       onClick={() => setPolyMode('synthesis')}
-                      className={`px-6 py-3 rounded-xl font-bold transition-all border-2 flex flex-col items-center gap-1 ${polyMode === 'synthesis' ? 'border-brand-primary bg-white text-brand-primary shadow-lg' : 'border-slate-200 text-slate-400 hover:bg-white'}`}
+                      className={`px - 6 py - 3 rounded - xl font - bold transition - all border - 2 flex flex - col items - center gap - 1 ${polyMode === 'synthesis' ? 'border-brand-primary bg-white text-brand-primary shadow-lg' : 'border-slate-200 text-slate-400 hover:bg-white'} `}
                     >
                       <span className="text-sm">Part I</span>
                       <span>Synthesis (Catalysis)</span>
                     </button>
                     <button
                       onClick={() => setPolyMode('conductivity')}
-                      className={`px-6 py-3 rounded-xl font-bold transition-all border-2 flex flex-col items-center gap-1 ${polyMode === 'conductivity' ? 'border-brand-primary bg-white text-brand-primary shadow-lg' : 'border-slate-200 text-slate-400 hover:bg-white'}`}
+                      className={`px - 6 py - 3 rounded - xl font - bold transition - all border - 2 flex flex - col items - center gap - 1 ${polyMode === 'conductivity' ? 'border-brand-primary bg-white text-brand-primary shadow-lg' : 'border-slate-200 text-slate-400 hover:bg-white'} `}
                     >
                       <span className="text-sm">Part II</span>
                       <span>Conductivity</span>
@@ -1932,14 +1356,14 @@ const App: React.FC = () => {
                   <div className="flex gap-4 justify-center">
                     <button
                       onClick={() => setSolidClassConfig(p => ({ ...p, type: 'ionic' }))}
-                      className={`px-6 py-3 rounded-xl font-bold transition-all border-2 flex flex-col items-center gap-1 ${solidClassConfig.type === 'ionic' ? 'border-brand-primary bg-white text-brand-primary shadow-lg' : 'border-slate-200 text-slate-400 hover:bg-white'}`}
+                      className={`px - 6 py - 3 rounded - xl font - bold transition - all border - 2 flex flex - col items - center gap - 1 ${solidClassConfig.type === 'ionic' ? 'border-brand-primary bg-white text-brand-primary shadow-lg' : 'border-slate-200 text-slate-400 hover:bg-white'} `}
                     >
                       <span className="text-sm">Calculator</span>
                       <span>Punnett Square (9:3:3:1)</span>
                     </button>
                     <button
                       onClick={() => setSolidClassConfig(p => ({ ...p, type: 'metallic' }))}
-                      className={`px-6 py-3 rounded-xl font-bold transition-all border-2 flex flex-col items-center gap-1 ${solidClassConfig.type === 'metallic' ? 'border-brand-primary bg-white text-brand-primary shadow-lg' : 'border-slate-200 text-slate-400 hover:bg-white'}`}
+                      className={`px - 6 py - 3 rounded - xl font - bold transition - all border - 2 flex flex - col items - center gap - 1 ${solidClassConfig.type === 'metallic' ? 'border-brand-primary bg-white text-brand-primary shadow-lg' : 'border-slate-200 text-slate-400 hover:bg-white'} `}
                     >
                       <span className="text-sm">Mechanism</span>
                       <span>Meiosis Animation</span>
@@ -2001,14 +1425,14 @@ const App: React.FC = () => {
                   <div className="flex gap-4 justify-center">
                     <button
                       onClick={() => setPolyMode('synthesis')}
-                      className={`px-6 py-3 rounded-xl font-bold transition-all border-2 flex flex-col items-center gap-1 ${polyMode === 'synthesis' ? 'border-brand-primary bg-white text-brand-primary shadow-lg' : 'border-slate-200 text-slate-400 hover:bg-white'}`}
+                      className={`px - 6 py - 3 rounded - xl font - bold transition - all border - 2 flex flex - col items - center gap - 1 ${polyMode === 'synthesis' ? 'border-brand-primary bg-white text-brand-primary shadow-lg' : 'border-slate-200 text-slate-400 hover:bg-white'} `}
                     >
                       <span className="text-sm">Animation</span>
                       <span>Crossing Over</span>
                     </button>
                     <button
                       onClick={() => setPolyMode('conductivity')}
-                      className={`px-6 py-3 rounded-xl font-bold transition-all border-2 flex flex-col items-center gap-1 ${polyMode === 'conductivity' ? 'border-brand-primary bg-white text-brand-primary shadow-lg' : 'border-slate-200 text-slate-400 hover:bg-white'}`}
+                      className={`px - 6 py - 3 rounded - xl font - bold transition - all border - 2 flex flex - col items - center gap - 1 ${polyMode === 'conductivity' ? 'border-brand-primary bg-white text-brand-primary shadow-lg' : 'border-slate-200 text-slate-400 hover:bg-white'} `}
                     >
                       <span className="text-sm">Interactive Map</span>
                       <span>Distance vs Recombination</span>
@@ -2055,8 +1479,8 @@ const App: React.FC = () => {
                   <TranscriptionCanvas mode={polyMode === 'synthesis' ? 'prokaryote' : 'eukaryote'} />
                 </div>
                 <div className="p-4 bg-slate-50 border-t border-slate-200 flex justify-center gap-4">
-                  <button onClick={() => setPolyMode('synthesis')} className={`px-4 py-2 rounded-lg font-bold ${polyMode === 'synthesis' ? 'bg-brand-primary text-white' : 'bg-white text-slate-500 shadow-sm border'}`}>Prokaryote</button>
-                  <button onClick={() => setPolyMode('conductivity')} className={`px-4 py-2 rounded-lg font-bold ${polyMode === 'conductivity' ? 'bg-brand-primary text-white' : 'bg-white text-slate-500 shadow-sm border'}`}>Eukaryote</button>
+                  <button onClick={() => setPolyMode('synthesis')} className={`px - 4 py - 2 rounded - lg font - bold ${polyMode === 'synthesis' ? 'bg-brand-primary text-white' : 'bg-white text-slate-500 shadow-sm border'} `}>Prokaryote</button>
+                  <button onClick={() => setPolyMode('conductivity')} className={`px - 4 py - 2 rounded - lg font - bold ${polyMode === 'conductivity' ? 'bg-brand-primary text-white' : 'bg-white text-slate-500 shadow-sm border'} `}>Eukaryote</button>
                 </div>
               </div>
             </div>
@@ -2311,7 +1735,7 @@ const App: React.FC = () => {
                     <button
                       key={d}
                       onClick={() => setOpticsDevice(d as any)}
-                      className={`px-4 py-2 rounded-lg font-bold capitalize ${opticsDevice === d ? 'bg-brand-primary text-white shadow' : 'bg-white border text-slate-500'}`}
+                      className={`px - 4 py - 2 rounded - lg font - bold capitalize ${opticsDevice === d ? 'bg-brand-primary text-white shadow' : 'bg-white border text-slate-500'} `}
                     >
                       {d.replace('_', ' ')}
                     </button>
@@ -2491,107 +1915,26 @@ const App: React.FC = () => {
 
         {/* 9. MECHANICAL PROPERTIES OF SOLIDS (CLASS 11) */}
         {currentScreen === 'TOPIC_VIEW' && activeTopicId === 'mechanical-properties-solids' && (
-          <div className="p-6 grid grid-cols-1 lg:grid-cols-12 gap-8 animate-in fade-in duration-500">
-            <div className="lg:col-span-8 flex flex-col gap-6" id="tour-simulation">
-              <div className="flex items-center gap-2 mb-2 text-brand-primary/60 hover:text-brand-primary cursor-pointer w-fit" onClick={goHome}>
-                <ArrowLeft size={18} /> <span className="text-sm font-medium">Back to Curriculum</span>
-              </div>
-              <div className={isSimulationFullscreen ? "fixed inset-0 z-[100] bg-slate-900 flex flex-col overflow-y-auto" : "bg-white rounded-2xl shadow-md border border-slate-200 overflow-hidden"}>
-                <div className="bg-slate-900 px-6 py-3 flex items-center justify-between border-b border-slate-700">
-                  <h3 className="font-display font-bold text-white flex items-center gap-2">
-                    <Activity size={18} className="text-brand-secondary" /> Virtual Tensile Test Lab
-                  </h3>
-                  <button
-                    onClick={() => setIsSimulationFullscreen(!isSimulationFullscreen)}
-                    className="p-1.5 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors cursor-pointer ml-auto"
-                    title={isSimulationFullscreen ? "Minimize" : "Maximize"}
-                  >
-                    {isSimulationFullscreen ? <Minimize2 size={20} /> : <Maximize2 size={20} />}
-                  </button>
-                </div>
-                <div className="relative min-h-[700px] bg-slate-50">
-                  <TensileTestCanvas />
-                </div>
-              </div>
-            </div>
-            <div className="lg:col-span-4 relative">
-              <div className="sticky top-24 h-[calc(100vh-8rem)] overflow-y-auto pr-2 custom-scrollbar">
-                <div className="bg-white p-8 rounded-2xl shadow-sm border border-slate-200">
-                  <TextbookContent topic={currentTopics.find(t => t.id === activeTopicId)} />
-                </div>
-              </div>
-            </div>
-          </div>
+          <TensileTestCanvas
+            topic={currentTopics.find(t => t.id === activeTopicId)!}
+            onExit={goHome}
+          />
         )}
 
         {/* 10. HYDROGEN SPECTRUM (CLASS 11) */}
         {currentScreen === 'TOPIC_VIEW' && activeTopicId === 'hydrogen-spectrum' && (
-          <div className="p-6 grid grid-cols-1 lg:grid-cols-12 gap-8 animate-in fade-in duration-500">
-            <div className="lg:col-span-8 flex flex-col gap-6" id="tour-simulation">
-              <div className="flex items-center gap-2 mb-2 text-brand-primary/60 hover:text-brand-primary cursor-pointer w-fit" onClick={goHome}>
-                <ArrowLeft size={18} /> <span className="text-sm font-medium">Back to Curriculum</span>
-              </div>
-              <div className={isSimulationFullscreen ? "fixed inset-0 z-[100] bg-slate-900 flex flex-col overflow-y-auto" : "bg-white rounded-2xl shadow-md border border-slate-200 overflow-hidden"}>
-                <div className="bg-slate-900 px-6 py-3 flex items-center justify-between border-b border-slate-700">
-                  <h3 className="font-display font-bold text-white flex items-center gap-2">
-                    <Activity size={18} className="text-brand-secondary" /> Hydrogen Spectrum Lab
-                  </h3>
-                  <button
-                    onClick={() => setIsSimulationFullscreen(!isSimulationFullscreen)}
-                    className="p-1.5 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors cursor-pointer ml-auto"
-                    title={isSimulationFullscreen ? "Minimize" : "Maximize"}
-                  >
-                    {isSimulationFullscreen ? <Minimize2 size={20} /> : <Maximize2 size={20} />}
-                  </button>
-                </div>
-                <div className="relative min-h-[700px] bg-slate-900">
-                  <HydrogenSpectrumLab />
-                </div>
-              </div>
-            </div>
-            <div className="lg:col-span-4 relative">
-              <div className="sticky top-24 h-[calc(100vh-8rem)] overflow-y-auto pr-2 custom-scrollbar">
-                <div className="bg-white p-8 rounded-2xl shadow-sm border border-slate-200">
-                  <TextbookContent topic={currentTopics.find(t => t.id === activeTopicId)} />
-                </div>
-              </div>
-            </div>
-          </div>
+          <HydrogenSpectrumLab
+            topic={currentTopics.find(t => t.id === activeTopicId)!}
+            onExit={goHome}
+          />
         )}
 
         {/* 11. SHAPES OF ATOMIC ORBITALS (CLASS 11) */}
         {currentScreen === 'TOPIC_VIEW' && activeTopicId === 'atomic-orbitals' && (
-          <div className="p-6 grid grid-cols-1 lg:grid-cols-12 gap-8 animate-in fade-in duration-500">
-            <div className="lg:col-span-8 flex flex-col gap-6" id="tour-simulation">
-              <div className="flex items-center gap-2 mb-2 text-brand-primary/60 hover:text-brand-primary cursor-pointer w-fit" onClick={goHome}>
-                <ArrowLeft size={18} /> <span className="text-sm font-medium">Back to Curriculum</span>
-              </div>
-              <div className={isSimulationFullscreen ? "fixed inset-0 z-[100] bg-slate-900 flex flex-col overflow-y-auto" : "bg-white rounded-2xl shadow-md border border-slate-200 overflow-hidden"}>
-                <div className="bg-slate-900 px-6 py-3 flex items-center justify-between border-b border-slate-700">
-                  <h3 className="font-display font-bold text-white flex items-center gap-2">
-                    <Activity size={18} className="text-brand-secondary" /> Shapes of Atomic Orbitals Hologram
-                  </h3>
-                  <button
-                    onClick={() => setIsSimulationFullscreen(!isSimulationFullscreen)}
-                    className="p-1.5 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors cursor-pointer ml-auto"
-                    title={isSimulationFullscreen ? "Minimize" : "Maximize"}
-                  >
-                    {isSimulationFullscreen ? <Minimize2 size={20} /> : <Maximize2 size={20} />}
-                  </button>
-                </div>
-                <div className="relative min-h-[700px] bg-slate-900 flex flex-col">
-                  <AtomicOrbitalsLab />
-                </div>
-              </div>
-            </div>
-            <div className="lg:col-span-4 relative">
-              <div className="sticky top-24 h-[calc(100vh-8rem)] overflow-y-auto pr-2 custom-scrollbar">
-                <div className="bg-white p-8 rounded-2xl shadow-sm border border-slate-200">
-                  <TextbookContent topic={currentTopics.find(t => t.id === activeTopicId)} />
-                </div>
-              </div>
-            </div>
-          </div>
+          <AtomicOrbitalsLab
+            topic={currentTopics.find(t => t.id === activeTopicId)!}
+            onExit={goHome}
+          />
         )}
 
         {/* ================== ASSISTANT ================== */}

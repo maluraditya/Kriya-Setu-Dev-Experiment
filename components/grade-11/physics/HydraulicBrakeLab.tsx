@@ -1,17 +1,21 @@
 import React, { useRef, useEffect, useState, useCallback } from 'react';
+import TopicLayoutContainer from '../../TopicLayoutContainer';
 
 interface HydraulicBrakeLabProps {
-    force1: number;
-    area1: number;
-    area2: number;
-    fluidType: 'liquid' | 'gas';
-    isApplyingText: boolean;
+    topic: any;
+    onExit: () => void;
 }
 
-const HydraulicBrakeLab: React.FC<HydraulicBrakeLabProps> = ({ force1, area1, area2, fluidType }) => {
+const HydraulicBrakeLab: React.FC<HydraulicBrakeLabProps> = ({ topic, onExit }) => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const animRef = useRef<number>(0);
     const [pedalDown, setPedalDown] = useState(false);
+
+    // Internal state moved from App.tsx
+    const [force1, setForce1] = useState(100);
+    const [area1, setArea1] = useState(10);
+    const [area2, setArea2] = useState(100);
+    const [fluidType, setFluidType] = useState<'liquid' | 'gas'>('liquid');
 
     // Mutable refs for animation state
     const pedalRef = useRef(false);
@@ -385,17 +389,89 @@ const HydraulicBrakeLab: React.FC<HydraulicBrakeLabProps> = ({ force1, area1, ar
         };
     }, [draw]);
 
+    const simulationCombo = (
+        <div className="w-full h-full relative bg-slate-900 rounded-2xl overflow-hidden shadow-xl border border-slate-700">
+            <canvas
+                ref={canvasRef}
+                width={800}
+                height={500}
+                className="w-full h-full cursor-pointer block"
+                onMouseDown={() => setPedalDown(true)}
+                onMouseUp={() => setPedalDown(false)}
+                onMouseLeave={() => setPedalDown(false)}
+                onTouchStart={() => setPedalDown(true)}
+                onTouchEnd={() => setPedalDown(false)}
+            />
+        </div>
+    );
+
+    const controlsCombo = (
+        <div className="flex flex-col gap-6 w-full text-slate-700">
+            <div className="grid md:grid-cols-2 gap-6">
+                <div className="space-y-4">
+                    <div className="space-y-2 p-4 bg-white rounded-xl border border-slate-200 shadow-sm">
+                        <label className="text-xs font-bold text-slate-500 uppercase flex justify-between">
+                            <span>Master Piston Area (A₁)</span> <span className="text-brand-primary">{area1} cm²</span>
+                        </label>
+                        <input
+                            type="range" min="5" max="50" step="5"
+                            value={area1}
+                            onChange={(e) => setArea1(Number(e.target.value))}
+                            className="w-full accent-brand-secondary h-2 bg-slate-200 rounded-lg cursor-pointer"
+                        />
+                    </div>
+                    <div className="space-y-2 p-4 bg-white rounded-xl border border-slate-200 shadow-sm">
+                        <label className="text-xs font-bold text-slate-500 uppercase flex justify-between">
+                            <span>Wheel Piston Area (A₂)</span> <span className="text-brand-primary">{area2} cm²</span>
+                        </label>
+                        <input
+                            type="range" min="50" max="500" step="10"
+                            value={area2}
+                            onChange={(e) => setArea2(Number(e.target.value))}
+                            className="w-full accent-blue-500 h-2 bg-slate-200 rounded-lg cursor-pointer"
+                        />
+                    </div>
+                </div>
+                <div className="space-y-4">
+                    <div className="space-y-2 p-4 bg-white rounded-xl border border-slate-200 shadow-sm">
+                        <label className="text-xs font-bold text-slate-500 uppercase flex justify-between">
+                            <span>Input Force (Foot Pedal)</span> <span className="text-amber-500">{force1} N</span>
+                        </label>
+                        <input
+                            type="range" min="10" max="500" step="10"
+                            value={force1}
+                            onChange={(e) => setForce1(Number(e.target.value))}
+                            className="w-full accent-amber-500 h-2 bg-slate-200 rounded-lg cursor-pointer"
+                        />
+                    </div>
+                    <div className="space-y-2 pt-2 px-2">
+                        <label className="text-xs font-bold text-slate-500 uppercase">Fluid Type</label>
+                        <div className="flex bg-slate-200 p-1 rounded-lg">
+                            <button
+                                className={`flex-1 text-sm py-1 rounded-md font-bold transition-colors ${fluidType === 'liquid' ? 'bg-white text-emerald-600 shadow' : 'text-slate-500 hover:bg-white/50'}`}
+                                onClick={() => setFluidType('liquid')}
+                            >
+                                Liquid (Incompressible)
+                            </button>
+                            <button
+                                className={`flex-1 text-sm py-1 rounded-md font-bold transition-colors ${fluidType === 'gas' ? 'bg-white text-yellow-600 shadow' : 'text-slate-500 hover:bg-white/50'}`}
+                                onClick={() => setFluidType('gas')}
+                            >
+                                Gas (Compressible)
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+
     return (
-        <canvas
-            ref={canvasRef}
-            width={800}
-            height={500}
-            className="w-full h-full cursor-pointer"
-            onMouseDown={() => setPedalDown(true)}
-            onMouseUp={() => setPedalDown(false)}
-            onMouseLeave={() => setPedalDown(false)}
-            onTouchStart={() => setPedalDown(true)}
-            onTouchEnd={() => setPedalDown(false)}
+        <TopicLayoutContainer
+            topic={topic}
+            onExit={onExit}
+            SimulationComponent={simulationCombo}
+            ControlsComponent={controlsCombo}
         />
     );
 };

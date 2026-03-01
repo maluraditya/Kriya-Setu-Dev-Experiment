@@ -1,4 +1,10 @@
 import React, { useRef, useEffect, useCallback } from 'react';
+import TopicLayoutContainer from '../../TopicLayoutContainer';
+
+interface EquipartitionLabProps {
+    topic: any;
+    onExit: () => void;
+}
 
 // ==================== GAS TYPE DATA ====================
 interface GasType {
@@ -17,7 +23,7 @@ const GAS_TYPES: GasType[] = [
 
 const R = 8.314; // J/(mol·K)
 
-const EquipartitionLab: React.FC = () => {
+const EquipartitionLab: React.FC<EquipartitionLabProps> = ({ topic, onExit }) => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const animRef = useRef(0);
     const stateRef = useRef({
@@ -434,11 +440,21 @@ const EquipartitionLab: React.FC = () => {
 
     const handleMouseUp = useCallback(() => { draggingRef.current = ''; }, []);
 
+    const simulationCombo = (
+        <div className="w-full h-full relative bg-slate-900 overflow-hidden shadow-2xl rounded-2xl flex items-center justify-center">
+            <canvas ref={canvasRef} width={800} height={480}
+                className="w-full h-full cursor-pointer max-w-[1000px]"
+                onMouseDown={handleMouseDown} onMouseMove={handleMouseMove}
+                onMouseUp={handleMouseUp} onMouseLeave={handleMouseUp}
+            />
+        </div>
+    );
+
     return (
-        <canvas ref={canvasRef} width={800} height={480}
-            className="w-full h-full cursor-pointer"
-            onMouseDown={handleMouseDown} onMouseMove={handleMouseMove}
-            onMouseUp={handleMouseUp} onMouseLeave={handleMouseUp}
+        <TopicLayoutContainer
+            topic={topic}
+            onExit={onExit}
+            SimulationComponent={simulationCombo}
         />
     );
 };

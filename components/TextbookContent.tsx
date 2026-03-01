@@ -3,9 +3,10 @@ import { Topic } from '../types';
 
 interface TextbookContentProps {
   topic: Topic | undefined;
+  layout?: 'legacy' | 'unified';
 }
 
-const TextbookContent: React.FC<TextbookContentProps> = ({ topic }) => {
+const TextbookContent: React.FC<TextbookContentProps> = ({ topic, layout = 'legacy' }) => {
 
   const VideoSection = () => (
     <div className="mt-12 mb-12" id="tour-videos">

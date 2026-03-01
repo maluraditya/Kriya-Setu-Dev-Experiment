@@ -1,16 +1,17 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { Play, Pause, RotateCcw } from 'lucide-react';
+import TopicLayoutContainer from '../../TopicLayoutContainer';
 
 interface FluidDynamicsLabProps {
-    flowRate: number; // Volume flux
-    constrictionArea: number; // Cross-sectional area at the narrowest point
-    onFlowRateChange: (val: number) => void;
-    onAreaChange: (val: number) => void;
+    topic: any;
+    onExit: () => void;
 }
 
-const FluidDynamicsLab: React.FC<FluidDynamicsLabProps> = ({ flowRate, constrictionArea, onFlowRateChange, onAreaChange }) => {
+const FluidDynamicsLab: React.FC<FluidDynamicsLabProps> = ({ topic, onExit }) => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const [isPlaying, setIsPlaying] = useState(true);
+    const [flowRate, setFlowRate] = useState(50);
+    const [constrictionArea, setConstrictionArea] = useState(100);
 
     // Constants
     const A1 = 100; // Fixed wide area 
@@ -210,46 +211,37 @@ const FluidDynamicsLab: React.FC<FluidDynamicsLabProps> = ({ flowRate, constrict
     const maxKE = 0.5 * rho * (500 / 20) * (500 / 20); // max flow rate, min area
     const maxP = 300000;
 
-    return (
-        <div className="flex flex-col h-full bg-slate-50 gap-4 p-4">
-
-            {/* Visual Apparatus Area */}
-            <div className="flex-1 relative bg-white border border-slate-200 rounded-xl overflow-hidden shadow-inner flex items-center justify-center min-h-[300px]">
+    const simulationCombo = (
+        <div className="w-full h-full relative bg-slate-100 rounded-2xl overflow-hidden border border-slate-300 shadow-inner flex flex-col">
+            <div className="flex-1 relative flex items-center justify-center min-h-[300px]">
                 <canvas
                     ref={canvasRef}
                     width={800}
                     height={400}
-                    className="w-full h-full object-contain"
+                    className="w-full h-full object-contain mix-blend-multiply"
                 />
 
-                {/* Play/Pause Overlay */}
                 <div className="absolute top-4 right-4 flex gap-2">
                     <button
                         onClick={() => setIsPlaying(!isPlaying)}
-                        className="bg-white p-2 rounded-full shadow hover:bg-slate-100 text-brand-primary"
+                        className="bg-white p-2 text-slate-700 rounded-lg shadow-sm hover:bg-slate-50 transition-colors border border-slate-200"
                     >
                         {isPlaying ? <Pause size={20} /> : <Play size={20} />}
                     </button>
                 </div>
 
-                {/* Labels Overlay */}
-                <div className="absolute top-[280px] left-[150px] -translate-x-1/2 text-center text-xs font-bold text-slate-500 bg-white/80 px-2 rounded">
-                    Wide Section (A₁) <br /> Low Velocity
+                <div className="absolute bottom-[20px] left-[150px] -translate-x-1/2 text-center text-[10px] font-bold text-slate-500 bg-white/90 px-2 py-1 rounded shadow-sm border border-slate-200">
+                    Wide Section (A₁)<br />Low Velocity
                 </div>
-                <div className="absolute top-[280px] left-[400px] -translate-x-1/2 text-center text-xs font-bold text-slate-500 bg-white/80 px-2 rounded">
-                    Constriction (A₂) <br /> High Velocity
+                <div className="absolute bottom-[20px] left-[400px] -translate-x-1/2 text-center text-[10px] font-bold text-slate-500 bg-white/90 px-2 py-1 rounded shadow-sm border border-slate-200">
+                    Constriction (A₂)<br />High Velocity
                 </div>
-
             </div>
 
-            {/* Real-time Data & Charts Area */}
-            <div className="h-48 flex gap-4">
-
-                {/* Chart 1: Wide Section */}
+            <div className="h-48 flex gap-4 p-4 bg-slate-200 border-t border-slate-300">
                 <div className="flex-1 bg-white border border-slate-200 rounded-xl p-4 flex flex-col items-center shadow-sm">
                     <h4 className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-4">Wide Section (A₁)</h4>
                     <div className="flex-1 w-full flex items-end justify-center gap-6">
-
                         <div className="flex flex-col items-center w-12 gap-2">
                             <span className="text-[10px] text-slate-400 font-mono">{(KE1 / 1000).toFixed(1)}k</span>
                             <div className="w-8 bg-slate-100 rounded-t-md relative h-28 flex items-end">
@@ -258,9 +250,8 @@ const FluidDynamicsLab: React.FC<FluidDynamicsLabProps> = ({ flowRate, constrict
                                     style={{ height: `${Math.max(5, (KE1 / maxKE) * 100)}%` }}
                                 />
                             </div>
-                            <span className="text-xs font-bold text-brand-dark">KE</span>
+                            <span className="text-xs font-bold text-slate-700">KE</span>
                         </div>
-
                         <div className="flex flex-col items-center w-12 gap-2">
                             <span className="text-[10px] text-slate-400 font-mono">{(P1_display / 1000).toFixed(0)}k</span>
                             <div className="w-8 bg-slate-100 rounded-t-md relative h-28 flex items-end">
@@ -269,17 +260,14 @@ const FluidDynamicsLab: React.FC<FluidDynamicsLabProps> = ({ flowRate, constrict
                                     style={{ height: `${(P1_display / maxP) * 100}%` }}
                                 />
                             </div>
-                            <span className="text-xs font-bold text-brand-dark">Press</span>
+                            <span className="text-xs font-bold text-slate-700">Press</span>
                         </div>
-
                     </div>
                 </div>
 
-                {/* Chart 2: Constriction */}
                 <div className="flex-1 bg-white border border-slate-200 rounded-xl p-4 flex flex-col items-center shadow-sm border-t-4 border-t-brand-primary">
                     <h4 className="text-xs font-bold text-brand-primary uppercase tracking-widest mb-4">Constriction (A₂)</h4>
                     <div className="flex-1 w-full flex items-end justify-center gap-6">
-
                         <div className="flex flex-col items-center w-12 gap-2">
                             <span className="text-[10px] text-orange-500 font-mono font-bold">{(KE2 / 1000).toFixed(1)}k</span>
                             <div className="w-8 bg-slate-100 rounded-t-md relative h-28 flex items-end">
@@ -287,13 +275,11 @@ const FluidDynamicsLab: React.FC<FluidDynamicsLabProps> = ({ flowRate, constrict
                                     className="w-full bg-amber-400 rounded-t-md transition-all duration-300 relative overflow-hidden"
                                     style={{ height: `${Math.max(5, (KE2 / maxKE) * 100)}%` }}
                                 >
-                                    {/* Shimmer effect for high KE */}
                                     {KE2 > 50000 && <div className="absolute inset-0 bg-white/30 animate-pulse"></div>}
                                 </div>
                             </div>
                             <span className="text-xs font-bold text-amber-600">KE</span>
                         </div>
-
                         <div className="flex flex-col items-center w-12 gap-2">
                             <span className="text-[10px] text-blue-500 font-mono font-bold">{(P2_display / 1000).toFixed(0)}k</span>
                             <div className="w-8 bg-slate-100 rounded-t-md relative h-28 flex items-end">
@@ -304,13 +290,54 @@ const FluidDynamicsLab: React.FC<FluidDynamicsLabProps> = ({ flowRate, constrict
                             </div>
                             <span className="text-xs font-bold text-blue-600">Press</span>
                         </div>
-
                     </div>
                 </div>
-
             </div>
-
         </div>
+    );
+
+    const controlsCombo = (
+        <div className="flex flex-col gap-6 w-full text-slate-700">
+            <div className="grid md:grid-cols-2 gap-6">
+                <div className="space-y-4 p-5 bg-white rounded-xl border border-slate-200 shadow-sm">
+                    <label className="text-sm font-bold text-slate-700 uppercase flex justify-between items-center">
+                        <span>Flow Rate (Volume Flux)</span>
+                        <span className="text-brand-primary bg-brand-50 text-brand-700 px-3 py-1 rounded-lg font-mono">{flowRate} units/s</span>
+                    </label>
+                    <input
+                        type="range" min="10" max="500" step="10"
+                        value={flowRate}
+                        onChange={(e) => setFlowRate(Number(e.target.value))}
+                        className="w-full accent-brand-secondary h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer"
+                    />
+                </div>
+                <div className="space-y-4 p-5 bg-white rounded-xl border border-slate-200 shadow-sm">
+                    <label className="text-sm font-bold text-slate-700 uppercase flex justify-between items-center">
+                        <span>Constriction Area (A₂)</span>
+                        <span className="text-brand-primary bg-brand-50 text-brand-700 px-3 py-1 rounded-lg font-mono">{constrictionArea} units²</span>
+                    </label>
+                    <input
+                        type="range" min="20" max="100" step="5"
+                        value={constrictionArea}
+                        onChange={(e) => setConstrictionArea(Number(e.target.value))}
+                        className="w-full accent-blue-500 h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer"
+                    />
+                    <div className="flex justify-between text-[10px] text-slate-400 font-bold uppercase mt-1">
+                        <span>Narrow</span>
+                        <span>Wide (A₁ = 100)</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+
+    return (
+        <TopicLayoutContainer
+            topic={topic}
+            onExit={onExit}
+            SimulationComponent={simulationCombo}
+            ControlsComponent={controlsCombo}
+        />
     );
 };
 

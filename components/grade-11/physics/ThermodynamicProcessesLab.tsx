@@ -1,4 +1,10 @@
 import React, { useRef, useEffect, useState, useCallback } from 'react';
+import TopicLayoutContainer from '../../TopicLayoutContainer';
+
+interface ThermodynamicProcessesLabProps {
+    topic: any;
+    onExit: () => void;
+}
 
 // ==================== PHYSICS CONSTANTS ====================
 const R = 8.314; // J/(mol·K)
@@ -41,7 +47,7 @@ const PROCESS_INFO: Record<string, { title: string; color: string; formula: stri
 };
 
 // ==================== COMPONENT ====================
-const ThermodynamicProcessesLab: React.FC = () => {
+const ThermodynamicProcessesLab: React.FC<ThermodynamicProcessesLabProps> = ({ topic, onExit }) => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const animRef = useRef<number>(0);
 
@@ -536,16 +542,26 @@ const ThermodynamicProcessesLab: React.FC = () => {
         }
     }, []);
 
+    const simulationCombo = (
+        <div className="w-full h-full relative bg-slate-900 overflow-hidden shadow-2xl rounded-2xl flex items-center justify-center">
+            <canvas
+                ref={canvasRef}
+                width={800}
+                height={480}
+                className="w-full h-full cursor-pointer max-w-[1000px]"
+                onMouseDown={handleMouseDown}
+                onMouseMove={handleMouseMove}
+                onMouseUp={handleMouseUp}
+                onMouseLeave={handleMouseUp}
+            />
+        </div>
+    );
+
     return (
-        <canvas
-            ref={canvasRef}
-            width={800}
-            height={480}
-            className="w-full h-full cursor-pointer"
-            onMouseDown={handleMouseDown}
-            onMouseMove={handleMouseMove}
-            onMouseUp={handleMouseUp}
-            onMouseLeave={handleMouseUp}
+        <TopicLayoutContainer
+            topic={topic}
+            onExit={onExit}
+            SimulationComponent={simulationCombo}
         />
     );
 };
