@@ -27,6 +27,7 @@ import LeChatelierLab from './components/grade-11/chemistry/LeChatelierLab';
 import QualitativeAnalysisCanvas from './components/grade-11/chemistry/QualitativeAnalysisCanvas';
 import QuantitativeAnalysisCanvas from './components/grade-11/chemistry/QuantitativeAnalysisCanvas';
 import EthaneConformationsCanvas from './components/grade-11/chemistry/EthaneConformationsCanvas';
+import GeometricalIsomerismCanvas from './components/grade-11/chemistry/GeometricalIsomerismCanvas';
 
 // Grade 12 - Physics
 import ElectromagneticInductionCanvas from './components/grade-12/physics/ElectromagneticInductionCanvas';
@@ -366,6 +367,12 @@ const App: React.FC = () => {
         Topic: Conformations of Ethane (NCERT Class 11, Unit 9 Hydrocarbons)
         Concept: Free rotation around C-C σ bond produces infinite conformations. Staggered (60°/180°/300°) = minimum energy, maximum stability. Eclipsed (0°/120°/240°) = maximum torsional strain (12.5 kJ/mol), minimum stability. Energy follows E = (12.5/2)(1−cos3θ). Newman projection = head-on view down C-C axis. Sawhorse = angled view.
         Simulation: Interactive dihedral angle slider (0°-360°), real-time Newman/Sawhorse/3D projections, live sinusoidal energy graph, electron cloud toggle for visualizing torsional strain.
+      `;
+    } else if (activeTopicId === 'stereoisomerism-geometrical') {
+      return `
+        Topic: Geometrical Isomerism / Cis-Trans Isomerism (NCERT Class 11, Unit 8 & 9)
+        Concept: Restricted rotation around C=C double bond (π bond prevents rotation). Cis = identical groups on same side (polar, μ>0, higher BP). Trans = identical groups on opposite sides (non-polar, μ=0, higher MP due to crystal packing). Physical properties differ due to dipole moment vector addition/cancellation.
+        Simulation: 4-phase simulation — Phase1: free rotation in alkanes (single σ bond). Phase2: restricted rotation in alkenes (π bond barrier). Phase3: cis-isomer with dipole vectors adding. Phase4: trans-isomer with dipole vectors cancelling. Property dashboard shows real dipole, BP, MP data.
       `;
     }
     return "User is on the curriculum dashboard.";
@@ -1172,6 +1179,41 @@ const App: React.FC = () => {
                 </div>
                 <div className={`relative bg-slate-900 flex flex-col ${isSimulationFullscreen ? 'flex-1' : 'h-[550px]'}`}>
                   <EthaneConformationsCanvas />
+                </div>
+              </div>
+            </div>
+            <div className="lg:col-span-5 relative">
+              <div className="sticky top-24 h-[calc(100vh-8rem)] overflow-y-auto pr-2 custom-scrollbar">
+                <div className="bg-white p-8 rounded-2xl shadow-sm border border-slate-200 min-h-full">
+                  <TextbookContent topic={currentTopics.find(t => t.id === activeTopicId)} />
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* ================== GEOMETRICAL ISOMERISM ================== */}
+        {currentScreen === 'TOPIC_VIEW' && activeTopicId === 'stereoisomerism-geometrical' && (
+          <div className="p-6 grid grid-cols-1 lg:grid-cols-12 gap-8 animate-in fade-in duration-500">
+            <div className="lg:col-span-7 flex flex-col gap-6" id="tour-simulation">
+              <div className="flex items-center gap-2 mb-2 text-brand-primary/60 hover:text-brand-primary cursor-pointer w-fit" onClick={goHome}>
+                <ArrowLeft size={18} /> <span className="text-sm font-medium">Back to Curriculum</span>
+              </div>
+              <div className={isSimulationFullscreen ? "fixed inset-0 z-[100] bg-slate-900 flex flex-col" : "bg-white rounded-2xl shadow-md border border-slate-200 overflow-hidden"}>
+                <div className="bg-slate-900 px-6 py-3 flex items-center justify-between border-b border-slate-700 shrink-0">
+                  <h3 className="font-display font-bold text-white flex items-center gap-2">
+                    <Activity size={18} className="text-brand-secondary" /> Geometrical Isomerism — Cis vs Trans Lab
+                  </h3>
+                  <button
+                    onClick={() => setIsSimulationFullscreen(!isSimulationFullscreen)}
+                    className="p-1.5 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors cursor-pointer ml-auto"
+                    title={isSimulationFullscreen ? "Minimize" : "Maximize"}
+                  >
+                    {isSimulationFullscreen ? <Minimize2 size={20} /> : <Maximize2 size={20} />}
+                  </button>
+                </div>
+                <div className={`relative bg-slate-900 flex flex-col ${isSimulationFullscreen ? 'flex-1' : 'h-[550px]'}`}>
+                  <GeometricalIsomerismCanvas />
                 </div>
               </div>
             </div>

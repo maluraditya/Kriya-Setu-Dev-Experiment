@@ -1220,6 +1220,60 @@ const TextbookContent: React.FC<TextbookContentProps> = ({ topic }) => {
     );
   }
 
+  if (topic?.id === 'stereoisomerism-geometrical') {
+    return (
+      <div className="prose prose-slate prose-lg max-w-none font-sans" id="tour-content">
+        <h1 className="font-display text-3xl font-bold text-brand-primary mb-6">Geometrical Isomerism &mdash; Cis-Trans Configuration &amp; Dipole Moments</h1>
+        <p className="lead text-xl text-slate-600 mb-8">
+          Stereoisomers have the <strong>same connectivity</strong> of atoms but differ in their <strong>3D spatial arrangement</strong>. Geometrical isomerism arises when rotation around a C=C double bond is <strong>restricted</strong>.
+        </p>
+
+        <h3 className="text-xl font-display font-bold text-brand-dark mt-8 mb-4">I. Why is Rotation Restricted?</h3>
+        <p>
+          A C=C double bond consists of one <strong>&sigma; bond</strong> (head-on overlap) and one <strong>&pi; bond</strong> (lateral overlap of parallel p-orbitals). Rotating one carbon would break the parallel alignment of the p-orbitals, <em>destroying the &pi; bond</em>. Therefore, rotation is <strong>strictly forbidden</strong>.
+        </p>
+        <div className="my-4 p-4 bg-red-50 rounded-xl border border-red-200">
+          <p className="text-sm text-red-800"><strong>Key Rule:</strong> Free rotation is possible around C&ndash;C single bonds (alkanes), but NOT around C=C double bonds (alkenes). This restriction creates permanent geometric isomers.</p>
+        </div>
+
+        <h3 className="text-xl font-display font-bold text-brand-dark mt-8 mb-4">II. Cis and Trans Isomers</h3>
+        <ul className="list-disc pl-5 space-y-4 mb-6">
+          <li><strong>Cis:</strong> Identical groups on the <em>same side</em> of the double bond.</li>
+          <li><strong>Trans:</strong> Identical groups on <em>opposite sides</em> of the double bond.</li>
+        </ul>
+        <div className="my-4 p-4 bg-blue-50 rounded-xl border border-blue-200">
+          <p className="text-sm text-blue-800"><strong>Condition:</strong> Geometrical isomerism requires that each doubly bonded carbon has <strong>two different substituents</strong>. If either carbon has two identical groups, no cis/trans isomers exist.</p>
+        </div>
+
+        <h3 className="text-xl font-display font-bold text-brand-dark mt-8 mb-4">III. Dipole Moment &amp; Physical Properties</h3>
+        <div className="my-6 p-4 bg-emerald-50 rounded-xl border border-emerald-200 space-y-2">
+          <p className="font-mono text-lg text-emerald-700 text-center"><strong>Cis:</strong> Bond dipoles ADD UP &rarr; &mu; &gt; 0 (Polar)</p>
+          <p className="text-sm text-emerald-600 text-center">Higher boiling point due to stronger dipole-dipole interactions</p>
+        </div>
+        <div className="my-6 p-4 bg-amber-50 rounded-xl border border-amber-200 space-y-2">
+          <p className="font-mono text-lg text-amber-700 text-center"><strong>Trans:</strong> Bond dipoles CANCEL &rarr; &mu; = 0 (Non-polar)</p>
+          <p className="text-sm text-amber-600 text-center">Higher melting point due to symmetrical crystal packing</p>
+        </div>
+
+        <h3 className="text-xl font-display font-bold text-brand-dark mt-8 mb-4">IV. Real-World Analogies</h3>
+        <div className="bg-amber-50 p-6 rounded-xl border-l-4 border-amber-500 my-4">
+          <h4 className="font-bold text-amber-900 mb-2">📌 Cardboard &amp; Nails</h4>
+          <p className="text-sm">One nail (single bond) = free rotation. Two nails (double bond) = locked. Whatever is attached is permanently fixed in position.</p>
+        </div>
+        <div className="bg-sky-50 p-6 rounded-xl border-l-4 border-sky-500 my-4">
+          <h4 className="font-bold text-sky-900 mb-2">🚣 Rowboat Oars</h4>
+          <p className="text-sm">Both oars on the same side = cis. One oar left, one right = trans. The boat behaves completely differently in each configuration.</p>
+        </div>
+        <div className="bg-red-50 p-6 rounded-xl border-l-4 border-red-500 my-4">
+          <h4 className="font-bold text-red-900 mb-2">🍳 Trans Fats &amp; Health</h4>
+          <p className="text-sm">Natural fats are <strong>cis</strong> (bent chains, liquid oils). Artificial hydrogenation creates <strong>trans</strong> fats (straight chains, solid margarine). Our bodies cannot process the unnatural trans geometry, leading to cardiovascular disease.</p>
+        </div>
+
+        <VideoSection />
+      </div>
+    );
+  }
+
   // --- UNIT VI-IX: PHYSICS TOPICS ---
 
   if (topic?.id === 'emi') {

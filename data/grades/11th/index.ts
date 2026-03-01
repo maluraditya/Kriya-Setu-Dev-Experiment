@@ -260,5 +260,18 @@ export const TOPICS_11TH: Topic[] = [
         grade: '11th',
         thumbnailUrl: '/images/thumbnails/11th-chemistry/thumb_ethane_conformations.png',
         youtubeVideoIds: []
+    },
+    {
+        id: 'stereoisomerism-geometrical',
+        title: 'Geometrical Isomerism — Cis-Trans Configuration & Dipole Moments',
+        subject: 'Chemistry',
+        unit: 'Unit IX',
+        chapter: 'Hydrocarbons',
+        description: 'Discover why double bonds lock rotation. Build cis and trans isomers, visualize dipole vector addition/cancellation, and compare physical properties.',
+        thumbnailIcon: 'Activity',
+        branch: 'Organic Chemistry',
+        grade: '11th',
+        thumbnailUrl: '/images/thumbnails/11th-chemistry/thumb_geometrical_isomerism.png',
+        youtubeVideoIds: []
     }
 ];
