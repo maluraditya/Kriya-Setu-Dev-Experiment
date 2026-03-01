@@ -247,5 +247,18 @@ export const TOPICS_11TH: Topic[] = [
         grade: '11th',
         thumbnailUrl: '/images/thumbnails/11th-chemistry/thumb_quantitative_analysis.png',
         youtubeVideoIds: []
+    },
+    {
+        id: 'ethane-conformations',
+        title: 'Conformations of Ethane — Torsional Strain & Newman Projections',
+        subject: 'Chemistry',
+        unit: 'Unit IX',
+        chapter: 'Hydrocarbons',
+        description: 'Rotate the C-C bond of ethane in real-time. Explore staggered vs eclipsed conformations through Newman, Sawhorse, and 3D projections with a live energy graph.',
+        thumbnailIcon: 'Activity',
+        branch: 'Organic Chemistry',
+        grade: '11th',
+        thumbnailUrl: '/images/thumbnails/11th-chemistry/thumb_ethane_conformations.png',
+        youtubeVideoIds: []
     }
 ];

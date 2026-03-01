@@ -1144,6 +1144,82 @@ const TextbookContent: React.FC<TextbookContentProps> = ({ topic }) => {
     );
   }
 
+  if (topic?.id === 'ethane-conformations') {
+    return (
+      <div className="prose prose-slate prose-lg max-w-none font-sans" id="tour-content">
+        <h1 className="font-display text-3xl font-bold text-brand-primary mb-6">Conformations of Ethane — Torsional Strain &amp; Newman Projections</h1>
+        <p className="lead text-xl text-slate-600 mb-8">
+          The C–C single bond (&sigma; bond) in ethane allows <strong>almost free rotation</strong>. The different spatial arrangements produced by this rotation are called <strong>conformations</strong> (or conformers/rotamers).
+        </p>
+
+        <h3 className="text-xl font-display font-bold text-brand-dark mt-8 mb-4">I. Why Rotation is &ldquo;Almost&rdquo; Free</h3>
+        <p>
+          Although the &sigma; bond is cylindrically symmetric, rotation is not perfectly free. The electron clouds of C–H bonds on adjacent carbons <strong>repel each other</strong>. This repulsive interaction is called <strong>torsional strain</strong>.
+        </p>
+        <div className="my-4 p-4 bg-amber-50 rounded-xl border border-amber-200">
+          <p className="text-sm text-amber-800">The energy barrier for ethane is only <strong>12.5 kJ/mol</strong> — small enough that room-temperature kinetic energy easily overcomes it. Individual conformers cannot be isolated.</p>
+        </div>
+
+        <h3 className="text-xl font-display font-bold text-brand-dark mt-8 mb-4">II. Extreme Conformations</h3>
+        <ul className="list-disc pl-5 space-y-4 mb-6">
+          <li>
+            <strong>Staggered (60&deg;, 180&deg;, 300&deg;):</strong> H atoms are as far apart as possible. <em>Minimum</em> torsional strain, <em>maximum</em> stability, <em>lowest</em> potential energy.
+          </li>
+          <li>
+            <strong>Eclipsed (0&deg;, 120&deg;, 240&deg;):</strong> H atoms are directly behind each other. <em>Maximum</em> torsional strain (12.5 kJ/mol), <em>minimum</em> stability, <em>highest</em> potential energy.
+          </li>
+          <li>
+            <strong>Skew:</strong> Any intermediate angle — partially staggered, with intermediate energy.
+          </li>
+        </ul>
+
+        <h3 className="text-xl font-display font-bold text-brand-dark mt-8 mb-4">III. Newman Projection</h3>
+        <p>
+          View the molecule <strong>head-on</strong>, looking directly down the C–C axis. The front carbon is a <strong>dot</strong>; the rear carbon is a <strong>circle</strong>. Bonds radiate outward at 120&deg; angles.
+        </p>
+        <div className="my-4 p-4 bg-blue-50 rounded-xl border border-blue-200">
+          <p className="text-sm text-blue-800"><strong>Key insight:</strong> In the staggered Newman projection, rear bonds bisect the angles between front bonds. In eclipsed, they align exactly behind front bonds.</p>
+        </div>
+
+        <h3 className="text-xl font-display font-bold text-brand-dark mt-8 mb-4">IV. Sawhorse Projection</h3>
+        <p>
+          The molecule is viewed from a tilted angle. The C–C bond is drawn diagonally with the front carbon at the lower end and the rear carbon at the upper end.
+        </p>
+
+        <h3 className="text-xl font-display font-bold text-brand-dark mt-8 mb-4">V. Energy Diagram</h3>
+        <div className="my-6 p-4 bg-slate-100 rounded-xl border border-slate-300">
+          <p className="font-mono text-lg text-brand-primary text-center">E = (12.5/2) &times; (1 &minus; cos 3&theta;)</p>
+          <p className="text-sm text-slate-600 mt-2 text-center">A perfect sinusoidal curve with 3 maxima (eclipsed) and 3 minima (staggered) per 360&deg; rotation.</p>
+        </div>
+        <p className="text-sm text-slate-600 italic">
+          Note: Throughout all rotations, bond lengths (C–C = 1.54 &Aring;, C–H = 1.09 &Aring;) and bond angles (109.5&deg;) remain <strong>fixed</strong>. Only the dihedral (torsional) angle changes.
+        </p>
+
+        <h3 className="text-xl font-display font-bold text-brand-dark mt-8 mb-4">VI. Real-World Analogies</h3>
+        <div className="bg-amber-50 p-6 rounded-xl border-l-4 border-amber-500 my-4">
+          <h4 className="font-bold text-amber-900 mb-2">☂️ Two Umbrellas on a Pole</h4>
+          <p className="text-sm">
+            Imagine two open umbrellas stacked on a single pole. If the spokes align perfectly (eclipsed), they crowd each other. Rotate one by 60&deg; so spokes fit in gaps (staggered), and they have maximum breathing room.
+          </p>
+        </div>
+        <div className="bg-sky-50 p-6 rounded-xl border-l-4 border-sky-500 my-4">
+          <h4 className="font-bold text-sky-900 mb-2">⚙️ Gears Face-to-Face</h4>
+          <p className="text-sm">
+            Two gears placed face-to-face: if teeth align (eclipsed), they clash (high strain). If teeth align with gaps (staggered), they nestle comfortably (low strain).
+          </p>
+        </div>
+        <div className="bg-purple-50 p-6 rounded-xl border-l-4 border-purple-500 my-4">
+          <h4 className="font-bold text-purple-900 mb-2">💊 Drug-Receptor Binding</h4>
+          <p className="text-sm">
+            A drug molecule must adopt a specific low-energy conformation to dock into the active site of a target protein. Understanding conformational preferences is crucial for rational drug design.
+          </p>
+        </div>
+
+        <VideoSection />
+      </div>
+    );
+  }
+
   // --- UNIT VI-IX: PHYSICS TOPICS ---
 
   if (topic?.id === 'emi') {
