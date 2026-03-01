@@ -29,7 +29,7 @@ import QualitativeAnalysisCanvas from './components/grade-11/chemistry/Qualitati
 import QuantitativeAnalysisCanvas from './components/grade-11/chemistry/QuantitativeAnalysisCanvas';
 import EthaneConformationsCanvas from './components/grade-11/chemistry/EthaneConformationsCanvas';
 import GeometricalIsomerismCanvas from './components/grade-11/chemistry/GeometricalIsomerismCanvas';
-import ResponsivePrototypeCanvas from './components/grade-11/chemistry/ResponsivePrototypeCanvas';
+
 
 // Grade 12 - Physics
 import ElectromagneticInductionCanvas from './components/grade-12/physics/ElectromagneticInductionCanvas';
@@ -379,56 +379,60 @@ const App: React.FC = () => {
   }, [activeTopicId, kineticsConfig, reactionCount, externalVoltage, isomerConfig, selectedIon, haloConfig, polyMode, solidClassConfig, unitCellConfig, defectMode]);
 
   return (
-    <div className="min-h-screen flex flex-col bg-brand-gray font-sans text-slate-900">
+    <div className="min-h-screen flex flex-col bg-brand-gray font-sans text-slate-900 overflow-x-hidden">
 
       {/* --- HEADER --- */}
-      <header className="bg-brand-primary sticky top-0 z-20 shadow-md border-b border-white/10">
-        <div className="max-w-[1600px] mx-auto px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-4 cursor-pointer" onClick={goHome}>
-            {/* Brand Logo */}
-            <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-lg overflow-hidden border-2 border-white transform hover:scale-105 transition-transform">
+      <header className="bg-gradient-to-r from-brand-primary via-brand-primary to-rose-700 sticky top-0 z-50 shadow-lg">
+        <div className="max-w-[1600px] mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
+          <div className="flex items-center gap-3 cursor-pointer" onClick={goHome}>
+            <div className="w-10 h-10 sm:w-12 sm:h-12 bg-white rounded-full flex items-center justify-center shadow-lg overflow-hidden border-2 border-white/80 transform hover:scale-105 transition-transform">
               <img src="/logo.png" alt="Excellent Academy" className="w-full h-full object-cover" />
             </div>
-            {/* Brand Text */}
             <div className="flex flex-col">
-              <h1 className="text-xl font-display font-bold text-white tracking-wide leading-tight">Excellent Academy</h1>
-              <p className="text-[10px] text-brand-secondary font-bold uppercase tracking-widest">Digital Learning Series</p>
+              <h1 className="text-base sm:text-xl font-display font-bold text-white tracking-wide leading-tight">Excellent Academy</h1>
+              <p className="text-[9px] sm:text-[10px] text-brand-secondary font-bold uppercase tracking-widest">Digital Learning Series</p>
             </div>
           </div>
 
-          <nav className="hidden md:flex items-center gap-6 text-sm font-medium text-white/90">
+          {/* Mobile: Grade + Tour */}
+          <div className="flex md:hidden items-center gap-2">
+            <div className="flex bg-white/10 rounded-lg p-0.5 border border-white/20">
+              <button
+                onClick={() => { setActiveGrade('11th'); setActiveTopicId(null); setCurrentScreen('DASHBOARD'); }}
+                className={`px-2.5 py-1 rounded-md text-[10px] font-bold transition-all ${activeGrade === '11th' ? 'bg-brand-secondary text-brand-dark shadow-sm' : 'text-white/70'}`}
+              >11th</button>
+              <button
+                onClick={() => { setActiveGrade('12th'); setActiveTopicId(null); setCurrentScreen('DASHBOARD'); }}
+                className={`px-2.5 py-1 rounded-md text-[10px] font-bold transition-all ${activeGrade === '12th' ? 'bg-brand-secondary text-brand-dark shadow-sm' : 'text-white/70'}`}
+              >12th</button>
+            </div>
+          </div>
+
+          {/* Desktop Nav */}
+          <nav className="hidden md:flex items-center gap-4 text-sm font-medium text-white/90">
             <button
               onClick={() => currentScreen === 'DASHBOARD' ? startDashboardTour(handleDashboardTourFinish) : startTopicTour()}
-              className="flex items-center gap-2 bg-white/10 hover:bg-white/20 px-3 py-1.5 rounded-full transition-colors border border-white/10 text-xs font-bold uppercase tracking-wider"
+              className="flex items-center gap-2 bg-white/10 hover:bg-white/20 px-4 py-2 rounded-full transition-all border border-white/15 text-xs font-bold uppercase tracking-wider hover:shadow-md"
               title="Start Guided Tour"
             >
               <HelpCircle size={14} className="text-brand-secondary" /> Tour
             </button>
 
-
-
-            {/* Grade Selector */}
-            <div className="flex bg-brand-dark/30 rounded-lg p-1 border border-white/10" id="tour-grade-selector">
+            <div className="flex bg-white/10 rounded-xl p-1 border border-white/15 backdrop-blur-sm" id="tour-grade-selector">
               <button
                 onClick={() => { setActiveGrade('11th'); setActiveTopicId(null); setCurrentScreen('DASHBOARD'); }}
-                className={`px - 3 py - 1 rounded - md text - xs transition - colors ${activeGrade === '11th' ? 'bg-brand-secondary text-brand-dark font-bold' : 'text-slate-300 hover:text-white'} `}
-              >
-                Class 11
-              </button>
+                className={`px-4 py-1.5 rounded-lg text-xs font-bold transition-all duration-300 ${activeGrade === '11th' ? 'bg-brand-secondary text-brand-dark shadow-md' : 'text-white/70 hover:text-white hover:bg-white/10'}`}
+              >Class 11</button>
               <button
                 onClick={() => { setActiveGrade('12th'); setActiveTopicId(null); setCurrentScreen('DASHBOARD'); }}
-                className={`px - 3 py - 1 rounded - md text - xs transition - colors ${activeGrade === '12th' ? 'bg-brand-secondary text-brand-dark font-bold' : 'text-slate-300 hover:text-white'} `}
-              >
-                Class 12
-              </button>
+                className={`px-4 py-1.5 rounded-lg text-xs font-bold transition-all duration-300 ${activeGrade === '12th' ? 'bg-brand-secondary text-brand-dark shadow-md' : 'text-white/70 hover:text-white hover:bg-white/10'}`}
+              >Class 12</button>
             </div>
 
-            <div className="flex items-center gap-2">
-              <span className="bg-brand-dark px-3 py-1 rounded-full text-xs text-brand-secondary border border-brand-secondary/20 shadow-sm flex items-center gap-2">
-                <GraduationCap size={12} />
-                {activeGrade} • {activeSubject}
-              </span>
-            </div>
+            <span className="bg-white/10 backdrop-blur-sm px-4 py-1.5 rounded-full text-xs text-white border border-white/15 shadow-sm flex items-center gap-2">
+              <GraduationCap size={12} className="text-brand-secondary" />
+              {activeGrade} • {activeSubject}
+            </span>
           </nav>
         </div>
       </header>
@@ -600,21 +604,7 @@ const App: React.FC = () => {
           />
         )}
 
-        {/* ================== RESPONSIVE UI PROTOTYPE ================== */}
-        {currentScreen === 'TOPIC_VIEW' && activeTopicId === 'responsive-prototype' && (
-          // NO PADDING, full height, absolute inset
-          <div className="fixed inset-0 z-[100] bg-slate-950 animate-in fade-in duration-500 overflow-hidden">
-            {/* Back button sitting on top of the absolute canvas */}
-            <div
-              className="absolute top-4 left-4 z-50 flex items-center gap-2 px-4 py-2 bg-slate-900/60 hover:bg-slate-800/80 backdrop-blur-md rounded-2xl text-white cursor-pointer border border-white/10 shadow-xl transition-all"
-              onClick={goHome}
-            >
-              <ArrowLeft size={18} /> <span className="text-sm font-bold">Exit Sandbox</span>
-            </div>
 
-            <ResponsivePrototypeCanvas />
-          </div>
-        )}
 
         {/* ================== GEOMETRICAL ISOMERISM ================== */}
         {currentScreen === 'TOPIC_VIEW' && activeTopicId === 'stereoisomerism-geometrical' && (
@@ -2021,16 +2011,31 @@ const App: React.FC = () => {
       <Assistant contextData={aiContext} />
 
       {/* --- FOOTER --- */}
-      <footer className="bg-brand-dark text-slate-400 py-8 mt-12 border-t border-slate-800">
-        <div className="max-w-[1600px] mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-4">
-          <div className="text-sm">
-            &copy; 2024 Excellent Academy. All Rights Reserved.
+      <footer className="relative bg-slate-950 py-14 mt-16 overflow-hidden">
+        {/* Subtle gradient glow behind content */}
+        <div className="absolute inset-0 bg-gradient-to-t from-brand-primary/5 via-transparent to-transparent pointer-events-none" />
+
+        <div className="relative z-10 text-center space-y-5">
+          {/* Logo + Brand */}
+          <div className="flex items-center justify-center gap-3">
+            <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-white/15 shadow-lg">
+              <img src="/logo.png" alt="Excellent Academy" className="w-full h-full object-cover" />
+            </div>
+            <span className="text-white font-display font-bold text-lg tracking-wide">Excellent Academy</span>
           </div>
-          <div className="flex gap-6 text-sm font-medium">
-            <a href="#" className="hover:text-white transition-colors">Privacy Policy</a>
-            <a href="#" className="hover:text-white transition-colors">Terms of Use</a>
-            <a href="#" className="hover:text-white transition-colors">Contact Support</a>
+
+          {/* Copyright */}
+          <p className="text-[13px] text-white/40">&copy; 2026 All Rights Reserved</p>
+
+          {/* Gradient accent divider */}
+          <div className="flex justify-center">
+            <div className="w-24 h-[2px] rounded-full bg-gradient-to-r from-transparent via-brand-secondary/60 to-transparent" />
           </div>
+
+          {/* Tagline */}
+          <p className="text-lg font-display font-medium text-white/70 italic tracking-wide">
+            Building the future of education
+          </p>
         </div>
       </footer>
 
