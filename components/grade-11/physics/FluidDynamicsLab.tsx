@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect, useState, useCallback } from 'react';
 import { Play, Pause, RotateCcw } from 'lucide-react';
 import TopicLayoutContainer from '../../TopicLayoutContainer';
 
@@ -13,332 +13,249 @@ const FluidDynamicsLab: React.FC<FluidDynamicsLabProps> = ({ topic, onExit }) =>
     const [flowRate, setFlowRate] = useState(50);
     const [constrictionArea, setConstrictionArea] = useState(100);
 
-    // Constants
-    const A1 = 100; // Fixed wide area 
-    const rho = 1000; // Density of water (kg/m^3)
-    const P_atm = 101325; // Atmospheric pressure 
+    const A1_val = 100; 
+    const rho_val = 1000;
+    const v1_val = flowRate / A1_val;
+    const v2_val = flowRate / constrictionArea;
+    const deltaP_val = 0.5 * rho_val * (v2_val * v2_val - v1_val * v1_val);
+    const P1_display_val = 200000;
+    const P2_display_val = P1_display_val - deltaP_val;
+    const KE1_val = 0.5 * rho_val * v1_val * v1_val;
+    const KE2_val = 0.5 * rho_val * v2_val * v2_val;
 
-    // Calculations based on Continuity Equation: A1 * v1 = A2 * v2 = flowRate
-    // where flowRate is Q. So v = Q / A.
-    const v1 = flowRate / A1;
-    const v2 = flowRate / constrictionArea;
-
-    // Bernoulli's: P1 + 0.5 * rho * v1^2 = P2 + 0.5 * rho * v2^2 (h is constant)
-    // Let P1 be based on flow rate, but let's just make P1 slightly above atm.
-    // We want visual differences, so let's scale the values for display.
-
-    // Real calculation for delta P
-    const deltaP = 0.5 * rho * (v2 * v2 - v1 * v1);
-    const P1_display = 200000; // Base pressure for wide pipe
-    const P2_display = P1_display - deltaP;
-
-    const KE1 = 0.5 * rho * v1 * v1;
-    const KE2 = 0.5 * rho * v2 * v2;
-
-    // Manometer heights (P = rho * g * h -> h = P / (rho * g))
-    // We'll scale heights for visual representation
-    const h1 = 120; // Fixed visual height for P1
-    // Scale h2 relative to h1 based on pressure difference
-    // Max deltaP occurs at max flowRate and min area:
-    // v1_max = 500 / 100 = 5
-    // v2_max = 500 / 20 = 25
-    // deltaP_max = 0.5 * 1000 * (625 - 25) = 500 * 600 = 300,000
-    // So scale deltaP to a max drop of ~110px
-    const maxDeltaP = 300000;
-    const h2 = Math.max(10, h1 - (deltaP / maxDeltaP) * 110);
-
-    // Particles state for animation
     const particlesRef = useRef<{ x: number, y: number, speedMultiplier: number }[]>([]);
-    const animationRef = useRef<number>();
+    const animRef = useRef<number>(0);
+    const lastTimeRef = useRef(performance.now());
 
-    // Initialize particles
+    // Dynamic resize
+    useEffect(() => {
+        const canvas = canvasRef.current;
+        if (!canvas) return;
+        const parent = canvas.parentElement;
+        if (!parent) return;
+        const resizeObserver = new ResizeObserver(() => {
+            canvas.width = parent.clientWidth;
+            canvas.height = parent.clientHeight;
+        });
+        resizeObserver.observe(parent);
+        canvas.width = parent.clientWidth;
+        canvas.height = parent.clientHeight;
+        return () => resizeObserver.disconnect();
+    }, []);
+
+    // Init particles
     useEffect(() => {
         particlesRef.current = Array.from({ length: 150 }).map(() => ({
             x: Math.random() * 800,
-            y: (Math.random() - 0.5) * A1, // Spread across pipe height
+            y: (Math.random() - 0.5) * A1_val,
             speedMultiplier: 0.8 + Math.random() * 0.4
         }));
-    }, [A1]);
+    }, [A1_val]);
 
-    // Animation Loop
-    useEffect(() => {
+    const draw = useCallback((time: number) => {
         const canvas = canvasRef.current;
-        if (!canvas || !isPlaying) return;
-
+        if (!canvas) return;
         const ctx = canvas.getContext('2d');
         if (!ctx) return;
+        const W = canvas.width, H = canvas.height;
+        if (W < 10 || H < 10) { animRef.current = requestAnimationFrame(draw); return; }
 
-        let lastTime = performance.now();
+        const dt = (time - lastTimeRef.current) / 1000;
+        lastTimeRef.current = time;
 
-        const render = (time: number) => {
-            const dt = (time - lastTime) / 1000; // Delta time in seconds
-            lastTime = time;
+        ctx.clearRect(0, 0, W, H);
+        ctx.fillStyle = '#f8fafc'; // Soft White
+        ctx.fillRect(0, 0, W, H);
 
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        // DYNAMIC VIEWPORT SCALING (Laptop vs Smartboard)
+        const scale = W < 1000 ? 1.0 : (W > 1500 ? 1.3 : 1.0 + (W - 1000) * 0.0006);
+        const fs = (base: number) => Math.max(10, Math.min(base * scale, W * 0.025, H * 0.045));
+        const pad = Math.min(W * 0.03, H * 0.035, scale * 24);
 
-            // We need to figure out the pipe's Y boundary at any given X.
-            // Pipe goes from x=0 to 800.
-            // Narrow section is roughly between x=300 and x=500.
-            const getRadiusAtX = (x: number) => {
-                if (x < 250) return A1 / 2;
-                if (x > 550) return A1 / 2;
-                if (x >= 350 && x <= 450) return constrictionArea / 2;
+        const midlineY = H * 0.35;
+        const pipeFullR_val = (H * 0.2); 
 
-                // Easing for the transition
-                if (x >= 250 && x < 350) {
-                    const t = (x - 250) / 100;
-                    // smoothstep
-                    const smooth_t = t * t * (3 - 2 * t);
-                    return (A1 / 2) * (1 - smooth_t) + (constrictionArea / 2) * smooth_t;
-                }
-                if (x > 450 && x <= 550) {
-                    const t = (x - 450) / 100;
-                    const smooth_t = t * t * (3 - 2 * t);
-                    return (constrictionArea / 2) * (1 - smooth_t) + (A1 / 2) * smooth_t;
-                }
-                return A1 / 2;
-            };
+        const getRadiusAtX_val = (x: number) => {
+            const normX = x / W;
+            const startNarrow = 0.35, endNarrow = 0.45;
+            const transLen = 0.12;
+            
+            if (normX < startNarrow - transLen) return pipeFullR_val;
+            if (normX > endNarrow + transLen) return pipeFullR_val;
+            if (normX >= startNarrow && normX <= endNarrow) return (constrictionArea / A1_val) * pipeFullR_val;
 
-            const getVelocityAtX = (x: number) => {
-                // A * v = constant -> v = (A1 * v1) / A_x
-                const rx = getRadiusAtX(x);
-                const Ax = rx * 2; // Linear mapping since it's 2D visually
-                return (A1 * v1) / Ax;
-            };
-
-            // Draw Pipe Background
-            ctx.fillStyle = '#dbeafe'; // blue-100
-            ctx.beginPath();
-            for (let x = 0; x <= 800; x += 5) {
-                ctx.lineTo(x, 200 - getRadiusAtX(x));
+            if (normX >= startNarrow - transLen && normX < startNarrow) {
+                const t = (normX - (startNarrow - transLen)) / transLen;
+                const st = t * t * (3 - 2 * t);
+                return pipeFullR_val * (1 - st) + (constrictionArea / A1_val) * pipeFullR_val * st;
             }
-            for (let x = 800; x >= 0; x -= 5) {
-                ctx.lineTo(x, 200 + getRadiusAtX(x));
+            if (normX > endNarrow && normX <= endNarrow + transLen) {
+                const t = (normX - endNarrow) / transLen;
+                const st = t * t * (3 - 2 * t);
+                return (constrictionArea / A1_val) * pipeFullR_val * (1 - st) + pipeFullR_val * st;
             }
-            ctx.closePath();
-            ctx.fill();
+            return pipeFullR_val;
+        };
 
-            // Draw outlines
-            ctx.strokeStyle = '#64748b'; // slate-500
-            ctx.lineWidth = 4;
-            ctx.beginPath();
-            for (let x = 0; x <= 800; x += 5) ctx.lineTo(x, 200 - getRadiusAtX(x));
-            ctx.stroke();
+        const getVelocityAtX_val = (x: number) => {
+            const rx = getRadiusAtX_val(x);
+            return (pipeFullR_val * v1_val) / rx;
+        };
 
-            ctx.beginPath();
-            for (let x = 0; x <= 800; x += 5) ctx.lineTo(x, 200 + getRadiusAtX(x));
-            ctx.stroke();
+        // Pipe Wall
+        ctx.fillStyle = '#ffffff';
+        ctx.beginPath();
+        for (let x = 0; x <= W; x += 5) ctx.lineTo(x, midlineY - getRadiusAtX_val(x));
+        for (let x = W; x >= 0; x -= 5) ctx.lineTo(x, midlineY + getRadiusAtX_val(x));
+        ctx.closePath(); ctx.fill();
+        ctx.strokeStyle = '#94a3b8'; ctx.lineWidth = 4 * scale;
+        ctx.beginPath(); for (let x = 0; x <= W; x += 5) ctx.lineTo(x, midlineY - getRadiusAtX_val(x)); ctx.stroke();
+        ctx.beginPath(); for (let x = 0; x <= W; x += 5) ctx.lineTo(x, midlineY + getRadiusAtX_val(x)); ctx.stroke();
 
-            // v2_max is needed for particle opacity scaling
-            const v2_max = 500 / 20;
-
-            // Update & Draw Particles (Streamlines)
+        // Particles
+        if (isPlaying) {
             const particles = particlesRef.current;
             for (let i = 0; i < particles.length; i++) {
                 const p = particles[i];
-                const vel = getVelocityAtX(p.x);
-                p.x = p.x + vel * p.speedMultiplier * dt * 45; // Speed factor
-
-                if (p.x > 800) {
-                    p.x = -20;
-                    p.y = (Math.random() - 0.5) * A1; // Respawn at the start
-                }
-
-                // Adjust Y based on current radius to keep them inside the pipe
-                // This is a simple approximation: scale their relative Y position
-                const currentR = getRadiusAtX(p.x);
-                const startR = A1 / 2;
-                const normalizedY = p.y / startR; // -1 to 1
-                const actualY = 200 + normalizedY * currentR;
-
-                // Draw particle
+                const vel = getVelocityAtX_val(p.x);
+                p.x += vel * p.speedMultiplier * dt * W * 0.15;
+                if (p.x > W) { p.x = -20; p.y = (Math.random() - 0.5) * A1_val; }
+                const currentR = getRadiusAtX_val(p.x);
+                const actualY = midlineY + (p.y / (A1_val / 2)) * currentR;
                 ctx.beginPath();
-                // Draw a small horizontal line for streamline effect
-                ctx.moveTo(p.x, actualY);
-                ctx.lineTo(p.x + Math.max(15, vel * 3), actualY);
-                ctx.strokeStyle = `rgba(37, 99, 235, ${Math.min(1, 0.3 + (vel / v2_max) * 0.7)})`; // blue-600, more opaque when faster
-                ctx.lineWidth = 1.5 + (vel / v2_max) * 2.5;
+                ctx.moveTo(p.x, actualY); ctx.lineTo(p.x + Math.max(14, vel * 6) * scale, actualY);
+                ctx.strokeStyle = `rgba(37, 99, 235, ${Math.min(1, 0.4 + (vel / 25) * 0.6)})`;
+                ctx.lineWidth = (2.5 + (vel / 25) * 2.5) * scale;
                 ctx.stroke();
             }
+        }
 
-            // Draw Manometers
+        // Manometers
+        const drawMano_val = (normX: number, label: string, pVal: number) => {
+            const x = normX * W;
+            const rx = getRadiusAtX_val(x);
+            const topY_val = midlineY - rx;
+            const manoH_val = H * 0.22;
+            const pNorm_val = Math.min(1, pVal / P1_display_val);
+            const waterLevel_val = manoH_val * pNorm_val;
+            
+            ctx.fillStyle = '#ffffff'; ctx.fillRect(x - 14 * scale, topY_val - manoH_val, 28 * scale, manoH_val);
+            ctx.strokeStyle = '#475569'; ctx.lineWidth = 2.5 * scale;
+            ctx.strokeRect(x - 14 * scale, topY_val - manoH_val, 28 * scale, manoH_val);
+            
+            ctx.fillStyle = '#2563eb'; ctx.fillRect(x - 11 * scale, topY_val - waterLevel_val, 22 * scale, waterLevel_val);
+            ctx.fillStyle = '#1e293b'; ctx.font = `bold ${fs(12)}px sans-serif`; ctx.textAlign = 'center';
+            ctx.fillText(label.toUpperCase(), x, topY_val - manoH_val - 10 * scale);
+            ctx.fillStyle = '#2563eb'; ctx.font = `bold ${fs(14)}px monospace`;
+            ctx.fillText(`${(pVal / 1000).toFixed(1)} kPa`, x, topY_val - waterLevel_val - 8 * scale);
+        };
+        drawMano_val(0.2, 'P₁', P1_display_val);
+        drawMano_val(0.42, 'P₂', P2_display_val);
 
-            const drawManometer = (x: number, waterHeight: number) => {
-                const pipeTopY = 200 - getRadiusAtX(x);
-                // Tube outline
-                ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
-                ctx.fillRect(x - 10, 20, 20, pipeTopY - 20);
+        // Stats Panels (Bottom)
+        const panelY_val = H * 0.62;
+        const panelH_val = H - panelY_val - pad;
+        const colW_val = (W - pad * 3) / 2;
+        const maxKE_val = 0.5 * rho_val * (25) ** 2;
 
-                // Draw left and right lines of tube
-                ctx.strokeStyle = '#64748b';
-                ctx.lineWidth = 4;
-                ctx.beginPath();
-                ctx.moveTo(x - 10, 20);
-                ctx.lineTo(x - 10, pipeTopY);
-                ctx.stroke();
-
-                ctx.beginPath();
-                ctx.moveTo(x + 10, 20);
-                ctx.lineTo(x + 10, pipeTopY);
-                ctx.stroke();
-
-                // Erase the pipe's top border where the tube meets it
-                ctx.fillStyle = '#dbeafe'; // pipe color matching new background
-                ctx.fillRect(x - 8, pipeTopY - 3, 16, 6);
-
-                // Water level inside
-                ctx.fillStyle = '#3b82f6'; // darker blue for manometer water to stand out
-                const waterTop = Math.max(22, pipeTopY - waterHeight);
-                ctx.fillRect(x - 8, waterTop, 16, pipeTopY - waterTop + 2); // +2 to blend into pipe
+        const drawStats_val = (x: number, title: string, ke: number, pr: number, color: string) => {
+            ctx.fillStyle = '#ffffff'; roundRect(ctx, x, panelY_val, colW_val, panelH_val, 16); ctx.fill();
+            ctx.strokeStyle = '#e2e8f0'; ctx.lineWidth = 1.5; roundRect(ctx, x, panelY_val, colW_val, panelH_val, 16); ctx.stroke();
+            ctx.fillStyle = '#0f172a'; ctx.font = `bold ${fs(13)}px sans-serif`; ctx.textAlign = 'center';
+            ctx.fillText(title.toUpperCase(), x + colW_val / 2, panelY_val + pad * 1.2);
+            
+            const barY_val = panelY_val + pad * 2.8, barH_val = panelH_val - pad * 5.5, bw_val = colW_val * 0.18;
+            const drawBar_val = (bx: number, val: number, max: number, bCol: string, bLab: string) => {
+                ctx.fillStyle = '#f8fafc'; roundRect(ctx, bx, barY_val, bw_val, barH_val, 6); ctx.fill();
+                const hVal = (val / max) * barH_val;
+                ctx.fillStyle = bCol; roundRect(ctx, bx + 1, barY_val + barH_val - hVal, bw_val - 2, hVal, 6); ctx.fill();
+                ctx.fillStyle = '#475569'; ctx.font = `bold ${fs(10)}px sans-serif`;
+                ctx.fillText(bLab.toUpperCase(), bx + bw_val / 2, barY_val + barH_val + fs(12));
             };
-
-            drawManometer(150, h1); // P1
-            drawManometer(400, h2); // P2
-
-
-            animationRef.current = requestAnimationFrame(render);
+            drawBar_val(x + colW_val * 0.22, ke, maxKE_val, '#d97706', 'Vel E');
+            drawBar_val(x + colW_val * 0.6, pr, P1_display_val * 1.2, '#2563eb', 'Press');
         };
+        drawStats_val(pad, 'Inlet (A₁)', KE1_val, P1_display_val, '#64748b');
+        drawStats_val(pad * 2 + colW_val, 'Narrow (A₂)', KE2_val, P2_display_val, '#2563eb');
 
-        animationRef.current = requestAnimationFrame(render);
+        // Header Title
+        ctx.fillStyle = '#0f172a'; ctx.font = `bold ${fs(18)}px sans-serif`; ctx.textAlign = 'left';
+        ctx.fillText('Fluid Mechanics: Bernoulli\'s Principle', pad, pad * 1.3);
 
-        return () => {
-            if (animationRef.current) cancelAnimationFrame(animationRef.current);
-        };
-    }, [isPlaying, A1, v1, constrictionArea, h1, h2]);
+        animRef.current = requestAnimationFrame(draw);
+    }, [isPlaying, constrictionArea, flowRate, A1_val, v1_val, v2_val, KE1_val, KE2_val, P1_display_val, P2_display_val]);
 
+    useEffect(() => {
+        animRef.current = requestAnimationFrame(draw);
+        return () => cancelAnimationFrame(animRef.current);
+    }, [draw]);
 
-    // Bar Chart Max Values for scaling
-    const maxKE = 0.5 * rho * (500 / 20) * (500 / 20); // max flow rate, min area
-    const maxP = 300000;
+    const handleReset = () => {
+        setFlowRate(50);
+        setConstrictionArea(100);
+    };
 
     const simulationCombo = (
-        <div className="w-full h-full relative bg-slate-100 rounded-2xl overflow-hidden border border-slate-300 shadow-inner flex flex-col">
-            <div className="flex-1 relative flex items-center justify-center min-h-[300px]">
-                <canvas
-                    ref={canvasRef}
-                    width={800}
-                    height={400}
-                    className="w-full h-full object-contain mix-blend-multiply"
-                />
-
-                <div className="absolute top-4 right-4 flex gap-2">
-                    <button
-                        onClick={() => setIsPlaying(!isPlaying)}
-                        className="bg-white p-2 text-slate-700 rounded-lg shadow-sm hover:bg-slate-50 transition-colors border border-slate-200"
-                    >
-                        {isPlaying ? <Pause size={20} /> : <Play size={20} />}
-                    </button>
-                </div>
-
-                <div className="absolute bottom-[20px] left-[150px] -translate-x-1/2 text-center text-[10px] font-bold text-slate-500 bg-white/90 px-2 py-1 rounded shadow-sm border border-slate-200">
-                    Wide Section (A₁)<br />Low Velocity
-                </div>
-                <div className="absolute bottom-[20px] left-[400px] -translate-x-1/2 text-center text-[10px] font-bold text-slate-500 bg-white/90 px-2 py-1 rounded shadow-sm border border-slate-200">
-                    Constriction (A₂)<br />High Velocity
-                </div>
-            </div>
-
-            <div className="h-48 flex gap-4 p-4 bg-slate-200 border-t border-slate-300">
-                <div className="flex-1 bg-white border border-slate-200 rounded-xl p-4 flex flex-col items-center shadow-sm">
-                    <h4 className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-4">Wide Section (A₁)</h4>
-                    <div className="flex-1 w-full flex items-end justify-center gap-6">
-                        <div className="flex flex-col items-center w-12 gap-2">
-                            <span className="text-[10px] text-slate-400 font-mono">{(KE1 / 1000).toFixed(1)}k</span>
-                            <div className="w-8 bg-slate-100 rounded-t-md relative h-28 flex items-end">
-                                <div
-                                    className="w-full bg-amber-400 rounded-t-md transition-all duration-300"
-                                    style={{ height: `${Math.max(5, (KE1 / maxKE) * 100)}%` }}
-                                />
-                            </div>
-                            <span className="text-xs font-bold text-slate-700">KE</span>
-                        </div>
-                        <div className="flex flex-col items-center w-12 gap-2">
-                            <span className="text-[10px] text-slate-400 font-mono">{(P1_display / 1000).toFixed(0)}k</span>
-                            <div className="w-8 bg-slate-100 rounded-t-md relative h-28 flex items-end">
-                                <div
-                                    className="w-full bg-blue-500 rounded-t-md transition-all duration-300"
-                                    style={{ height: `${(P1_display / maxP) * 100}%` }}
-                                />
-                            </div>
-                            <span className="text-xs font-bold text-slate-700">Press</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div className="flex-1 bg-white border border-slate-200 rounded-xl p-4 flex flex-col items-center shadow-sm border-t-4 border-t-brand-primary">
-                    <h4 className="text-xs font-bold text-brand-primary uppercase tracking-widest mb-4">Constriction (A₂)</h4>
-                    <div className="flex-1 w-full flex items-end justify-center gap-6">
-                        <div className="flex flex-col items-center w-12 gap-2">
-                            <span className="text-[10px] text-orange-500 font-mono font-bold">{(KE2 / 1000).toFixed(1)}k</span>
-                            <div className="w-8 bg-slate-100 rounded-t-md relative h-28 flex items-end">
-                                <div
-                                    className="w-full bg-amber-400 rounded-t-md transition-all duration-300 relative overflow-hidden"
-                                    style={{ height: `${Math.max(5, (KE2 / maxKE) * 100)}%` }}
-                                >
-                                    {KE2 > 50000 && <div className="absolute inset-0 bg-white/30 animate-pulse"></div>}
-                                </div>
-                            </div>
-                            <span className="text-xs font-bold text-amber-600">KE</span>
-                        </div>
-                        <div className="flex flex-col items-center w-12 gap-2">
-                            <span className="text-[10px] text-blue-500 font-mono font-bold">{(P2_display / 1000).toFixed(0)}k</span>
-                            <div className="w-8 bg-slate-100 rounded-t-md relative h-28 flex items-end">
-                                <div
-                                    className="w-full bg-blue-500 rounded-t-md transition-all duration-300"
-                                    style={{ height: `${Math.max(5, (P2_display / maxP) * 100)}%` }}
-                                />
-                            </div>
-                            <span className="text-xs font-bold text-blue-600">Press</span>
-                        </div>
-                    </div>
-                </div>
+        <div className="w-full h-full relative bg-slate-50 rounded-2xl overflow-hidden border border-slate-200 shadow-inner flex flex-col">
+            <div className="flex-1 relative min-h-[300px]">
+                <canvas ref={canvasRef} className="absolute inset-0 w-full h-full object-contain" />
             </div>
         </div>
     );
 
     const controlsCombo = (
-        <div className="flex flex-col gap-6 w-full text-slate-700">
-            <div className="grid md:grid-cols-2 gap-6">
-                <div className="space-y-4 p-5 bg-white rounded-xl border border-slate-200 shadow-sm">
-                    <label className="text-sm font-bold text-slate-700 uppercase flex justify-between items-center">
-                        <span>Flow Rate (Volume Flux)</span>
-                        <span className="text-brand-primary bg-brand-50 text-brand-700 px-3 py-1 rounded-lg font-mono">{flowRate} units/s</span>
+        <div className="flex flex-col gap-2 md:gap-4 w-full text-slate-700 p-1 md:p-2">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-6">
+                <div className="space-y-2 md:space-y-3 p-3 md:p-5 bg-white rounded-xl border border-slate-200 shadow-sm">
+                    <label className="text-sm md:text-base font-bold text-slate-700 flex justify-between items-center mb-1">
+                        <span>🌊 Flow Rate</span>
+                        <span className="text-amber-700 font-mono text-base md:text-lg bg-amber-50 border border-amber-100 px-3 py-0.5 md:py-1 rounded shadow-sm">{flowRate} u/s</span>
                     </label>
-                    <input
-                        type="range" min="10" max="500" step="10"
-                        value={flowRate}
+                    <input type="range" min="10" max="500" step="10" value={flowRate}
                         onChange={(e) => setFlowRate(Number(e.target.value))}
-                        className="w-full accent-brand-secondary h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer"
-                    />
-                </div>
-                <div className="space-y-4 p-5 bg-white rounded-xl border border-slate-200 shadow-sm">
-                    <label className="text-sm font-bold text-slate-700 uppercase flex justify-between items-center">
-                        <span>Constriction Area (A₂)</span>
-                        <span className="text-brand-primary bg-brand-50 text-brand-700 px-3 py-1 rounded-lg font-mono">{constrictionArea} units²</span>
-                    </label>
-                    <input
-                        type="range" min="20" max="100" step="5"
-                        value={constrictionArea}
-                        onChange={(e) => setConstrictionArea(Number(e.target.value))}
-                        className="w-full accent-blue-500 h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer"
-                    />
-                    <div className="flex justify-between text-[10px] text-slate-400 font-bold uppercase mt-1">
-                        <span>Narrow</span>
-                        <span>Wide (A₁ = 100)</span>
+                        className="w-full accent-amber-600 h-2 md:h-3 bg-slate-100 rounded-lg appearance-none cursor-pointer" />
+                    <div className="flex justify-between text-[10px] font-bold text-slate-400 uppercase">
+                        <span>Low</span><span>High</span>
                     </div>
                 </div>
+                <div className="space-y-2 md:space-y-3 p-3 md:p-5 bg-white rounded-xl border border-slate-200 shadow-sm">
+                    <label className="text-sm md:text-base font-bold text-slate-700 flex justify-between items-center mb-1">
+                        <span>📏 Area (A₂)</span>
+                        <span className="text-blue-700 font-mono text-base md:text-lg bg-blue-50 border border-blue-100 px-3 py-0.5 md:py-1 rounded shadow-sm">{constrictionArea} u²</span>
+                    </label>
+                    <input type="range" min="20" max="100" step="5" value={constrictionArea}
+                        onChange={(e) => setConstrictionArea(Number(e.target.value))}
+                        className="w-full accent-blue-600 h-2 md:h-3 bg-slate-100 rounded-lg appearance-none cursor-pointer" />
+                    <div className="flex justify-between text-[10px] font-bold text-slate-400 uppercase">
+                        <span>Narrow</span><span>Normal</span>
+                    </div>
+                </div>
+            </div>
+            <div className="flex flex-col md:flex-row gap-2 md:gap-4 justify-center mt-1 md:mt-2">
+                <button onClick={() => setIsPlaying(!isPlaying)}
+                    className={`w-full md:w-auto flex items-center justify-center gap-2 md:gap-3 px-6 md:px-12 py-3 md:py-4 rounded-xl border font-bold text-sm md:text-base transition-all shadow-md active:scale-95 ${isPlaying ? 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50' : 'bg-emerald-600 border-emerald-500 text-white hover:bg-emerald-500 shadow-lg'}`}>
+                    {isPlaying ? <Pause size={22} /> : <Play size={22} />} {isPlaying ? 'PAUSE' : 'START'}
+                </button>
+                <button onClick={handleReset}
+                    className="w-full md:w-auto flex items-center justify-center gap-2 md:gap-3 px-6 md:px-12 py-3 md:py-4 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl border border-slate-200 transition-all font-bold text-sm md:text-base shadow-sm active:scale-95">
+                    <RotateCcw size={22} /> RESET ALL
+                </button>
             </div>
         </div>
     );
 
     return (
-        <TopicLayoutContainer
-            topic={topic}
-            onExit={onExit}
-            SimulationComponent={simulationCombo}
-            ControlsComponent={controlsCombo}
-        />
+        <TopicLayoutContainer topic={topic} onExit={onExit}
+            SimulationComponent={simulationCombo} ControlsComponent={controlsCombo} />
     );
 };
+
+function roundRect(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, r: number) {
+    ctx.beginPath(); ctx.moveTo(x + r, y); ctx.lineTo(x + w - r, y);
+    ctx.quadraticCurveTo(x + w, y, x + w, y + r); ctx.lineTo(x + w, y + h - r);
+    ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h); ctx.lineTo(x + r, y + h);
+    ctx.quadraticCurveTo(x, y + h, x, y + h - r); ctx.lineTo(x, y + r);
+    ctx.quadraticCurveTo(x, y, x + r, y); ctx.closePath();
+}
 
 export default FluidDynamicsLab;

@@ -1,4 +1,5 @@
 import React, { useRef, useEffect, useState, useCallback } from 'react';
+import { RotateCcw, Play, Pause } from 'lucide-react';
 import TopicLayoutContainer from '../../TopicLayoutContainer';
 
 interface WavesLabProps {
@@ -9,22 +10,41 @@ interface WavesLabProps {
 const WavesLab: React.FC<WavesLabProps> = ({ topic, onExit }) => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const animRef = useRef(0);
-    const stateRef = useRef({
-        freq: 5.0,       // Hz (driving frequency)
-        tension: 50,     // N
-        mu: 0.01,        // kg/m (linear mass density)
-        amplitude: 30,   // px
-        fixedEnd: true,  // true = rigid, false = free
-        running: true,
-        time: 0,
-    });
-    const frameRef = useRef(0);
 
-    // String length in px
-    const STRING_L = 420;
-    const STRING_Y = 120;
-    const STRING_X0 = 50;
-    const N_PARTICLES = 120;
+    const [freq, setFreq] = useState(5.0);
+    const [tension, setTension] = useState(50);
+    const [fixedEnd, setFixedEnd] = useState(true);
+    const [running, setRunning] = useState(true);
+
+    const stateRef = useRef({
+        freq: 5.0, tension: 50, mu: 0.01, amplitude: 35,
+        fixedEnd: true, running: true, time: 0,
+    });
+
+    const N_PARTICLES = 140;
+
+    useEffect(() => {
+        stateRef.current.freq = freq;
+        stateRef.current.tension = tension;
+        stateRef.current.fixedEnd = fixedEnd;
+        stateRef.current.running = running;
+    }, [freq, tension, fixedEnd, running]);
+
+    // Dynamic canvas resize
+    useEffect(() => {
+        const canvas = canvasRef.current;
+        if (!canvas) return;
+        const parent = canvas.parentElement;
+        if (!parent) return;
+        const resizeObserver = new ResizeObserver(() => {
+            canvas.width = parent.clientWidth;
+            canvas.height = parent.clientHeight;
+        });
+        resizeObserver.observe(parent);
+        canvas.width = parent.clientWidth;
+        canvas.height = parent.clientHeight;
+        return () => resizeObserver.disconnect();
+    }, []);
 
     const draw = useCallback(() => {
         const canvas = canvasRef.current;
@@ -32,148 +52,161 @@ const WavesLab: React.FC<WavesLabProps> = ({ topic, onExit }) => {
         const ctx = canvas.getContext('2d');
         if (!ctx) return;
         const W = canvas.width, H = canvas.height;
+        if (W < 10 || H < 10) { animRef.current = requestAnimationFrame(draw); return; }
         const s = stateRef.current;
-        frameRef.current++;
 
-        if (s.running) {
-            s.time += 0.004; // Natively 20% of original speed
-        }
+        if (s.running) s.time += 0.004;
 
         // Physics
-        const v = Math.sqrt(s.tension / s.mu); // wave speed m/s
-        const lambda = v / s.freq; // wavelength in "meters"
+        const v_wave = Math.sqrt(s.tension / s.mu);
+        const lambda = v_wave / s.freq;
         const omega = 2 * Math.PI * s.freq;
         const k = 2 * Math.PI / lambda;
-
-        // How many half-wavelengths fit in L? Resonance when L = n*λ/2
-        const L_meters = STRING_L * 0.01; // scale: 1px = 0.01m
-        const n_harmonic = Math.round(2 * L_meters * s.freq / v);
-        const resonantFreq = n_harmonic > 0 ? n_harmonic * v / (2 * L_meters) : 0;
+        const STRING_L = W * 0.85;
+        const L_meters = STRING_L * 0.01;
+        const n_harmonic = Math.round(2 * L_meters * s.freq / v_wave);
+        const resonantFreq = n_harmonic > 0 ? n_harmonic * v_wave / (2 * L_meters) : 0;
         const isResonant = n_harmonic > 0 && Math.abs(s.freq - resonantFreq) < 0.3;
 
-        // ===== CLEAR =====
+        // Clear
         ctx.clearRect(0, 0, W, H);
-        const bg = ctx.createLinearGradient(0, 0, 0, H);
-        bg.addColorStop(0, '#0f172a'); bg.addColorStop(1, '#1e293b');
-        ctx.fillStyle = bg; ctx.fillRect(0, 0, W, H);
+        ctx.fillStyle = '#f8fafc'; // Soft White
+        ctx.fillRect(0, 0, W, H);
 
-        // ===== LAYOUT =====
-        const dx = 505, dy = 20, dw = 285;
+        // DYNAMIC VIEWPORT SCALING (Laptop vs Smartboard)
+        const scale = W < 1000 ? 1.0 : (W > 1500 ? 1.3 : 1.0 + (W - 1000) * 0.0006);
+        const fs = (base: number) => Math.max(10, Math.min(base * scale, W * 0.025, H * 0.045));
+        const pad = Math.min(W * 0.03, H * 0.035, scale * 24);
 
-        // ===== OSCILLATOR (left) =====
-        const oscY = STRING_Y + Math.sin(omega * s.time) * s.amplitude * 0.6;
-        ctx.fillStyle = '#475569';
-        roundRect(ctx, STRING_X0 - 25, STRING_Y - 30, 25, 60, 4); ctx.fill();
-        ctx.fillStyle = '#64748b'; ctx.beginPath();
-        ctx.arc(STRING_X0 - 12, oscY, 6, 0, Math.PI * 2); ctx.fill();
-        ctx.strokeStyle = '#94a3b8'; ctx.lineWidth = 1;
-        ctx.beginPath(); ctx.arc(STRING_X0 - 12, oscY, 6, 0, Math.PI * 2); ctx.stroke();
+        // ═══════════════════════════════════════════
+        // TOP: String animation
+        // ═══════════════════════════════════════════
+        const STRING_X0 = pad * 4;
+        const STRING_Y = H * 0.18;
+        const scaledAmp = Math.min(s.amplitude, H * 0.08);
 
-        // ===== CLAMP (right) =====
+        // Oscillator (left)
+        const oscY = STRING_Y + Math.sin(omega * s.time) * scaledAmp * 0.6;
+        ctx.fillStyle = '#94a3b8';
+        roundRect(ctx, STRING_X0 - 32 * scale, STRING_Y - 35 * scale, 32 * scale, 70 * scale, 6); ctx.fill();
+        ctx.fillStyle = '#334155'; ctx.beginPath();
+        ctx.arc(STRING_X0 - 16 * scale, oscY, 10 * scale, 0, Math.PI * 2); ctx.fill();
+        ctx.strokeStyle = '#1e293b'; ctx.lineWidth = 1.5 * scale;
+        ctx.beginPath(); ctx.arc(STRING_X0 - 16 * scale, oscY, 10 * scale, 0, Math.PI * 2); ctx.stroke();
+
+        // Clamp (right)
         const clampX = STRING_X0 + STRING_L;
-        ctx.fillStyle = '#475569';
+        ctx.fillStyle = '#94a3b8';
         if (s.fixedEnd) {
-            ctx.fillRect(clampX, STRING_Y - 30, 12, 60);
-            // Hatch marks for wall
-            ctx.strokeStyle = '#94a3b8'; ctx.lineWidth = 0.5;
+            ctx.fillRect(clampX, STRING_Y - 35 * scale, 16 * scale, 70 * scale);
+            ctx.strokeStyle = '#f8fafc'; ctx.lineWidth = 1.5 * scale;
             for (let i = 0; i < 6; i++) {
                 ctx.beginPath();
-                ctx.moveTo(clampX + 10, STRING_Y - 25 + i * 10);
-                ctx.lineTo(clampX + 2, STRING_Y - 17 + i * 10);
+                ctx.moveTo(clampX + 14 * scale, STRING_Y - 30 * scale + i * 12 * scale);
+                ctx.lineTo(clampX + 2 * scale, STRING_Y - 21 * scale + i * 12 * scale);
                 ctx.stroke();
             }
         } else {
-            // Free end: ring
-            ctx.strokeStyle = '#94a3b8'; ctx.lineWidth = 2;
-            ctx.beginPath(); ctx.arc(clampX + 6, STRING_Y, 8, 0, Math.PI * 2); ctx.stroke();
-            ctx.fillStyle = '#1e293b'; ctx.beginPath(); ctx.arc(clampX + 6, STRING_Y, 6, 0, Math.PI * 2); ctx.fill();
+            ctx.strokeStyle = '#334155'; ctx.lineWidth = 4 * scale;
+            ctx.beginPath(); ctx.arc(clampX + 8 * scale, STRING_Y, 12 * scale, 0, Math.PI * 2); ctx.stroke();
+            ctx.fillStyle = '#ffffff'; ctx.beginPath(); ctx.arc(clampX + 8 * scale, STRING_Y, 8 * scale, 0, Math.PI * 2); ctx.fill();
         }
 
         // Labels
-        ctx.fillStyle = '#64748b'; ctx.font = '7px Inter, sans-serif'; ctx.textAlign = 'center';
-        ctx.fillText('Oscillator', STRING_X0 - 12, STRING_Y + 45);
-        ctx.fillText(s.fixedEnd ? 'Fixed End' : 'Free End', clampX + 6, STRING_Y + 45);
+        ctx.fillStyle = '#64748b'; ctx.font = `bold ${fs(12)}px sans-serif`; ctx.textAlign = 'center';
+        ctx.fillText('OSCILLATOR', STRING_X0 - 16 * scale, STRING_Y + 55 * scale);
+        ctx.fillText(s.fixedEnd ? 'FIXED' : 'FREE', clampX + 8 * scale, STRING_Y + 55 * scale);
 
-        // ===== DRAW STRING WITH SUPERPOSITION =====
+        // Draw string
         const points: { x: number; y: number }[] = [];
         for (let i = 0; i <= N_PARTICLES; i++) {
             const px = STRING_X0 + (i / N_PARTICLES) * STRING_L;
-            const x_m = (i / N_PARTICLES) * L_meters; // position in meters
-
-            // Incident wave
-            const y_inc = s.amplitude * Math.sin(k * x_m - omega * s.time);
-            // Reflected wave (phase depends on boundary)
+            const x_m = (i / N_PARTICLES) * L_meters;
+            const y_inc = scaledAmp * Math.sin(k * x_m - omega * s.time);
             const y_ref = s.fixedEnd
-                ? -s.amplitude * Math.sin(k * (2 * L_meters - x_m) - omega * s.time)
-                : s.amplitude * Math.sin(k * (2 * L_meters - x_m) - omega * s.time);
-            const y_total = y_inc + y_ref;
-
-            points.push({ x: px, y: STRING_Y + y_total });
+                ? -scaledAmp * Math.sin(k * (2 * L_meters - x_m) - omega * s.time)
+                : scaledAmp * Math.sin(k * (2 * L_meters - x_m) - omega * s.time);
+            points.push({ x: px, y: STRING_Y + y_inc + y_ref });
         }
 
-        // Draw string line
-        ctx.strokeStyle = isResonant ? '#22c55e' : '#94a3b8';
-        ctx.lineWidth = isResonant ? 2.5 : 1.5;
+        ctx.strokeStyle = isResonant ? '#16a34a' : '#475569';
+        ctx.lineWidth = (isResonant ? 4.5 : 3.5) * scale;
         ctx.beginPath();
         points.forEach((p, i) => i === 0 ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y));
         ctx.stroke();
 
-        // Draw particles
-        const particleStep = Math.max(1, Math.floor(N_PARTICLES / 40));
+        // Particles
+        const particleStep = Math.max(1, Math.floor(N_PARTICLES / 45));
         for (let i = 0; i <= N_PARTICLES; i += particleStep) {
             const p = points[i];
             const disp = Math.abs(p.y - STRING_Y);
-            const bright = Math.min(1, disp / (s.amplitude * 1.5));
-            const color = isResonant
-                ? `rgba(34, 197, 94, ${0.4 + bright * 0.6})`
-                : `rgba(148, 163, 184, ${0.3 + bright * 0.5})`;
-            ctx.fillStyle = color;
-            ctx.beginPath(); ctx.arc(p.x, p.y, 2.5 + bright * 1.5, 0, Math.PI * 2); ctx.fill();
+            const bright = Math.min(1, disp / (scaledAmp * 1.5));
+            ctx.fillStyle = isResonant
+                ? `rgba(22, 163, 74, ${0.6 + bright * 0.4})`
+                : `rgba(15, 23, 42, ${0.5 + bright * 0.35})`;
+            ctx.beginPath(); ctx.arc(p.x, p.y, (4 + bright * 2) * scale, 0, Math.PI * 2); ctx.fill();
         }
 
-        // Mark nodes and antinodes at resonance
+        // Nodes and antinodes
         if (isResonant && n_harmonic > 0) {
             const lambdaRes = 2 * L_meters / n_harmonic;
-            // Nodes: every λ/2 from x=0
             for (let nn = 0; nn <= n_harmonic; nn++) {
                 const nodeX = STRING_X0 + (nn * lambdaRes / 2 / L_meters) * STRING_L;
-                ctx.fillStyle = 'rgba(239, 68, 68, 0.7)';
-                ctx.beginPath(); ctx.arc(nodeX, STRING_Y, 5, 0, Math.PI * 2); ctx.fill();
-                ctx.fillStyle = '#ef4444'; ctx.font = 'bold 7px Inter, sans-serif'; ctx.textAlign = 'center';
-                ctx.fillText('N', nodeX, STRING_Y + 18);
+                ctx.fillStyle = '#dc2626';
+                ctx.beginPath(); ctx.arc(nodeX, STRING_Y, 8 * scale, 0, Math.PI * 2); ctx.fill();
+                ctx.fillStyle = '#ffffff'; ctx.font = `bold ${fs(12)}px sans-serif`; ctx.textAlign = 'center';
+                ctx.fillText('N', nodeX, STRING_Y + 4 * scale);
             }
-            // Antinodes: at λ/4, 3λ/4, etc from start
             for (let an = 0; an < n_harmonic; an++) {
                 const antiX = STRING_X0 + ((an + 0.5) * lambdaRes / 2 / L_meters) * STRING_L;
-                ctx.strokeStyle = 'rgba(59,130,246,0.5)'; ctx.lineWidth = 1; ctx.setLineDash([3, 3]);
-                ctx.beginPath(); ctx.moveTo(antiX, STRING_Y - s.amplitude * 1.8); ctx.lineTo(antiX, STRING_Y + s.amplitude * 1.8); ctx.stroke();
+                ctx.strokeStyle = 'rgba(37, 99, 235, 0.5)'; ctx.lineWidth = 2 * scale; ctx.setLineDash([6, 5]);
+                ctx.beginPath(); ctx.moveTo(antiX, STRING_Y - scaledAmp * 2.2); ctx.lineTo(antiX, STRING_Y + scaledAmp * 2.2); ctx.stroke();
                 ctx.setLineDash([]);
-                ctx.fillStyle = '#3b82f6'; ctx.font = 'bold 7px Inter, sans-serif';
-                ctx.fillText('A', antiX, STRING_Y - s.amplitude * 1.8 - 5);
+                ctx.fillStyle = '#2563eb'; ctx.font = `bold ${fs(14)}px sans-serif`;
+                ctx.fillText('A', antiX, STRING_Y - scaledAmp * 2.2 - 8 * scale);
             }
         }
 
-        // ===== WAVE GRAPHS (bottom) =====
-        const gy0 = 190, gw = 220, gh = 50;
+        // Title area
+        ctx.fillStyle = '#0f172a'; ctx.font = `bold ${fs(16)}px sans-serif`; ctx.textAlign = 'left';
+        ctx.fillText('Superposition, Reflection & Standing Waves', pad, pad * 1.2);
+        ctx.fillStyle = isResonant ? '#16a34a' : '#64748b';
+        ctx.font = `bold ${fs(12)}px sans-serif`;
+        ctx.fillText(isResonant ? `STATIONARY WAVE: HARMONIC #${n_harmonic}` : 'SWEEP FREQUENCY FOR RESONANCE harmonics', pad, pad * 1.2 + fs(17));
+
+        // ═══════════════════════════════════════════
+        // BOTTOM: Wave Graphs + Info Panel
+        // ═══════════════════════════════════════════
+        const bottomY = H * 0.35;
+        const bottomH = H - bottomY - pad;
+
+        const graphAreaW = W * 0.48;
+        const graphX = pad;
+        const graphGap = pad * 0.5;
+        const graphCount = 3;
+        const resBoxH = Math.min(bottomH * 0.2, 55 * scale);
+        const singleGH = (bottomH - graphGap * graphCount - resBoxH - graphGap) / graphCount;
+
         const waveGraphs = [
-            { label: 'Incident', color: '#3b82f6', yOff: gy0 },
-            { label: 'Reflected', color: '#ef4444', yOff: gy0 + 63 },
-            { label: 'Resultant', color: '#8b5cf6', yOff: gy0 + 126 },
+            { label: 'INCIDENT', color: '#2563eb' },
+            { label: 'REFLECTED', color: '#dc2626' },
+            { label: 'RESULTANT', color: '#7c3aed' },
         ];
 
-        waveGraphs.forEach(g => {
-            const gy = g.yOff;
-            ctx.fillStyle = 'rgba(15,23,42,0.6)'; roundRect(ctx, 20, gy, gw, gh, 6); ctx.fill();
-            ctx.strokeStyle = '#334155'; ctx.lineWidth = 0.5; roundRect(ctx, 20, gy, gw, gh, 6); ctx.stroke();
-            ctx.strokeStyle = 'rgba(255,255,255,0.08)'; ctx.lineWidth = 0.5;
-            ctx.beginPath(); ctx.moveTo(20, gy + gh / 2); ctx.lineTo(20 + gw, gy + gh / 2); ctx.stroke();
-            ctx.fillStyle = g.color; ctx.font = 'bold 8px monospace'; ctx.textAlign = 'left';
-            ctx.fillText(g.label, 25, gy + 11);
+        waveGraphs.forEach((g, idx) => {
+            const gy = bottomY + idx * (singleGH + graphGap);
+            ctx.fillStyle = '#ffffff';
+            roundRect(ctx, graphX, gy, graphAreaW, singleGH, 8); ctx.fill();
+            ctx.strokeStyle = '#e2e8f0'; ctx.lineWidth = 1.5;
+            roundRect(ctx, graphX, gy, graphAreaW, singleGH, 8); ctx.stroke();
+            ctx.strokeStyle = 'rgba(15, 23, 42, 0.08)'; ctx.lineWidth = 1;
+            ctx.beginPath(); ctx.moveTo(graphX, gy + singleGH / 2); ctx.lineTo(graphX + graphAreaW, gy + singleGH / 2); ctx.stroke();
+            ctx.fillStyle = g.color; ctx.font = `bold ${fs(11)}px monospace`; ctx.textAlign = 'left';
+            ctx.fillText(g.label, graphX + 10, gy + fs(12) + 4);
         });
 
-        // Plot graphs
         for (let i = 0; i <= N_PARTICLES; i++) {
-            const px = 20 + (i / N_PARTICLES) * gw;
+            const px = graphX + (i / N_PARTICLES) * graphAreaW;
             const x_m = (i / N_PARTICLES) * L_meters;
             const y_inc = Math.sin(k * x_m - omega * s.time);
             const y_ref = s.fixedEnd
@@ -181,150 +214,71 @@ const WavesLab: React.FC<WavesLabProps> = ({ topic, onExit }) => {
                 : Math.sin(k * (2 * L_meters - x_m) - omega * s.time);
             const y_res = y_inc + y_ref;
 
-            const drawDot = (gy: number, val: number, color: string) => {
-                const py = gy + gh / 2 - val * (gh / 2 - 4);
+            const drawDot = (gIdx: number, val: number, color: string) => {
+                const gy = bottomY + gIdx * (singleGH + graphGap);
+                const py = gy + singleGH / 2 - val * (singleGH / 2 - 6);
                 ctx.fillStyle = color;
-                if (i % 3 === 0) { ctx.fillRect(px, py, 1.5, 1.5); }
+                if (i % 2 === 0) ctx.fillRect(px, py, 3, 3);
             };
-            drawDot(waveGraphs[0].yOff, y_inc, '#3b82f6');
-            drawDot(waveGraphs[1].yOff, y_ref, '#ef4444');
-            drawDot(waveGraphs[2].yOff, y_res * 0.5, '#8b5cf6');
+            drawDot(0, y_inc, '#2563eb');
+            drawDot(1, y_ref, '#dc2626');
+            drawDot(2, y_res * 0.5, '#7c3aed');
         }
 
-        // ===== RESONANCE / HARMONIC INDICATOR (center-bottom) =====
-        const resY = gy0 + 126 + gh + 10;
+        const resY = bottomY + graphCount * (singleGH + graphGap);
         if (isResonant && n_harmonic > 0) {
-            ctx.fillStyle = 'rgba(34,197,94,0.15)'; roundRect(ctx, 20, resY, gw, 40, 8); ctx.fill();
-            ctx.strokeStyle = '#22c55e'; ctx.lineWidth = 1.5; roundRect(ctx, 20, resY, gw, 40, 8); ctx.stroke();
-            ctx.fillStyle = '#22c55e'; ctx.font = 'bold 12px Inter, sans-serif'; ctx.textAlign = 'center';
-            ctx.fillText(`🎵 RESONANCE! Harmonic #${n_harmonic}`, 20 + gw / 2, resY + 16);
-            ctx.fillStyle = '#94a3b8'; ctx.font = '8px Inter, sans-serif';
-            ctx.fillText(`${n_harmonic} loop${n_harmonic > 1 ? 's' : ''}  |  ${n_harmonic + 1} nodes  |  ${n_harmonic} antinodes`, 20 + gw / 2, resY + 30);
+            ctx.fillStyle = 'rgba(22,163,74,0.08)'; roundRect(ctx, graphX, resY, graphAreaW, resBoxH, 10); ctx.fill();
+            ctx.strokeStyle = '#16a34a'; ctx.lineWidth = 2.5 * scale; roundRect(ctx, graphX, resY, graphAreaW, resBoxH, 10); ctx.stroke();
+            ctx.fillStyle = '#16a34a'; ctx.font = `bold ${fs(14)}px sans-serif`; ctx.textAlign = 'center';
+            ctx.fillText(`🎶 RESONANCE DETECTED (n = ${n_harmonic})`, graphX + graphAreaW / 2, resY + resBoxH * 0.45);
         } else {
-            ctx.fillStyle = 'rgba(30,41,59,0.5)'; roundRect(ctx, 20, resY, gw, 40, 8); ctx.fill();
-            ctx.strokeStyle = '#334155'; ctx.lineWidth = 1; roundRect(ctx, 20, resY, gw, 40, 8); ctx.stroke();
-            ctx.fillStyle = '#64748b'; ctx.font = '10px Inter, sans-serif'; ctx.textAlign = 'center';
-            ctx.fillText('Adjust frequency to find resonance...', 20 + gw / 2, resY + 24);
+            ctx.fillStyle = '#ffffff'; roundRect(ctx, graphX, resY, graphAreaW, resBoxH, 10); ctx.fill();
+            ctx.strokeStyle = '#e2e8f0'; ctx.lineWidth = 1.5; roundRect(ctx, graphX, resY, graphAreaW, resBoxH, 10); ctx.stroke();
+            ctx.fillStyle = '#94a3b8'; ctx.font = `bold ${fs(12)}px sans-serif`; ctx.textAlign = 'center';
+            ctx.fillText('SWEEP FREQUENCY FOR RESONANCE...', graphX + graphAreaW / 2, resY + resBoxH * 0.6);
         }
 
-        // ===== RIGHT PANEL =====
-        ctx.fillStyle = 'rgba(30,41,59,0.7)'; roundRect(ctx, dx, dy, dw, 90, 8); ctx.fill();
-        ctx.strokeStyle = '#334155'; ctx.lineWidth = 1; roundRect(ctx, dx, dy, dw, 90, 8); ctx.stroke();
+        const rightX = graphX + graphAreaW + pad;
+        const rightW = W - rightX - pad;
 
-        ctx.fillStyle = '#3b82f6'; ctx.font = 'bold 14px monospace'; ctx.textAlign = 'center';
-        ctx.fillText(`ν = ${s.freq.toFixed(1)} Hz`, dx + dw / 4, dy + 22);
-        ctx.fillStyle = '#f59e0b'; ctx.font = 'bold 14px monospace';
-        ctx.fillText(`v = ${v.toFixed(1)} m/s`, dx + 3 * dw / 4, dy + 22);
+        const card1H = bottomH * 0.52;
+        ctx.fillStyle = '#ffffff';
+        roundRect(ctx, rightX, bottomY, rightW, card1H, 14); ctx.fill();
+        ctx.strokeStyle = '#e2e8f0'; ctx.lineWidth = 1.5;
+        roundRect(ctx, rightX, bottomY, rightW, card1H, 14); ctx.stroke();
 
-        ctx.fillStyle = '#94a3b8'; ctx.font = '8px monospace'; ctx.textAlign = 'center';
-        ctx.fillText(`λ = ${lambda.toFixed(3)} m  |  k = ${k.toFixed(1)} rad/m  |  ω = ${omega.toFixed(1)} rad/s`, dx + dw / 2, dy + 40);
-        ctx.fillText(`v = √(T/μ) = √(${s.tension}/${s.mu})  |  L = ${L_meters.toFixed(2)} m`, dx + dw / 2, dy + 54);
+        const lineH = fs(16) + 10;
+        let fy = bottomY + lineH * 1.5;
+        ctx.fillStyle = '#2563eb'; ctx.font = `bold ${fs(20)}px monospace`; ctx.textAlign = 'center';
+        ctx.fillText(`ν = ${s.freq.toFixed(1)} Hz`, rightX + rightW * 0.3, fy);
+        ctx.fillStyle = '#d97706'; ctx.font = `bold ${fs(20)}px monospace`;
+        ctx.fillText(`v = ${v_wave.toFixed(1)} m/s`, rightX + rightW * 0.7, fy);
 
+        fy += lineH;
+        ctx.fillStyle = '#0f172a'; ctx.font = `bold ${fs(11)}px monospace`;
+        ctx.fillText(`λ = ${lambda.toFixed(3)} m | k = ${k.toFixed(1)}`, rightX + rightW / 2, fy);
+
+        fy += lineH;
+        ctx.fillStyle = '#64748b'; ctx.font = `bold ${fs(11)}px monospace`;
+        ctx.fillText(`SPEED v = √(T/μ)`, rightX + rightW / 2, fy);
+
+        fy += lineH * 1.2;
         if (isResonant && n_harmonic > 0) {
-            ctx.fillStyle = '#22c55e'; ctx.font = 'bold 10px Inter, sans-serif';
-            ctx.fillText(`Harmonic n = ${n_harmonic}  |  νₙ = n·v/(2L)`, dx + dw / 2, dy + 72);
-        } else {
-            ctx.fillStyle = '#64748b'; ctx.font = '9px Inter, sans-serif';
-            ctx.fillText('Not at resonance — adjust frequency', dx + dw / 2, dy + 72);
-        }
-        ctx.fillStyle = '#64748b'; ctx.font = '7px Inter, sans-serif';
-        ctx.fillText(`ν₁ = ${(v / (2 * L_meters)).toFixed(1)} Hz (fundamental)`, dx + dw / 2, dy + 85);
-
-        // ===== CONTROLS =====
-        const ctrlY = dy + 100;
-        const slW = dw - 20;
-
-        // Frequency slider
-        ctx.fillStyle = '#94a3b8'; ctx.font = 'bold 9px Inter, sans-serif'; ctx.textAlign = 'left';
-        ctx.fillText(`🎵 Frequency: ${s.freq.toFixed(1)} Hz`, dx + 10, ctrlY + 10);
-        ctx.fillStyle = '#1e293b'; roundRect(ctx, dx + 10, ctrlY + 16, slW, 12, 6); ctx.fill();
-        const fNorm = (s.freq - 1) / 49;
-        ctx.fillStyle = '#3b82f6'; roundRect(ctx, dx + 10, ctrlY + 16, fNorm * slW, 12, 6); ctx.fill();
-        ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(dx + 10 + fNorm * slW, ctrlY + 22, 8, 0, Math.PI * 2); ctx.fill();
-        ctx.strokeStyle = '#94a3b8'; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(dx + 10 + fNorm * slW, ctrlY + 22, 8, 0, Math.PI * 2); ctx.stroke();
-
-        // Tension slider
-        const tslY = ctrlY + 38;
-        ctx.fillStyle = '#94a3b8'; ctx.font = 'bold 9px Inter, sans-serif'; ctx.textAlign = 'left';
-        ctx.fillText(`🔧 Tension: ${Math.round(s.tension)} N`, dx + 10, tslY + 10);
-        ctx.fillStyle = '#1e293b'; roundRect(ctx, dx + 10, tslY + 16, slW, 12, 6); ctx.fill();
-        const tNorm = (s.tension - 10) / 190;
-        ctx.fillStyle = '#f59e0b'; roundRect(ctx, dx + 10, tslY + 16, tNorm * slW, 12, 6); ctx.fill();
-        ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(dx + 10 + tNorm * slW, tslY + 22, 8, 0, Math.PI * 2); ctx.fill();
-        ctx.strokeStyle = '#94a3b8'; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(dx + 10 + tNorm * slW, tslY + 22, 8, 0, Math.PI * 2); ctx.stroke();
-
-        // Boundary toggle
-        const bndY = tslY + 40;
-        ctx.fillStyle = s.fixedEnd ? '#1e293b' : '#8b5cf6';
-        roundRect(ctx, dx + 10, bndY, slW / 2 - 3, 26, 8); ctx.fill();
-        ctx.strokeStyle = s.fixedEnd ? '#22c55e' : '#64748b'; ctx.lineWidth = 1.5;
-        roundRect(ctx, dx + 10, bndY, slW / 2 - 3, 26, 8); ctx.stroke();
-        ctx.fillStyle = s.fixedEnd ? '#22c55e' : '#fff'; ctx.font = 'bold 9px Inter, sans-serif'; ctx.textAlign = 'center';
-        ctx.fillText('🔒 Fixed End', dx + 10 + (slW / 2 - 3) / 2, bndY + 17);
-
-        ctx.fillStyle = !s.fixedEnd ? '#1e293b' : '#8b5cf6';
-        const fbx = dx + 10 + slW / 2 + 3;
-        roundRect(ctx, fbx, bndY, slW / 2 - 3, 26, 8); ctx.fill();
-        ctx.strokeStyle = !s.fixedEnd ? '#22c55e' : '#64748b'; ctx.lineWidth = 1.5;
-        roundRect(ctx, fbx, bndY, slW / 2 - 3, 26, 8); ctx.stroke();
-        ctx.fillStyle = !s.fixedEnd ? '#22c55e' : '#fff'; ctx.font = 'bold 9px Inter, sans-serif';
-        ctx.fillText('🔓 Free End', fbx + (slW / 2 - 3) / 2, bndY + 17);
-
-        // Play/Pause
-        const pbY = bndY + 34;
-        ctx.fillStyle = s.running ? '#1e293b' : '#22c55e';
-        roundRect(ctx, dx + 10, pbY, slW, 26, 8); ctx.fill();
-        ctx.strokeStyle = s.running ? '#64748b' : '#22c55e'; ctx.lineWidth = 1.5; roundRect(ctx, dx + 10, pbY, slW, 26, 8); ctx.stroke();
-        ctx.fillStyle = s.running ? '#94a3b8' : '#fff'; ctx.font = 'bold 10px Inter, sans-serif'; ctx.textAlign = 'center';
-        ctx.fillText(s.running ? '⏸ Pause' : '▶ Play', dx + 10 + slW / 2, pbY + 17);
-
-        // Reset
-        const rstY = pbY + 34;
-        ctx.fillStyle = '#1e293b'; roundRect(ctx, dx + 10, rstY, slW, 26, 8); ctx.fill();
-        ctx.strokeStyle = '#64748b'; ctx.lineWidth = 1; roundRect(ctx, dx + 10, rstY, slW, 26, 8); ctx.stroke();
-        ctx.fillStyle = '#94a3b8'; ctx.font = 'bold 10px Inter, sans-serif'; ctx.textAlign = 'center';
-        ctx.fillText('↺ Reset', dx + 10 + slW / 2, rstY + 17);
-
-        // ===== DESCRIPTION BOX =====
-        const descY = 280, descW2 = 240, descH2 = 100;
-        ctx.fillStyle = 'rgba(30,41,59,0.85)'; roundRect(ctx, 250, descY, descW2, descH2, 10); ctx.fill();
-        ctx.strokeStyle = '#8b5cf6'; ctx.lineWidth = 2; roundRect(ctx, 250, descY, descW2, descH2, 10); ctx.stroke();
-        ctx.fillStyle = '#8b5cf6'; roundRect(ctx, 262, descY + 10, 6, 20, 3); ctx.fill();
-        ctx.fillStyle = '#8b5cf6'; ctx.font = 'bold 10px Inter, sans-serif'; ctx.textAlign = 'left';
-        ctx.fillText('Standing Wave Equation', 276, descY + 22);
-        ctx.fillStyle = '#e2e8f0'; ctx.font = 'bold 10px monospace';
-        ctx.fillText('y = [2a sin(kx)] cos(ωt)', 262, descY + 42);
-        ctx.fillStyle = '#94a3b8'; ctx.font = '8px Inter, sans-serif';
-        wrapText(ctx, 'Nodes: sin(kx)=0 → x = nλ/2. Antinodes: |sin(kx)|=1 → x = (2n+1)λ/4. Resonance: L = nλ/2.', 262, descY + 58, descW2 - 25, 12);
-
-        // ===== HOW TO USE =====
-        const guideY = rstY + 36;
-        const guideH = H - guideY - 8;
-        if (guideH > 50) {
-            ctx.fillStyle = 'rgba(30,41,59,0.5)'; roundRect(ctx, dx, guideY, dw, guideH, 8); ctx.fill();
-            ctx.strokeStyle = '#334155'; ctx.lineWidth = 1; roundRect(ctx, dx, guideY, dw, guideH, 8); ctx.stroke();
-            ctx.fillStyle = '#64748b'; ctx.font = 'bold 9px Inter, sans-serif'; ctx.textAlign = 'center';
-            ctx.fillText('💡 HOW TO USE', dx + dw / 2, guideY + 16);
-            ctx.textAlign = 'left';
-            const steps = [
-                ['1.', 'Slide frequency — find resonance (green)'],
-                ['2.', 'Count loops = harmonic number n'],
-                ['3.', 'Change tension — resonance shifts'],
-                ['4.', 'Toggle Fixed/Free boundary type'],
-                ['5.', 'Watch graphs: blue + red = purple'],
-            ];
-            steps.forEach((st, i) => {
-                const sy = guideY + 30 + i * 14;
-                if (sy + 10 < guideY + guideH) {
-                    ctx.fillStyle = '#8b5cf6'; ctx.font = 'bold 8.5px monospace'; ctx.fillText(st[0], dx + 12, sy);
-                    ctx.fillStyle = '#94a3b8'; ctx.font = '8.5px Inter, sans-serif'; ctx.fillText(st[1], dx + 26, sy);
-                }
-            });
+            ctx.fillStyle = '#16a34a'; ctx.font = `bold ${fs(13)}px sans-serif`;
+            ctx.fillText(`RESONANT: νₙ = ${resonantFreq.toFixed(2)} Hz`, rightX + rightW / 2, fy);
         }
 
-        // Top status
-        ctx.fillStyle = '#94a3b8'; ctx.font = 'bold 9px Inter, sans-serif'; ctx.textAlign = 'left';
-        ctx.fillText(`Waves  |  ν=${s.freq.toFixed(1)}Hz  v=${v.toFixed(1)}m/s  λ=${lambda.toFixed(3)}m  |  ${isResonant ? `RESONANCE n=${n_harmonic}` : 'No resonance'}`, 10, 14);
+        const card2Y = bottomY + card1H + pad * 0.8;
+        const card2H = bottomH - card1H - pad * 0.8;
+        ctx.fillStyle = '#ffffff';
+        roundRect(ctx, rightX, card2Y, rightW, card2H, 14); ctx.fill();
+        ctx.strokeStyle = '#7c3aed40'; ctx.lineWidth = 2;
+        roundRect(ctx, rightX, card2Y, rightW, card2H, 14); ctx.stroke();
+
+        ctx.fillStyle = '#7c3aed'; ctx.font = `bold ${fs(14)}px sans-serif`;
+        ctx.fillText('STANDING WAVE EQUATION', rightX + rightW / 2, card2Y + lineH * 0.8);
+        ctx.fillStyle = '#0f172a'; ctx.font = `bold ${fs(16)}px monospace`;
+        ctx.fillText('y = [2A sin(kx)] cos(ωt)', rightX + rightW / 2, card2Y + lineH * 1.8);
 
         animRef.current = requestAnimationFrame(draw);
     }, []);
@@ -334,137 +288,79 @@ const WavesLab: React.FC<WavesLabProps> = ({ topic, onExit }) => {
         return () => { if (animRef.current) cancelAnimationFrame(animRef.current); };
     }, [draw]);
 
-    // ===== MOUSE HANDLERS =====
-    const draggingRef = useRef('');
-    const getCoords = useCallback((e: MouseEvent | Touch) => {
-        const c = canvasRef.current;
-        if (!c) return { x: 0, y: 0 };
-        const r = c.getBoundingClientRect();
-        return { x: (e.clientX - r.left) * (c.width / r.width), y: (e.clientY - r.top) * (c.height / r.height) };
-    }, []);
-
-    const handleMouseDown = useCallback((e: React.MouseEvent<HTMLCanvasElement>) => {
-        const { x, y } = getCoords(e);
-        const dx = 505, dw = 285, dy = 20, slW = dw - 20;
-        const ctrlY = dy + 100;
-
-        // Freq slider
-        if (x >= dx + 2 && x <= dx + dw && y >= ctrlY + 10 && y <= ctrlY + 34) {
-            draggingRef.current = 'freq';
-            const val = Math.max(0, Math.min(1, (x - (dx + 10)) / slW));
-            stateRef.current.freq = 1 + val * 49;
-            return;
-        }
-        // Tension slider
-        const tslY = ctrlY + 38;
-        if (x >= dx + 2 && x <= dx + dw && y >= tslY + 10 && y <= tslY + 34) {
-            draggingRef.current = 'tension';
-            const val = Math.max(0, Math.min(1, (x - (dx + 10)) / slW));
-            stateRef.current.tension = 10 + val * 190;
-            return;
-        }
-        // Boundary toggle
-        const bndY = tslY + 40;
-        if (y >= bndY && y <= bndY + 26) {
-            if (x >= dx + 10 && x <= dx + 10 + slW / 2 - 3) { stateRef.current.fixedEnd = true; return; }
-            if (x >= dx + 10 + slW / 2 + 3 && x <= dx + 10 + slW) { stateRef.current.fixedEnd = false; return; }
-        }
-        // Play/Pause
-        const pbY = bndY + 34;
-        if (x >= dx + 10 && x <= dx + 10 + slW && y >= pbY && y <= pbY + 26) {
-            stateRef.current.running = !stateRef.current.running;
-            return;
-        }
-
-        // Reset
-        const rstY = pbY + 34;
-        if (x >= dx + 10 && x <= dx + 10 + slW && y >= rstY && y <= rstY + 26) {
-            stateRef.current = { freq: 5.0, tension: 50, mu: 0.01, amplitude: 30, fixedEnd: true, running: true, time: 0 };
-        }
-    }, [getCoords]);
-
-    const handleMouseMove = useCallback((e: React.MouseEvent<HTMLCanvasElement>) => {
-        if (!draggingRef.current) return;
-        const { x } = getCoords(e);
-        const dx = 505, dw = 285, slW = dw - 20;
-        const val = Math.max(0, Math.min(1, (x - (dx + 10)) / slW));
-        if (draggingRef.current === 'freq') stateRef.current.freq = 1 + val * 49;
-        else if (draggingRef.current === 'tension') stateRef.current.tension = 10 + val * 190;
-    }, [getCoords]);
-
-    const handleMouseUp = useCallback(() => { draggingRef.current = ''; }, []);
-
-    // ===== TOUCH HANDLERS =====
-    const handleTouchStart = useCallback((e: React.TouchEvent<HTMLCanvasElement>) => {
-        e.preventDefault(); // Prevent scrolling
-        if (e.touches.length === 0) return;
-        const { x, y } = getCoords(e.touches[0]);
-        const dx = 505, dw = 285, dy = 20, slW = dw - 20;
-        const ctrlY = dy + 100;
-
-        // Freq slider
-        if (x >= dx + 2 && x <= dx + dw && y >= ctrlY + 10 && y <= ctrlY + 34) {
-            draggingRef.current = 'freq';
-            const val = Math.max(0, Math.min(1, (x - (dx + 10)) / slW));
-            stateRef.current.freq = 1 + val * 49;
-            return;
-        }
-        // Tension slider
-        const tslY = ctrlY + 38;
-        if (x >= dx + 2 && x <= dx + dw && y >= tslY + 10 && y <= tslY + 34) {
-            draggingRef.current = 'tension';
-            const val = Math.max(0, Math.min(1, (x - (dx + 10)) / slW));
-            stateRef.current.tension = 10 + val * 190;
-            return;
-        }
-        // Boundary toggle
-        const bndY = tslY + 40;
-        if (y >= bndY && y <= bndY + 26) {
-            if (x >= dx + 10 && x <= dx + 10 + slW / 2 - 3) { stateRef.current.fixedEnd = true; return; }
-            if (x >= dx + 10 + slW / 2 + 3 && x <= dx + 10 + slW) { stateRef.current.fixedEnd = false; return; }
-        }
-        // Play/Pause
-        const pbY = bndY + 34;
-        if (x >= dx + 10 && x <= dx + 10 + slW && y >= pbY && y <= pbY + 26) {
-            stateRef.current.running = !stateRef.current.running;
-            return;
-        }
-
-        // Reset
-        const rstY = pbY + 34;
-        if (x >= dx + 10 && x <= dx + 10 + slW && y >= rstY && y <= rstY + 26) {
-            stateRef.current = { freq: 5.0, tension: 50, mu: 0.01, amplitude: 30, fixedEnd: true, running: true, time: 0 };
-        }
-    }, [getCoords]);
-
-    const handleTouchMove = useCallback((e: React.TouchEvent<HTMLCanvasElement>) => {
-        e.preventDefault(); // Prevent scrolling
-        if (!draggingRef.current || e.touches.length === 0) return;
-        const { x } = getCoords(e.touches[0]);
-        const dx = 505, dw = 285, slW = dw - 20;
-        const val = Math.max(0, Math.min(1, (x - (dx + 10)) / slW));
-        if (draggingRef.current === 'freq') stateRef.current.freq = 1 + val * 49;
-        else if (draggingRef.current === 'tension') stateRef.current.tension = 10 + val * 190;
-    }, [getCoords]);
+    const handleReset = () => {
+        setFreq(5.0); setTension(50); setFixedEnd(true); setRunning(true);
+        stateRef.current = { freq: 5.0, tension: 50, mu: 0.01, amplitude: 35, fixedEnd: true, running: true, time: 0 };
+    };
 
     const simulationCombo = (
-        <div className="w-full h-full relative bg-slate-900 rounded-2xl overflow-hidden shadow-xl border border-slate-700">
-            <canvas ref={canvasRef} width={800} height={400}
-                className="w-full h-full cursor-pointer block"
-                onMouseDown={handleMouseDown} onMouseMove={handleMouseMove}
-                onMouseUp={handleMouseUp} onMouseLeave={handleMouseUp}
-                onTouchStart={handleTouchStart} onTouchMove={handleTouchMove}
-                onTouchEnd={handleMouseUp}
-            />
+        <div className="w-full h-full relative bg-slate-50 rounded-2xl overflow-hidden border border-slate-200 shadow-inner flex flex-col">
+            <div className="flex-1 relative min-h-[300px]">
+                <canvas ref={canvasRef} className="absolute inset-0 w-full h-full object-contain" />
+            </div>
+        </div>
+    );
+
+    const controlsCombo = (
+        <div className="flex flex-col gap-2 md:gap-4 w-full text-slate-700 p-1 md:p-2">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-6">
+                <div className="space-y-2 md:space-y-3 p-3 md:p-5 bg-white rounded-xl border border-slate-200 shadow-sm">
+                    <label className="text-sm md:text-base font-bold text-slate-700 flex justify-between items-center mb-1">
+                        <span>🎵 Driver Frequency</span>
+                        <span className="text-blue-700 font-mono text-base md:text-lg bg-blue-50 border border-blue-100 px-3 py-0.5 md:py-1 rounded shadow-sm">{freq.toFixed(1)} Hz</span>
+                    </label>
+                    <input type="range" min="1" max="50" step="0.5" value={freq}
+                        onChange={(e) => setFreq(Number(e.target.value))}
+                        className="w-full accent-blue-600 h-2 md:h-2.5 bg-slate-100 rounded-lg appearance-none cursor-pointer" />
+                    <div className="flex justify-between text-[10px] md:text-xs font-bold text-slate-400">
+                        <span>Min (1 Hz)</span><span>Max (50 Hz)</span>
+                    </div>
+                </div>
+                <div className="space-y-2 md:space-y-3 p-3 md:p-5 bg-white rounded-xl border border-slate-200 shadow-sm">
+                    <label className="text-sm md:text-base font-bold text-slate-700 flex justify-between items-center mb-1">
+                        <span>🔧 String Tension</span>
+                        <span className="text-amber-700 font-mono text-base md:text-lg bg-amber-50 border border-amber-100 px-3 py-0.5 md:py-1 rounded shadow-sm">{Math.round(tension)} N</span>
+                    </label>
+                    <input type="range" min="10" max="200" step="5" value={tension}
+                        onChange={(e) => setTension(Number(e.target.value))}
+                        className="w-full accent-amber-600 h-2 md:h-2.5 bg-slate-100 rounded-lg appearance-none cursor-pointer" />
+                    <div className="flex justify-between text-[10px] md:text-xs font-bold text-slate-400">
+                        <span>Min (10 N)</span><span>Max (200 N)</span>
+                    </div>
+                </div>
+            </div>
+            <div className="flex flex-col md:flex-row flex-wrap gap-2 md:gap-4 items-center justify-center mt-1 md:mt-2">
+                <div className="flex bg-slate-100 p-1 rounded-xl border border-slate-200 shadow-sm w-full md:w-auto">
+                    <button onClick={() => setFixedEnd(true)}
+                        className={`flex-1 md:flex-none px-4 md:px-6 py-2 md:py-3 text-sm md:text-base font-bold rounded-lg transition-all ${fixedEnd
+                            ? 'bg-emerald-600 text-white shadow-md'
+                            : 'text-slate-500 hover:text-slate-700 hover:bg-white/50'}`}>
+                        FIXED
+                    </button>
+                    <button onClick={() => setFixedEnd(false)}
+                        className={`flex-1 md:flex-none px-4 md:px-6 py-2 md:py-3 text-sm md:text-base font-bold rounded-lg transition-all ${!fixedEnd
+                            ? 'bg-violet-600 text-white shadow-md'
+                            : 'text-slate-500 hover:text-slate-700 hover:bg-white/50'}`}>
+                        FREE
+                    </button>
+                </div>
+                <button onClick={() => setRunning(!running)}
+                    className={`w-full md:w-auto flex items-center justify-center gap-2 md:gap-3 px-6 md:px-8 py-3 md:py-4 rounded-xl border font-bold text-sm md:text-base transition-all shadow-md active:scale-95 ${running
+                        ? 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'
+                        : 'bg-emerald-600 text-white border-emerald-500 shadow-lg'}`}>
+                    {running ? <><Pause size={20} /> PAUSE</> : <><Play size={20} /> RESUME</>}
+                </button>
+                <button onClick={handleReset}
+                    className="w-full md:w-auto flex items-center justify-center gap-2 md:gap-3 px-6 md:px-8 py-3 md:py-4 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl border border-slate-200 transition-all font-bold text-sm md:text-base shadow-sm active:scale-95">
+                    <RotateCcw size={20} /> RESET ALL
+                </button>
+            </div>
         </div>
     );
 
     return (
-        <TopicLayoutContainer
-            topic={topic}
-            onExit={onExit}
-            SimulationComponent={simulationCombo}
-        />
+        <TopicLayoutContainer topic={topic} onExit={onExit}
+            SimulationComponent={simulationCombo} ControlsComponent={controlsCombo} />
     );
 };
 
@@ -474,16 +370,6 @@ function roundRect(ctx: CanvasRenderingContext2D, x: number, y: number, w: numbe
     ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h); ctx.lineTo(x + r, y + h);
     ctx.quadraticCurveTo(x, y + h, x, y + h - r); ctx.lineTo(x, y + r);
     ctx.quadraticCurveTo(x, y, x + r, y); ctx.closePath();
-}
-
-function wrapText(ctx: CanvasRenderingContext2D, text: string, x: number, y: number, maxW: number, lineH: number) {
-    ctx.textAlign = 'left';
-    const words = text.split(' '); let line = '', curY = y;
-    for (const word of words) {
-        const test = line + word + ' ';
-        if (ctx.measureText(test).width > maxW && line) { ctx.fillText(line.trim(), x, curY); line = word + ' '; curY += lineH; } else { line = test; }
-    }
-    if (line.trim()) ctx.fillText(line.trim(), x, curY);
 }
 
 export default WavesLab;
