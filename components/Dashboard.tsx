@@ -67,7 +67,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onSelectTopic, activeSubject, set
           </span>
         </div>
         <h2 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-display font-extrabold text-slate-900 tracking-tight leading-tight animate-in fade-in slide-in-from-bottom-4 duration-700 delay-100">
-          Don’t Just Study Science. <br />
+          Don’t Just Study. <br />
           <span className="bg-gradient-to-r from-brand-primary via-indigo-500 to-brand-secondary bg-clip-text text-transparent drop-shadow-sm">
             Experience It.
           </span>
