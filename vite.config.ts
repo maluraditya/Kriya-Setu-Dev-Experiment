@@ -15,7 +15,7 @@ export default defineConfig(({ mode }) => {
         react(),
         VitePWA({
           registerType: 'autoUpdate',
-          injectRegister: 'script',
+          injectRegister: 'inline',
           includeAssets: ['logo.png', 'images/**/*'],
           manifest: {
             id: '/',
@@ -89,14 +89,14 @@ export default defineConfig(({ mode }) => {
                 }
               }
             ]
-          },
-          devOptions: {
-            enabled: true,
-            type: 'module',
-            navigateFallback: 'index.html'
           }
         })
       ],
+      build: {
+        outDir: 'dist',
+        assetsDir: 'assets',
+        emptyOutDir: true,
+      },
       define: {
         'process.env.API_KEY': JSON.stringify(env.GEMINI_API_KEY),
         'process.env.GEMINI_API_KEY': JSON.stringify(env.GEMINI_API_KEY)
