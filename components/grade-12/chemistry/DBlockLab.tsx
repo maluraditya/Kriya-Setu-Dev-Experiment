@@ -162,11 +162,45 @@ const DBlockLab: React.FC<DBlockLabProps> = ({ topic, onExit }) => {
             ctx.lineWidth = 4; // Thicker orbital lines
             ctx.lineCap = 'round';
 
-            // t2g (Lower, 3 orbitals)
-            const orbW = 45;
-            const gap = 20;
-            const t2gX = 140;
+            // Degenerate State (5 orbitals before splitting)
+            const degY = 280;
+            const degX = 100;
+            const orbW = 35;
+            const gap = 15;
 
+            for (let i = 0; i < 5; i++) {
+                ctx.beginPath();
+                ctx.moveTo(degX + i * (orbW + gap), degY);
+                ctx.lineTo(degX + i * (orbW + gap) + orbW, degY);
+                ctx.strokeStyle = '#94a3b8'; // Neutral Slate
+                ctx.stroke();
+            }
+            ctx.textAlign = 'center';
+            ctx.fillStyle = '#64748b';
+            ctx.font = 'bold 14px sans-serif';
+            ctx.fillText("Spherical Field", degX + 2 * (orbW + gap) + orbW/2, degY + 30);
+            ctx.fillText("(Degenerate d-orbitals)", degX + 2 * (orbW + gap) + orbW/2, degY + 50);
+
+            // Connect lines from degenerate to split states
+            const splitStartX = degX + 5 * (orbW + gap) + 10;
+            const t2gX = 350;
+            const egStartX = splitStartX;
+            const egX = 385;
+
+            // Dashed connection lines
+            ctx.beginPath();
+            ctx.moveTo(splitStartX, degY);
+            ctx.lineTo(t2gX - 20, groundY);
+            ctx.moveTo(splitStartX, degY);
+            ctx.lineTo(egX - 20, excitedY);
+            ctx.strokeStyle = '#cbd5e1';
+            ctx.lineWidth = 2;
+            ctx.setLineDash([5, 5]);
+            ctx.stroke();
+            ctx.setLineDash([]);
+            ctx.lineWidth = 4; // Reset to thicker for orbitals
+
+            // t2g (Lower, 3 orbitals)
             for (let i = 0; i < 3; i++) {
                 ctx.beginPath();
                 ctx.moveTo(t2gX + i * (orbW + gap), groundY);
@@ -186,7 +220,6 @@ const DBlockLab: React.FC<DBlockLabProps> = ({ topic, onExit }) => {
             ctx.fillText("t₂g (Lower Energy)", t2gX + 1.5 * (orbW + gap) - gap / 2, groundY + 35);
 
             // eg (Upper, 2 orbitals)
-            const egX = 175;
             for (let i = 0; i < 2; i++) {
                 ctx.beginPath();
                 ctx.moveTo(egX + i * (orbW + gap), excitedY);
@@ -205,14 +238,14 @@ const DBlockLab: React.FC<DBlockLabProps> = ({ topic, onExit }) => {
 
             // Splitting Energy Delta_o
             ctx.beginPath();
-            ctx.moveTo(350, groundY);
-            ctx.lineTo(350, excitedY);
+            ctx.moveTo(560, groundY);
+            ctx.lineTo(560, excitedY);
             ctx.strokeStyle = '#94a3b8';
             ctx.setLineDash([5, 5]);
             ctx.stroke();
             ctx.setLineDash([]);
             ctx.fillStyle = '#64748b';
-            ctx.fillText("Δₒ", 370, (groundY + excitedY) / 2 + 5);
+            ctx.fillText("Δₒ", 580, (groundY + excitedY) / 2 + 5);
 
             // --- 3. ELECTRON POPULATION ---
             const electrons = ionData.d;
@@ -242,14 +275,23 @@ const DBlockLab: React.FC<DBlockLabProps> = ({ topic, onExit }) => {
 
             const t2gPos = [0, 1, 2].map(i => ({ x: t2gX + i * (orbW + gap), y: groundY }));
             const egPos = [0, 1].map(i => ({ x: egX + i * (orbW + gap), y: excitedY }));
+            const degPos = [0, 1, 2, 3, 4].map(i => ({ x: degX + i * (orbW + gap), y: degY }));
 
-            const electronPositions: { x: number, y: number, spin: 'up' | 'down', id: number }[] = [];
+            const splitElectronPositions: { x: number, y: number, spin: 'up' | 'down', id: number }[] = [];
+            const degElectronPositions: { x: number, y: number, spin: 'up' | 'down', id: number }[] = [];
 
+            // Populate split state (high spin t2g and eg)
             for (let i = 0; i < electrons; i++) {
-                if (i < 3) electronPositions.push({ ...t2gPos[i], spin: 'up', id: i });
-                else if (i < 5) electronPositions.push({ ...egPos[i - 3], spin: 'up', id: i });
-                else if (i < 8) electronPositions.push({ ...t2gPos[i - 5], spin: 'down', id: i });
-                else electronPositions.push({ ...egPos[i - 8], spin: 'down', id: i });
+                if (i < 3) splitElectronPositions.push({ ...t2gPos[i], spin: 'up', id: i });
+                else if (i < 5) splitElectronPositions.push({ ...egPos[i - 3], spin: 'up', id: i });
+                else if (i < 8) splitElectronPositions.push({ ...t2gPos[i - 5], spin: 'down', id: i });
+                else splitElectronPositions.push({ ...egPos[i - 8], spin: 'down', id: i });
+            }
+
+            // Populate degenerate state (Hund's rule across 5 orbitals)
+            for (let i = 0; i < electrons; i++) {
+                if (i < 5) degElectronPositions.push({ ...degPos[i], spin: 'up', id: i });
+                else degElectronPositions.push({ ...degPos[i - 5], spin: 'down', id: i });
             }
 
             // Animation Logic
@@ -276,8 +318,13 @@ const DBlockLab: React.FC<DBlockLabProps> = ({ topic, onExit }) => {
                 }
             }
 
-            // Draw Electrons
-            electronPositions.forEach((e, idx) => {
+            // Draw Degenerate Electrons
+            ctx.globalAlpha = 0.6; // Slightly faded to show it's "before"
+            degElectronPositions.forEach((e) => drawElectron(e.x, e.y, e.spin));
+            ctx.globalAlpha = 1.0;
+
+            // Draw Split Electrons
+            splitElectronPositions.forEach((e, idx) => {
                 if (idx === jumpingElectronIndex && isJumping.current) {
                     drawElectron(e.x, jumpY, e.spin, true);
                     // Draw Photon
@@ -302,9 +349,9 @@ const DBlockLab: React.FC<DBlockLabProps> = ({ topic, onExit }) => {
 
 
             // --- 4. COLOR SWATCHES ---
-            const centerX = 600;
-            const centerY = 180;
-            const radius = 70;
+            const centerX = 700;
+            const centerY = 160;
+            const radius = 60;
 
             ctx.fillStyle = ionData.color;
             ctx.beginPath();
@@ -329,10 +376,10 @@ const DBlockLab: React.FC<DBlockLabProps> = ({ topic, onExit }) => {
             ctx.fillText(selectedIon === 'Sc3+' || selectedIon === 'Zn2+' ? "Colorless" : "Complementary (d-d transition)", centerX, centerY + radius + 45);
 
             // --- 5. MAGNETISM DISPLAY ---
-            const magX = 480;
-            const magY = 340;
-            const boxW = 280;
-            const boxH = 130;
+            const magX = 540;
+            const magY = 320;
+            const boxW = 240;
+            const boxH = 120;
 
             ctx.fillStyle = '#ffffff';
             ctx.fillRect(magX, magY, boxW, boxH);
@@ -402,17 +449,20 @@ const DBlockLab: React.FC<DBlockLabProps> = ({ topic, onExit }) => {
 
                 <div className="space-y-6">
                     <div className="space-y-3">
-                        <label className="text-xs font-bold text-slate-500 uppercase">Select Ion</label>
-                        <select
-                            value={selectedIon}
-                            onChange={(e) => setSelectedIon(e.target.value)}
-                            className="w-full p-3 rounded-xl border-2 border-slate-200 bg-white shadow-sm focus:border-violet-500 focus:ring-violet-500 font-bold text-slate-800 appearance-none outline-none cursor-pointer"
-                        >
+                        <label className="text-sm font-bold text-slate-600 uppercase">Select Metal Ion</label>
+                        <div className="grid grid-cols-4 gap-2">
                             {Object.keys(IONS).map(ion => (
-                                <option key={ion} value={ion}>{ion} (3d{IONS[ion].d})</option>
+                                <button
+                                    key={ion}
+                                    onClick={() => setSelectedIon(ion)}
+                                    className={`p-2 rounded-lg text-sm font-bold border-2 transition-all ${selectedIon === ion ? 'border-violet-500 bg-violet-50 text-violet-700 shadow-sm' : 'border-slate-200 text-slate-600 hover:bg-slate-50'}`}
+                                >
+                                    {ion} <br/>
+                                    <span className="text-[10px] opacity-75 font-normal">3d{IONS[ion].d}</span>
+                                </button>
                             ))}
-                        </select>
-                        <p className="text-[10px] text-slate-400">Assuming high-spin octahedral complex [M(H₂O)₆]ⁿ⁺</p>
+                        </div>
+                        <p className="text-xs text-slate-500 mt-2 p-2 bg-slate-100 rounded text-center">Assuming high-spin octahedral complex [M(H₂O)₆]ⁿ⁺</p>
                     </div>
 
                     <div className="bg-slate-50 p-4 flex flex-col gap-3 rounded-xl border border-slate-200">

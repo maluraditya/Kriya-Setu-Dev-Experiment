@@ -14,11 +14,15 @@ const ElectrochemistryLab: React.FC<ElectrochemistryLabProps> = ({ topic, onExit
     const metalIonsRef = useRef<Array<{ id: string, x: number, y: number, type: 'Zn' | 'Cu', state: 'metal' | 'solution', progress: number, active: boolean }>>([]);
 
     // Extracted state from App.tsx
-    const [externalVoltage, setExternalVoltage] = useState(0.0); // 0 to 2.5V
+    const [externalVoltage, setExternalVoltage] = useState(0.0); // 0, 1.1, 2.0
     const CELL_POTENTIAL = 1.10;
+
+    // Track dynamic mass
+    const massRef = useRef({ zn: 65.4, cu: 63.5 });
 
     const handleReset = useCallback(() => {
         setExternalVoltage(0.0);
+        massRef.current = { zn: 65.4, cu: 63.5 };
     }, []);
 
     // Initialize ions
@@ -178,8 +182,19 @@ const ElectrochemistryLab: React.FC<ElectrochemistryLabProps> = ({ topic, onExit
 
             // --- ELECTRODES ---
             // Dynamic thickness based on plating/dissolving (exaggerated)
-            let leftThickness = 30 + (levelOffset * -0.5);
-            let rightThickness = 30 + (levelOffset * 0.5);
+            // Galvanic (flow=1): Zn loses mass/thickness, Cu gains. Electrolytic (flow=-1): opposite.
+            if (!isEquilibrium) {
+                massRef.current.zn -= flowSpeed * 0.002 * flowDirection;
+                massRef.current.cu += flowSpeed * 0.002 * flowDirection;
+                // Cap masses reasonably for visual effect
+                if (massRef.current.zn < 20) massRef.current.zn = 20;
+                if (massRef.current.zn > 110) massRef.current.zn = 110;
+                if (massRef.current.cu < 20) massRef.current.cu = 20;
+                if (massRef.current.cu > 110) massRef.current.cu = 110;
+            }
+
+            let leftThickness = 20 + (massRef.current.zn - 65.4) * 0.4;
+            let rightThickness = 20 + (massRef.current.cu - 63.5) * 0.4;
             const electrodeH = 200;
 
             // Left (Zinc - silvery gray)
@@ -191,9 +206,14 @@ const ElectrochemistryLab: React.FC<ElectrochemistryLabProps> = ({ topic, onExit
             ctx.beginPath(); ctx.roundRect(leftBeakerX - leftThickness / 2, beakerY - 50, leftThickness, electrodeH, 3); ctx.fill();
 
             ctx.fillStyle = '#334155';
-            ctx.font = 'bold 18px sans-serif';
+            ctx.font = 'bold 20px sans-serif';
             ctx.textAlign = 'center';
             ctx.fillText("Zn (s)", leftBeakerX, beakerY + beakerH + 30);
+            
+            // Mass indicator Zn
+            ctx.font = 'bold 22px monospace';
+            ctx.fillStyle = flowDirection === 1 ? '#ef4444' : (flowDirection === -1 ? '#22c55e' : '#64748b');
+            ctx.fillText(`${massRef.current.zn.toFixed(1)} g`, leftBeakerX, beakerY + beakerH + 55);
 
             // Right (Copper - metallic orange/brown)
             const cuGrad = ctx.createLinearGradient(rightBeakerX - rightThickness / 2, 0, rightBeakerX + rightThickness / 2, 0);
@@ -204,7 +224,13 @@ const ElectrochemistryLab: React.FC<ElectrochemistryLabProps> = ({ topic, onExit
             ctx.beginPath(); ctx.roundRect(rightBeakerX - rightThickness / 2, beakerY - 50, rightThickness, electrodeH, 3); ctx.fill();
 
             ctx.fillStyle = '#92400e';
+            ctx.font = 'bold 20px sans-serif';
             ctx.fillText("Cu (s)", rightBeakerX, beakerY + beakerH + 30);
+
+            // Mass indicator Cu
+            ctx.font = 'bold 22px monospace';
+            ctx.fillStyle = flowDirection === 1 ? '#22c55e' : (flowDirection === -1 ? '#ef4444' : '#64748b');
+            ctx.fillText(`${massRef.current.cu.toFixed(1)} g`, rightBeakerX, beakerY + beakerH + 55);
 
             // --- SALT BRIDGE ---
             ctx.beginPath();
@@ -407,13 +433,13 @@ const ElectrochemistryLab: React.FC<ElectrochemistryLabProps> = ({ topic, onExit
             ctx.font = '16px sans-serif';
             ctx.fillStyle = '#64748b';
             if (isElectrolytic) {
-                ctx.fillText("Reduction (Cathode)", leftBeakerX, beakerY + beakerH + 55);
-                ctx.fillText("Oxidation (Anode)", rightBeakerX, beakerY + beakerH + 55);
+                ctx.fillText("Cathode (Reduction)", leftBeakerX, beakerY + beakerH + 85);
+                ctx.fillText("Anode (Oxidation)", rightBeakerX, beakerY + beakerH + 85);
                 ctx.fillStyle = '#ef4444';
                 ctx.fillText("← e⁻ flow driven by external V", centerX, 100);
             } else if (!isEquilibrium) {
-                ctx.fillText("Oxidation (Anode)", leftBeakerX, beakerY + beakerH + 55);
-                ctx.fillText("Reduction (Cathode)", rightBeakerX, beakerY + beakerH + 55);
+                ctx.fillText("Anode (Oxidation)", leftBeakerX, beakerY + beakerH + 85);
+                ctx.fillText("Cathode (Reduction)", rightBeakerX, beakerY + beakerH + 85);
                 ctx.fillStyle = '#22c55e';
                 ctx.fillText("e⁻ flow spontaneous →", centerX, 100);
             }
@@ -483,40 +509,35 @@ const ElectrochemistryLab: React.FC<ElectrochemistryLabProps> = ({ topic, onExit
                 </div>
 
                 <div className="space-y-4">
-                    <div className="space-y-2">
-                        <label className="text-xs font-bold text-slate-500 uppercase flex justify-between">
-                            <span className="flex items-center gap-1"><Zap size={14} /> External Voltage</span>
-                            <span className="text-slate-800 font-mono bg-slate-100 px-2 rounded">{externalVoltage.toFixed(2)} V</span>
-                        </label>
-                        <input
-                            type="range" min="0" max="2.5" step="0.05"
-                            value={externalVoltage}
-                            onChange={(e) => setExternalVoltage(Number(e.target.value))}
-                            className={`w-full h-3 rounded-lg appearance-none cursor-pointer ${isElectrolytic ? 'accent-red-500 bg-red-100' : 'accent-emerald-500 bg-emerald-100'}`}
-                        />
-                        <div className="flex justify-between text-[10px] text-slate-400 font-bold px-1 mt-1">
-                            <span>0.0V (Pure Galvanic)</span>
-                            <span className="text-slate-600">1.1V (Equilibrium)</span>
-                            <span>2.5V (Electrolytic)</span>
-                        </div>
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-3 mt-4">
+                    <label className="text-sm font-bold text-slate-600 uppercase">Select Mode</label>
+                    
+                    <div className="grid grid-cols-1 gap-3">
                         <button
-                            onClick={() => setExternalVoltage(0)}
-                            className="p-2 border border-slate-200 rounded-lg text-sm font-bold text-slate-600 hover:bg-slate-50 transition-colors"
+                            onClick={() => setExternalVoltage(0.0)}
+                            className={`p-4 border-2 rounded-xl text-left transition-all relative overflow-hidden ${externalVoltage === 0.0 ? 'border-emerald-500 bg-emerald-50 shadow-md' : 'border-slate-200 hover:border-emerald-300 hover:bg-slate-50'}`}
                         >
-                            Set to 0.0V
+                            <div className={`font-bold text-lg ${externalVoltage === 0.0 ? 'text-emerald-700' : 'text-slate-700'}`}>E_ext &lt; 1.1V</div>
+                            <div className="text-sm text-slate-500 mt-1">Galvanic Cell (Spontaneous)</div>
                         </button>
+                        
                         <button
                             onClick={() => setExternalVoltage(1.10)}
-                            className="p-2 border border-slate-200 rounded-lg text-sm font-bold text-slate-600 hover:bg-slate-50 transition-colors"
+                            className={`p-4 border-2 rounded-xl text-left transition-all relative overflow-hidden ${externalVoltage === 1.10 ? 'border-slate-500 bg-slate-100 shadow-md' : 'border-slate-200 hover:border-slate-300 hover:bg-slate-50'}`}
                         >
-                            Set to E° (1.10V)
+                            <div className={`font-bold text-lg ${externalVoltage === 1.10 ? 'text-slate-800' : 'text-slate-700'}`}>E_ext = 1.1V</div>
+                            <div className="text-sm text-slate-500 mt-1">Equilibrium (No Reaction)</div>
+                        </button>
+
+                        <button
+                            onClick={() => setExternalVoltage(2.0)}
+                            className={`p-4 border-2 rounded-xl text-left transition-all relative overflow-hidden ${externalVoltage === 2.0 ? 'border-red-500 bg-red-50 shadow-md' : 'border-slate-200 hover:border-red-300 hover:bg-slate-50'}`}
+                        >
+                            <div className={`font-bold text-lg ${externalVoltage === 2.0 ? 'text-red-700' : 'text-slate-700'}`}>E_ext &gt; 1.1V</div>
+                            <div className="text-sm text-slate-500 mt-1">Electrolytic Cell (Non-Spontaneous)</div>
                         </button>
                     </div>
 
-                    <div className="bg-slate-50 p-3 rounded-xl border border-slate-200 text-sm mt-2">
+                    <div className="bg-slate-50 p-4 rounded-xl border border-slate-200 text-sm mt-4">
                         <ul className="space-y-2">
                             <li className="flex gap-2">
                                 <Activity className="text-emerald-500 shrink-0" size={16} />

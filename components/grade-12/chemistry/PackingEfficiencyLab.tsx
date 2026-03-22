@@ -171,33 +171,33 @@ const PackingEfficiencyLab: React.FC<Props> = ({ topic, onExit }) => {
 
             // Info Box
             ctx.fillStyle = 'rgba(255, 255, 255, 0.95)';
-            ctx.beginPath(); ctx.roundRect(logicalWidth - 260, 20, 240, 130, 8); ctx.fill();
+            ctx.beginPath(); ctx.roundRect(logicalWidth - 340, 20, 320, 160, 12); ctx.fill();
 
             ctx.strokeStyle = '#e2e8f0';
-            ctx.lineWidth = 1;
+            ctx.lineWidth = 2;
             ctx.stroke();
 
-            ctx.shadowColor = 'rgba(0,0,0,0.05)';
-            ctx.shadowBlur = 10;
+            ctx.shadowColor = 'rgba(0,0,0,0.1)';
+            ctx.shadowBlur = 15;
             ctx.fill();
             ctx.shadowBlur = 0;
 
             ctx.fillStyle = '#1e293b';
-            ctx.font = 'bold 18px sans-serif';
+            ctx.font = 'bold 28px sans-serif';
             ctx.textAlign = 'left';
             const eff = cellType === 'fcc' ? '74%' : cellType === 'bcc' ? '68%' : '52.4%';
             const voidP = cellType === 'fcc' ? '26%' : cellType === 'bcc' ? '32%' : '47.6%';
 
-            ctx.fillText(`Efficiency: ${eff}`, logicalWidth - 240, 50);
+            ctx.fillText(`Packing: ${eff}`, logicalWidth - 315, 65);
 
-            ctx.font = '15px sans-serif';
+            ctx.font = 'bold 18px sans-serif';
             ctx.fillStyle = '#64748b';
-            ctx.fillText(`Void Space: ${voidP}`, logicalWidth - 240, 80);
+            ctx.fillText(`Empty Void Space: ${voidP}`, logicalWidth - 315, 100);
 
-            ctx.font = 'italic 14px sans-serif';
-            ctx.fillStyle = '#94a3b8';
-            const rel = cellType === 'fcc' ? '4r = √2a (Face Diag)' : cellType === 'bcc' ? '4r = √3a (Body Diag)' : '2r = a (Edge)';
-            ctx.fillText(`Relation: ${rel}`, logicalWidth - 240, 110);
+            ctx.font = 'bold 20px monospace';
+            ctx.fillStyle = '#4f46e5';
+            const rel = cellType === 'fcc' ? '4r = √2·a (Face Diag)' : cellType === 'bcc' ? '4r = √3·a (Body Diag)' : '2r = a (Edge)';
+            ctx.fillText(`Math: ${rel}`, logicalWidth - 315, 145);
 
             ctx.restore();
             requestRef.current = requestAnimationFrame(draw);
@@ -236,16 +236,34 @@ const PackingEfficiencyLab: React.FC<Props> = ({ topic, onExit }) => {
                     </div>
                     <div className="p-4 flex flex-col gap-4 w-full flex-1 overflow-y-auto max-h-[35vh] lg:max-h-[350px]">
                         <div className="space-y-4">
-                            <label className="text-xs font-bold text-slate-500 uppercase">Select Cell Type to view packing efficiency</label>
-                            <div className="flex bg-slate-100 p-1 rounded-lg">
-                                {['scc', 'bcc', 'fcc'].map(t => (
-                                    <button key={t} onClick={() => setCellType(t as any)} className={`flex-1 py-2 px-2 rounded font-bold text-sm transition-all ${cellType === t ? 'bg-white shadow text-indigo-600' : 'text-slate-500 hover:text-slate-700'}`}>
-                                        {t.toUpperCase()}
-                                    </button>
-                                ))}
+                            <label className="text-sm font-bold text-slate-600 uppercase">Select Unit Cell Type</label>
+                            
+                            <div className="grid grid-cols-1 gap-3">
+                                <button onClick={() => setCellType('scc')} className={`p-4 rounded-xl border-2 text-left transition-all ${cellType === 'scc' ? 'border-indigo-500 bg-indigo-50 text-indigo-700 shadow-md' : 'border-slate-200 text-slate-600 hover:bg-slate-50'}`}>
+                                    <div className="font-bold text-lg">Simple Cubic (SCC)</div>
+                                    <div className="text-sm opacity-80 mt-1 flex justify-between">
+                                        <span>Corners only</span>
+                                        <span className="font-mono bg-white/50 px-2 rounded border border-indigo-200">Z = 1</span>
+                                    </div>
+                                </button>
+                                <button onClick={() => setCellType('bcc')} className={`p-4 rounded-xl border-2 text-left transition-all ${cellType === 'bcc' ? 'border-indigo-500 bg-indigo-50 text-indigo-700 shadow-md' : 'border-slate-200 text-slate-600 hover:bg-slate-50'}`}>
+                                    <div className="font-bold text-lg">Body-Centered Cubic (BCC)</div>
+                                    <div className="text-sm opacity-80 mt-1 flex justify-between">
+                                        <span>Corners + Body Center</span>
+                                        <span className="font-mono bg-white/50 px-2 rounded border border-indigo-200">Z = 2</span>
+                                    </div>
+                                </button>
+                                <button onClick={() => setCellType('fcc')} className={`p-4 rounded-xl border-2 text-left transition-all ${cellType === 'fcc' ? 'border-indigo-500 bg-indigo-50 text-indigo-700 shadow-md' : 'border-slate-200 text-slate-600 hover:bg-slate-50'}`}>
+                                    <div className="font-bold text-lg">Face-Centered Cubic (FCC)</div>
+                                    <div className="text-sm opacity-80 mt-1 flex justify-between">
+                                        <span>Corners + 6 Face Centers</span>
+                                        <span className="font-mono bg-white/50 px-2 rounded border border-indigo-200">Z = 4</span>
+                                    </div>
+                                </button>
                             </div>
-                            <p className="text-xs text-slate-500 bg-slate-50 p-3 rounded border mt-4 leading-relaxed">
-                                The percentage of total space filled by the particles is called Packing Efficiency. Notice how the atoms touch along the edge (SCC), body diagonal (BCC), or face diagonal (FCC) to determine the radius to edge-length relationship.
+
+                            <p className="text-sm text-slate-600 bg-slate-50 p-4 rounded-xl border border-slate-200 mt-4 leading-relaxed">
+                                <strong>Packing Efficiency</strong> is the percentage of total space filled by the constituent particles. Notice how the atoms touch along the edge (SCC), body diagonal (BCC), or face diagonal (FCC) to determine the mathematical relationship between radius (r) and edge length (a).
                             </p>
                         </div>
                     </div>

@@ -28,13 +28,13 @@ const StereochemistryLab: React.FC<StereochemistryLabProps> = ({ topic, onExit }
 
     // Extracted State
     const [isomerConfig, setIsomerConfig] = useState<{
-        type: 'cis-trans-sq' | 'fac-mer' | 'optical',
+        type: 'cis-trans-sq' | 'fac-mer' | 'optical' | 'organic-chiral',
         subType: 'A' | 'B',
         showMirror: boolean
     }>({
-        type: 'cis-trans-sq',
+        type: 'organic-chiral',
         subType: 'A',
-        showMirror: false
+        showMirror: true
     });
 
     const [rotation, setRotation] = useState({ x: 0, y: 0 });
@@ -130,6 +130,29 @@ const StereochemistryLab: React.FC<StereochemistryLabProps> = ({ topic, onExit }
                 bonds.push({ from: 1, to: 3, isChelate: true });
                 bonds.push({ from: 4, to: 6, isChelate: true });
             }
+        } else if (type === 'organic-chiral') {
+            atoms[0] = { x: 0, y: 0, z: 0, color: '#334155', radius: 35, label: 'C*' }; // Chiral Center
+            
+            const sp3 = [
+                { x: 0, y: -120, z: 0 },
+                { x: 0, y: 40, z: 110 },
+                { x: 100, y: 40, z: -55 },
+                { x: -100, y: 40, z: -55 },
+            ];
+            
+            if (sub === 'A') {
+                atoms.push({ ...sp3[0], color: '#ef4444', radius: 25, label: 'OH' });
+                atoms.push({ ...sp3[1], color: '#3b82f6', radius: 25, label: 'CH₃' });
+                atoms.push({ ...sp3[2], color: '#eab308', radius: 25, label: 'COOH' });
+                atoms.push({ ...sp3[3], color: '#cbd5e1', radius: 15, label: 'H' });
+            } else {
+                // Swapped 2 groups for enantiomer
+                atoms.push({ ...sp3[0], color: '#ef4444', radius: 25, label: 'OH' });
+                atoms.push({ ...sp3[1], color: '#3b82f6', radius: 25, label: 'CH₃' });
+                atoms.push({ ...sp3[3], color: '#eab308', radius: 25, label: 'COOH' });
+                atoms.push({ ...sp3[2], color: '#cbd5e1', radius: 15, label: 'H' });
+            }
+            for (let i = 1; i <= 4; i++) bonds.push({ from: 0, to: i });
         }
         return { atoms, bonds };
     };
@@ -187,6 +210,17 @@ const StereochemistryLab: React.FC<StereochemistryLabProps> = ({ topic, onExit }
         projectedAtoms.sort((a, b) => a.z - b.z);
 
         projectedAtoms.forEach(a => {
+            // Aggressive Highlight for Chiral Centers
+            if (a.label === 'C*') {
+                ctx.beginPath();
+                ctx.arc(a.x, a.y, a.r * 1.5, 0, Math.PI * 2);
+                const glow = ctx.createRadialGradient(a.x, a.y, a.r, a.x, a.y, a.r * 1.5);
+                glow.addColorStop(0, 'rgba(234, 179, 8, 0.8)');
+                glow.addColorStop(1, 'rgba(234, 179, 8, 0)');
+                ctx.fillStyle = glow;
+                ctx.fill();
+            }
+
             // Main sphere
             ctx.beginPath();
             ctx.arc(a.x, a.y, a.r, 0, Math.PI * 2);
@@ -207,8 +241,12 @@ const StereochemistryLab: React.FC<StereochemistryLabProps> = ({ topic, onExit }
                 ctx.textBaseline = 'middle';
                 // slight text shadow for readability
                 ctx.shadowColor = 'rgba(0,0,0,0.5)';
-                ctx.shadowBlur = 2;
-                ctx.fillText(a.label, a.x, a.y);
+                ctx.shadowBlur = 4;
+                ctx.fillText(a.label === 'C*' ? 'C' : a.label, a.x, a.y); // Hide the * in text, halo is enough
+                if (a.label === 'C*') {
+                    ctx.fillStyle = '#fde047'; // Yellow star
+                    ctx.fillText('*', a.x + a.r * 0.4, a.y - a.r * 0.4);
+                }
                 ctx.shadowBlur = 0;
             }
         });
@@ -259,7 +297,7 @@ const StereochemistryLab: React.FC<StereochemistryLabProps> = ({ topic, onExit }
             const rx = rotation.x;
             const ry = rotation.y;
 
-            if (isomerConfig.showMirror && isomerConfig.type === 'optical') {
+            if (isomerConfig.showMirror && (isomerConfig.type === 'optical' || isomerConfig.type === 'organic-chiral')) {
                 const mol1 = generateMolecule(isomerConfig.type, 'A');
                 drawMolecule(ctx, logicalWidth * 0.25, logicalHeight / 2, mol1.atoms, mol1.bonds, { x: rx, y: ry });
 
@@ -324,8 +362,24 @@ const StereochemistryLab: React.FC<StereochemistryLabProps> = ({ topic, onExit }
             <div className="absolute top-4 left-4 pointer-events-none">
                 <div className="bg-white/90 backdrop-blur-sm border border-slate-200 shadow-sm px-4 py-2 rounded-xl text-slate-700 font-bold text-sm flex gap-2 items-center">
                     <Box size={16} className="text-indigo-500" />
-                    Drag to rotate 3D Molecule
+                    Interactive 3D Structure
                 </div>
+            </div>
+
+            {/* Smartboard-friendly rotation buttons */}
+            <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-4 z-10 bg-white/80 backdrop-blur p-2 rounded-2xl border border-slate-200 shadow-md">
+                <button onClick={() => setRotation(r => ({ ...r, y: r.y - Math.PI / 4 }))} className="px-4 py-3 rounded-xl font-bold text-sm shadow transition-colors bg-white text-slate-700 hover:bg-slate-50 border border-slate-200">
+                    ↺ Left
+                </button>
+                <button onClick={() => setRotation(r => ({ ...r, x: r.x + Math.PI / 4 }))} className="px-4 py-3 rounded-xl font-bold text-sm shadow transition-colors bg-white text-slate-700 hover:bg-slate-50 border border-slate-200">
+                    ↑ Up
+                </button>
+                <button onClick={() => setRotation(r => ({ ...r, x: r.x - Math.PI / 4 }))} className="px-4 py-3 rounded-xl font-bold text-sm shadow transition-colors bg-white text-slate-700 hover:bg-slate-50 border border-slate-200">
+                    ↓ Down
+                </button>
+                <button onClick={() => setRotation(r => ({ ...r, y: r.y + Math.PI / 4 }))} className="px-4 py-3 rounded-xl font-bold text-sm shadow transition-colors bg-white text-slate-700 hover:bg-slate-50 border border-slate-200">
+                    Right ↻
+                </button>
             </div>
 
             <div className="absolute top-4 right-4 flex gap-2">
@@ -340,31 +394,38 @@ const StereochemistryLab: React.FC<StereochemistryLabProps> = ({ topic, onExit }
         <div className="bg-white rounded-xl shadow-sm border border-slate-200 flex flex-col h-full w-full">
             <div className="flex bg-slate-50 border-b border-slate-200 p-2 gap-2 rounded-t-xl shrink-0 overflow-x-auto">
                 <button
-                    onClick={() => setIsomerConfig({ type: 'cis-trans-sq', subType: 'A', showMirror: false })}
-                    className={`flex whitespace-nowrap items-center gap-2 px-4 py-2 rounded-lg font-bold text-sm transition-all flex-1 justify-center ${isomerConfig.type === 'cis-trans-sq' ? 'bg-indigo-600 text-white shadow-md' : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200'}`}
+                    onClick={() => setIsomerConfig({ type: 'organic-chiral', subType: 'A', showMirror: true })}
+                    className={`flex whitespace-nowrap items-center gap-2 px-3 py-2 rounded-lg font-bold text-sm transition-all flex-1 justify-center ${isomerConfig.type === 'organic-chiral' ? 'bg-indigo-600 text-white shadow-md' : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200'}`}
                 >
-                    <Box size={16} /> Cis-Trans
+                    <Layers size={16} /> Organic Chiral
+                </button>
+                <button
+                    onClick={() => setIsomerConfig({ type: 'cis-trans-sq', subType: 'A', showMirror: false })}
+                    className={`flex whitespace-nowrap items-center gap-2 px-3 py-2 rounded-lg font-bold text-sm transition-all flex-1 justify-center ${isomerConfig.type === 'cis-trans-sq' ? 'bg-indigo-600 text-white shadow-md' : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200'}`}
+                >
+                    <Box size={16} /> Coord: Cis-Trans
                 </button>
                 <button
                     onClick={() => setIsomerConfig({ type: 'fac-mer', subType: 'A', showMirror: false })}
-                    className={`flex whitespace-nowrap items-center gap-2 px-4 py-2 rounded-lg font-bold text-sm transition-all flex-1 justify-center ${isomerConfig.type === 'fac-mer' ? 'bg-indigo-600 text-white shadow-md' : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200'}`}
+                    className={`flex whitespace-nowrap items-center gap-2 px-3 py-2 rounded-lg font-bold text-sm transition-all flex-1 justify-center ${isomerConfig.type === 'fac-mer' ? 'bg-indigo-600 text-white shadow-md' : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200'}`}
                 >
-                    <Layers size={16} /> Fac-Mer
+                    <Layers size={16} /> Coord: Fac-Mer
                 </button>
                 <button
-                    onClick={() => setIsomerConfig({ type: 'optical', subType: 'A', showMirror: false })}
-                    className={`flex whitespace-nowrap items-center gap-2 px-4 py-2 rounded-lg font-bold text-sm transition-all flex-1 justify-center ${isomerConfig.type === 'optical' ? 'bg-indigo-600 text-white shadow-md' : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200'}`}
+                    onClick={() => setIsomerConfig({ type: 'optical', subType: 'A', showMirror: true })}
+                    className={`flex whitespace-nowrap items-center gap-2 px-3 py-2 rounded-lg font-bold text-sm transition-all flex-1 justify-center ${isomerConfig.type === 'optical' ? 'bg-indigo-600 text-white shadow-md' : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200'}`}
                 >
-                    <Eye size={16} /> Optical
+                    <Eye size={16} /> Coord: Optical
                 </button>
             </div>
 
             <div className="p-4 flex flex-col gap-4 w-full flex-1 overflow-y-auto max-h-[35vh] lg:max-h-[350px]">
                 {/* Description based on type */}
                 <div className="text-center p-3 bg-indigo-50 border border-indigo-100 rounded-lg text-indigo-900 text-sm">
-                    {isomerConfig.type === 'cis-trans-sq' && <strong>Geometrical Isomerism: [MA2B2] Square Planar.</strong>}
-                    {isomerConfig.type === 'fac-mer' && <strong>Geometrical Isomerism: [MA3B3] Octahedral.</strong>}
-                    {isomerConfig.type === 'optical' && <strong>Optical Isomerism: [M(en)3] Octahedral. Non-superimposable mirror images.</strong>}
+                    {isomerConfig.type === 'organic-chiral' && <strong>Organic Enantiomers: Lactic Acid (Chiral Center Highlighted).</strong>}
+                    {isomerConfig.type === 'cis-trans-sq' && <strong>Coordination: Geometrical Isomerism [MA2B2] Square Planar.</strong>}
+                    {isomerConfig.type === 'fac-mer' && <strong>Coordination: Geometrical Isomerism [MA3B3] Octahedral.</strong>}
+                    {isomerConfig.type === 'optical' && <strong>Coordination: Optical Isomerism [M(en)3] Octahedral.</strong>}
                 </div>
 
                 <div className="space-y-6">
@@ -389,6 +450,11 @@ const StereochemistryLab: React.FC<StereochemistryLabProps> = ({ topic, onExit }
 
                     {/* Explanatory text of the subtype */}
                     <div className="bg-slate-50 p-4 rounded-xl border border-slate-200 text-sm text-slate-700">
+                        {isomerConfig.type === 'organic-chiral' && (
+                            isomerConfig.subType === 'A'
+                                ? "Dextro (d) Lactic Acid. The central carbon is attached to 4 different groups (-H, -OH, -CH3, -COOH), making it Chiral."
+                                : "Laevo (l) Lactic Acid."
+                        )}
                         {isomerConfig.type === 'cis-trans-sq' && (
                             isomerConfig.subType === 'A'
                                 ? "In Cis, identical groups are adjacent to each other."
@@ -401,13 +467,13 @@ const StereochemistryLab: React.FC<StereochemistryLabProps> = ({ topic, onExit }
                         )}
                         {isomerConfig.type === 'optical' && (
                             isomerConfig.subType === 'A'
-                                ? "Dextro (d) isomer rotates plane-polarized light to the right."
-                                : "Laevo (l) isomer rotates plane-polarized light to the left. They are Enantiomers."
+                                ? "Dextro (d) [M(en)3]³⁺ rotates plane-polarized light to the right."
+                                : "Laevo (l) [M(en)3]³⁺ rotates plane-polarized light to the left. They are Enantiomers."
                         )}
                     </div>
 
-                    {/* Mirror Toggle (Only for Optical) */}
-                    {isomerConfig.type === 'optical' && (
+                    {/* Mirror Toggle (Only for Optical Types) */}
+                    {(isomerConfig.type === 'optical' || isomerConfig.type === 'organic-chiral') && (
                         <div className="pt-4 border-t border-slate-200">
                             <label className="flex items-center gap-3 cursor-pointer">
                                 <div className="relative">
@@ -426,7 +492,7 @@ const StereochemistryLab: React.FC<StereochemistryLabProps> = ({ topic, onExit }
                             </label>
                             {isomerConfig.showMirror && (
                                 <p className="text-xs text-indigo-600 mt-3 font-medium bg-indigo-50 p-2 rounded border border-indigo-100">
-                                    Notice how they reflections cannot overlap each other directly, much like your left and right hand (Chirality).
+                                    Notice how the reflections cannot overlap each other directly, much like your left and right hand (Chirality).
                                 </p>
                             )}
                         </div>

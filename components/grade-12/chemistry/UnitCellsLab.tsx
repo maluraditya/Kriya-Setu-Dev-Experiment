@@ -11,7 +11,7 @@ const UnitCellsLab: React.FC<Props> = ({ topic, onExit }) => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const requestRef = useRef<number>();
 
-    const [cellType, setCellType] = useState<'scc' | 'bcc' | 'fcc'>('scc');
+    const [cellType, setCellType] = useState<string>('cubic-scc');
     const [showSlicer, setShowSlicer] = useState(false);
     const [rotation, setRotation] = useState({ x: 0.5, y: 0.5 });
 
@@ -84,25 +84,63 @@ const UnitCellsLab: React.FC<Props> = ({ topic, onExit }) => {
             ctx.lineWidth = 4;
             ctx.strokeRect(0, 0, logicalWidth, logicalHeight);
 
-            const cx = logicalWidth / 2;
-            const cy = logicalHeight / 2;
-            const size = 150;
+            const midX = logicalWidth / 2;
+            const midY = logicalHeight / 2;
+            const size = 120;
             const rx = rotation.x;
             const ry = rotation.y;
 
-            const project = (x: number, y: number, z: number) => {
-                let x1 = x * Math.cos(rx) - z * Math.sin(rx);
-                let z1 = x * Math.sin(rx) + z * Math.cos(rx);
-                let y1 = y * Math.cos(ry) - z1 * Math.sin(ry);
-                const scale = 500 / (500 - (y * Math.sin(ry) + z1 * Math.cos(ry)));
-                return { x: cx + x1 * scale, y: cy + y1 * scale, scale };
+            const crystalParams: Record<string, any> = {
+                'cubic-scc': { sys: 'Cubic', p: {a: 1, b: 1, c: 1, alpha: 90, beta: 90, gamma: 90}, type: 'scc' },
+                'cubic-bcc': { sys: 'Cubic', p: {a: 1, b: 1, c: 1, alpha: 90, beta: 90, gamma: 90}, type: 'bcc' },
+                'cubic-fcc': { sys: 'Cubic', p: {a: 1, b: 1, c: 1, alpha: 90, beta: 90, gamma: 90}, type: 'fcc' },
+                'tetragonal': { sys: 'Tetragonal', p: {a: 1, b: 1, c: 1.5, alpha: 90, beta: 90, gamma: 90}, type: 'scc' },
+                'orthorhombic': { sys: 'Orthorhombic', p: {a: 1, b: 1.3, c: 1.6, alpha: 90, beta: 90, gamma: 90}, type: 'scc' },
+                'hexagonal': { sys: 'Hexagonal', p: {a: 1, b: 1, c: 1.5, alpha: 90, beta: 90, gamma: 120}, type: 'scc' },
+                'rhombohedral': { sys: 'Rhombohedral', p: {a: 1, b: 1, c: 1, alpha: 75, beta: 75, gamma: 75}, type: 'scc' },
+                'monoclinic': { sys: 'Monoclinic', p: {a: 1, b: 1.3, c: 1.5, alpha: 90, beta: 105, gamma: 90}, type: 'scc' },
+                'triclinic': { sys: 'Triclinic', p: {a: 1, b: 1.2, c: 1.4, alpha: 75, beta: 110, gamma: 85}, type: 'scc' },
+            };
+
+            const selected = crystalParams[cellType] || crystalParams['cubic-scc'];
+            const { p, type } = selected;
+            
+            const toRad = Math.PI / 180;
+            const aVec = { x: p.a, y: 0, z: 0 };
+            const bVec = { x: p.b * Math.cos(p.gamma * toRad), y: p.b * Math.sin(p.gamma * toRad), z: 0 };
+            
+            const cv_x = p.c * Math.cos(p.beta * toRad);
+            const cv_y = p.c * (Math.cos(p.alpha * toRad) - Math.cos(p.beta * toRad) * Math.cos(p.gamma * toRad)) / Math.sin(p.gamma * toRad);
+            const cv_z2 = p.c * p.c - cv_x * cv_x - cv_y * cv_y;
+            const cv_z = Math.sqrt(Math.max(0, cv_z2));
+            const cVec = { x: cv_x, y: cv_y, z: cv_z };
+
+            const basis = (i: number, j: number, k: number) => {
+                const shiftX = -0.5 * (aVec.x + bVec.x + cVec.x);
+                const shiftY = -0.5 * (aVec.y + bVec.y + cVec.y);
+                const shiftZ = -0.5 * (aVec.z + bVec.z + cVec.z);
+                return {
+                    x: (i * aVec.x + j * bVec.x + k * cVec.x + shiftX) * size,
+                    y: -(i * aVec.y + j * bVec.y + k * cVec.y + shiftY) * size, // Negative because canvas Y goes down
+                    z: (i * aVec.z + j * bVec.z + k * cVec.z + shiftZ) * size
+                };
             };
 
             const corners = [
-                [-1, -1, -1], [1, -1, -1], [1, 1, -1], [-1, 1, -1],
-                [-1, -1, 1], [1, -1, 1], [1, 1, 1], [-1, 1, 1]
+                basis(0,0,0), basis(1,0,0), basis(1,1,0), basis(0,1,0),
+                basis(0,0,1), basis(1,0,1), basis(1,1,1), basis(0,1,1)
             ];
-            const projCorners = corners.map(c => project(c[0] * size / 2, c[1] * size / 2, c[2] * size / 2));
+
+            const project = (pt: {x: number, y: number, z: number}) => {
+                let x1 = pt.x * Math.cos(rx) - pt.z * Math.sin(rx);
+                let z1 = pt.x * Math.sin(rx) + pt.z * Math.cos(rx);
+                let y1 = pt.y * Math.cos(ry) - z1 * Math.sin(ry);
+                let z2 = pt.y * Math.sin(ry) + z1 * Math.cos(ry);
+                const scale = 500 / (500 - z2);
+                return { x: midX + x1 * scale, y: midY + y1 * scale, scale, depth: z2 };
+            };
+
+            const projCorners = corners.map(c => project(c));
 
             ctx.strokeStyle = '#cbd5e1';
             ctx.lineWidth = 2;
@@ -119,24 +157,24 @@ const UnitCellsLab: React.FC<Props> = ({ topic, onExit }) => {
             });
 
             const atoms: { x: number, y: number, z: number, type: 'corner' | 'face' | 'body', color: string }[] = [];
-            corners.forEach(c => atoms.push({ x: c[0] * size / 2, y: c[1] * size / 2, z: c[2] * size / 2, type: 'corner', color: '#3b82f6' }));
+            corners.forEach(c => atoms.push({ ...c, type: 'corner', color: '#3b82f6' }));
 
-            if (cellType === 'bcc') {
-                atoms.push({ x: 0, y: 0, z: 0, type: 'body', color: '#ef4444' });
+            if (type === 'bcc') {
+                atoms.push({ ...basis(0.5, 0.5, 0.5), type: 'body', color: '#ef4444' });
             }
 
-            if (cellType === 'fcc') {
-                const faces = [
-                    [0, 0, -1], [0, 0, 1], [0, -1, 0], [0, 1, 0], [-1, 0, 0], [1, 0, 0]
-                ];
-                faces.forEach(f => atoms.push({ x: f[0] * size / 2, y: f[1] * size / 2, z: f[2] * size / 2, type: 'face', color: '#22c55e' }));
+            if (type === 'fcc') {
+                atoms.push({ ...basis(0.5, 0.5, 0), type: 'face', color: '#22c55e' });
+                atoms.push({ ...basis(0.5, 0.5, 1), type: 'face', color: '#22c55e' });
+                atoms.push({ ...basis(0.5, 0, 0.5), type: 'face', color: '#22c55e' });
+                atoms.push({ ...basis(0.5, 1, 0.5), type: 'face', color: '#22c55e' });
+                atoms.push({ ...basis(0, 0.5, 0.5), type: 'face', color: '#22c55e' });
+                atoms.push({ ...basis(1, 0.5, 0.5), type: 'face', color: '#22c55e' });
             }
 
             const atomsWithDepth = atoms.map(a => {
-                let x1 = a.x * Math.cos(rx) - a.z * Math.sin(rx);
-                let z1 = a.x * Math.sin(rx) + a.z * Math.cos(rx);
-                let z2 = a.y * Math.sin(ry) + z1 * Math.cos(ry);
-                return { ...a, depth: z2, proj: project(a.x, a.y, a.z) };
+                let p = project(a);
+                return { ...a, depth: p.depth, proj: p };
             });
             atomsWithDepth.sort((a, b) => a.depth - b.depth);
 
@@ -195,19 +233,32 @@ const UnitCellsLab: React.FC<Props> = ({ topic, onExit }) => {
             ctx.shadowBlur = 0;
 
             ctx.fillStyle = '#1e293b';
-            ctx.font = 'bold 18px sans-serif';
+            ctx.font = 'bold 20px sans-serif';
             ctx.textAlign = 'left';
-            const z = cellType === 'fcc' ? 4 : cellType === 'bcc' ? 2 : 1;
-            ctx.fillText(`Total Atoms (Z): ${z}`, 40, 70);
+            ctx.fillText(`${selected.sys} System`, 40, 70);
 
+            let zValue = 1;
+            if (type === 'bcc') zValue = 2;
+            if (type === 'fcc') zValue = 4;
+            
             ctx.font = '14px sans-serif';
             ctx.fillStyle = '#64748b';
-            if (cellType === 'scc') ctx.fillText("8 Corners × 1/8 = 1", 40, 100);
-            if (cellType === 'bcc') ctx.fillText("8 Corners × 1/8 + 1 Body = 2", 40, 100);
-            if (cellType === 'fcc') {
-                ctx.fillText("8 Corners × 1/8 = 1", 40, 95);
-                ctx.fillText("6 Faces × 1/2 = 3", 40, 115);
-            }
+            ctx.fillText(`Atoms per unit cell (Z) = ${zValue}`, 40, 95);
+
+            ctx.font = 'bold 16px monospace';
+            ctx.fillStyle = '#4f46e5';
+            
+            const printParams = (p: any) => {
+                const a_print = p.a === p.b && p.b === p.c ? "a=b=c" : p.a === p.b ? "a=b≠c" : "a≠b≠c";
+                const ang_print = p.alpha === 90 && p.beta === 90 && p.gamma === 90 ? "α=β=γ=90°" : 
+                    p.alpha === 90 && p.beta === 90 && p.gamma === 120 ? "α=β=90°, γ=120°" : 
+                    p.alpha === p.beta && p.beta === p.gamma ? "α=β=γ≠90°" :
+                    p.alpha === 90 && p.gamma === 90 ? "α=γ=90°, β≠90°" : "α≠β≠γ≠90°";
+                return { dist: a_print, ang: ang_print };
+            };
+            const formats = printParams(p);
+            ctx.fillText(formats.dist, 40, 115);
+            ctx.fillText(formats.ang, 40, 135);
 
             ctx.restore();
             requestRef.current = requestAnimationFrame(draw);
@@ -246,21 +297,28 @@ const UnitCellsLab: React.FC<Props> = ({ topic, onExit }) => {
                     </div>
                     <div className="p-4 flex flex-col gap-4 w-full flex-1 overflow-y-auto max-h-[35vh] lg:max-h-[350px]">
                         <div className="space-y-4">
-                            <div className="flex bg-slate-100 p-1 rounded-lg">
-                                {['scc', 'bcc', 'fcc'].map(t => (
-                                    <button key={t} onClick={() => setCellType(t as any)} className={`flex-1 py-2 px-2 rounded font-bold text-sm transition-all ${cellType === t ? 'bg-white shadow text-indigo-600' : 'text-slate-500 hover:text-slate-700'}`}>
-                                        {t.toUpperCase()}
+                            <label className="text-sm font-bold text-slate-600 uppercase">Cubic Variations</label>
+                            <div className="grid grid-cols-3 gap-2">
+                                <button onClick={() => setCellType('cubic-scc')} className={`py-2 px-2 rounded-lg font-bold text-sm transition-all border-2 ${cellType === 'cubic-scc' ? 'border-indigo-500 bg-indigo-50 text-indigo-700' : 'border-slate-200 text-slate-500 hover:bg-slate-50'}`}>SCC</button>
+                                <button onClick={() => setCellType('cubic-bcc')} className={`py-2 px-2 rounded-lg font-bold text-sm transition-all border-2 ${cellType === 'cubic-bcc' ? 'border-indigo-500 bg-indigo-50 text-indigo-700' : 'border-slate-200 text-slate-500 hover:bg-slate-50'}`}>BCC</button>
+                                <button onClick={() => setCellType('cubic-fcc')} className={`py-2 px-2 rounded-lg font-bold text-sm transition-all border-2 ${cellType === 'cubic-fcc' ? 'border-indigo-500 bg-indigo-50 text-indigo-700' : 'border-slate-200 text-slate-500 hover:bg-slate-50'}`}>FCC</button>
+                            </div>
+
+                            <label className="text-sm font-bold text-slate-600 uppercase mt-4 block">Other Crystal Systems</label>
+                            <div className="grid grid-cols-2 gap-2">
+                                {['tetragonal', 'orthorhombic', 'hexagonal', 'rhombohedral', 'monoclinic', 'triclinic'].map((t) => (
+                                    <button key={t} onClick={() => setCellType(t)} className={`py-2 px-2 rounded-lg font-bold text-sm transition-all border-2 capitalize ${cellType === t ? 'border-indigo-500 bg-indigo-50 text-indigo-700' : 'border-slate-200 text-slate-500 hover:bg-slate-50'}`}>
+                                        {t}
                                     </button>
                                 ))}
                             </div>
-                            <label className="flex items-center gap-2 text-sm font-bold text-slate-700 cursor-pointer mt-4">
+                            
+                            <label className="flex items-center gap-2 text-sm font-bold text-slate-700 cursor-pointer mt-6 p-4 bg-slate-100 rounded-xl">
                                 <input type="checkbox" checked={showSlicer} onChange={(e) => setShowSlicer(e.target.checked)} className="rounded w-4 h-4 accent-indigo-600" />
-                                Visualize Sliced Atoms (1/8, 1/2)
+                                Visualize Sliced Atoms (1/8 corner, 1/2 face)
                             </label>
-                            <p className="text-xs text-slate-500 bg-slate-50 p-3 rounded border mt-4 leading-relaxed">
-                                {cellType === 'scc' && "Simple Cubic: Atoms only at the 8 corners. Effective atoms per unit cell = 1."}
-                                {cellType === 'bcc' && "Body Centered Cubic: Atoms at 8 corners + 1 in exact center. Effective atoms per unit cell = 2."}
-                                {cellType === 'fcc' && "Face Centered Cubic: Atoms at 8 corners + 1 in center of every 6 faces. Effective atoms per unit cell = 4."}
+                            <p className="text-sm text-slate-600 bg-slate-50 p-4 rounded-xl border mt-2 leading-relaxed">
+                                Explore the 7 crystal systems defined by variations in edge lengths (a,b,c) and angles (α,β,γ). This perfectly matches the 14 Bravais lattices taught in NCERT.
                             </p>
                         </div>
                     </div>

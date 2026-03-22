@@ -12,9 +12,8 @@ const PolymerLab: React.FC<PolymerLabProps> = ({ topic, onExit }) => {
     const requestRef = useRef<number>();
     const startTime = useRef(Date.now());
 
-    // Extracted state from App.tsx
-    const [polymerConfig, setPolymerConfig] = useState<{ mode: 'synthesis' | 'conductivity' }>({
-        mode: 'synthesis'
+    const [polymerConfig, setPolymerConfig] = useState<{ mode: 'addition' | 'condensation' }>({
+        mode: 'addition'
     });
 
     const handleReset = useCallback(() => {
@@ -84,7 +83,7 @@ const PolymerLab: React.FC<PolymerLabProps> = ({ topic, onExit }) => {
 
             const time = (Date.now() - startTime.current) / 1000;
 
-            if (polymerConfig.mode === 'synthesis') {
+            if (polymerConfig.mode === 'addition') {
                 // ZIEGLER-NATTA CATALYSIS VISUALIZATION
                 const catX = 200;
                 const catY = 250;
@@ -167,74 +166,55 @@ const PolymerLab: React.FC<PolymerLabProps> = ({ topic, onExit }) => {
                 ctx.fillText("Active site inserts monomer into growing chain", 30, 65);
 
             } else {
-                // CONDUCTING POLYMERS VISUALIZATION
-                const drawChain = (y: number, type: 'insulator' | 'conductor', label: string) => {
-                    ctx.fillStyle = '#1e293b';
-                    ctx.font = 'bold 18px sans-serif';
-                    ctx.textAlign = 'left';
-                    ctx.fillText(label, 50, y - 40);
+                // CONDENSATION POLYMERIZATION
+                ctx.fillStyle = '#1e293b';
+                ctx.font = 'bold 22px sans-serif';
+                ctx.textAlign = 'left';
+                ctx.fillText("Condensation Polymerization (e.g., Nylon 6,6)", 30, 40);
+                ctx.font = '16px sans-serif';
+                ctx.fillStyle = '#64748b';
+                ctx.fillText("Monomers combine with the loss of small molecules (like H₂O)", 30, 65);
 
-                    // Draw Backbone (ZigZag)
-                    const startX = 50;
-                    const segLen = 40;
-                    const count = 16;
+                const getX = (i: number) => 100 + i * 70;
+                const y = 250;
 
+                const count = Math.floor(time * 1.5) % 8 + 1; // 1 to 8 units
+
+                for(let i=0; i<count; i++) {
+                    const x = getX(i);
+                    // Draw monomer A or B
                     ctx.beginPath();
-                    ctx.moveTo(startX, y);
-                    for (let i = 0; i < count; i++) {
-                        ctx.lineTo(startX + (i + 1) * segLen, y + (i % 2 === 0 ? -20 : 20));
-                    }
-                    ctx.lineWidth = 4;
-                    ctx.strokeStyle = '#94a3b8';
-                    ctx.stroke();
+                    ctx.roundRect(x - 30, y - 20, 60, 40, 6);
+                    ctx.fillStyle = i % 2 === 0 ? '#3b82f6' : '#ef4444';
+                    ctx.fill();
+                    
+                    ctx.fillStyle = 'white';
+                    ctx.font = 'bold 14px sans-serif';
+                    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+                    ctx.fillText(i % 2 === 0 ? "A" : "B", x, y);
+                    
+                    if (i > 0) {
+                        // Draw bond
+                        ctx.beginPath();
+                        ctx.moveTo(getX(i-1) + 30, y);
+                        ctx.lineTo(x - 30, y);
+                        ctx.strokeStyle = '#1e293b';
+                        ctx.lineWidth = 4;
+                        ctx.stroke();
 
-                    // Draw Bonds
-                    for (let i = 0; i < count; i++) {
-                        if (type === 'conductor') {
-                            if (i % 2 === 0) {
-                                ctx.beginPath();
-                                ctx.moveTo(startX + i * segLen, y + (i % 2 === 0 ? -20 : 20) + 5);
-                                ctx.lineTo(startX + (i + 1) * segLen, y + ((i + 1) % 2 === 0 ? -20 : 20) + 5);
-                                ctx.strokeStyle = '#ef4444'; // Red double bond indicator
-                                ctx.lineWidth = 3;
-                                ctx.stroke();
-                            }
+                        // Water molecule leaving animation for the most recent bond
+                        if (i === count - 1) {
+                            const waterProgress = (time * 1.5) % 1;
+                            const wx = x - 35;
+                            const wy = y - 25 - waterProgress * 80;
+                            ctx.globalAlpha = 1 - waterProgress;
+                            ctx.fillStyle = '#0ea5e9';
+                            ctx.font = 'bold 16px sans-serif';
+                            ctx.fillText("💦 H₂O", wx, wy);
+                            ctx.globalAlpha = 1.0;
                         }
                     }
-
-                    // Draw Electrons
-                    if (type === 'conductor') {
-                        const eCount = 8;
-                        ctx.shadowColor = '#fbbf24';
-                        ctx.shadowBlur = 15;
-                        for (let k = 0; k < eCount; k++) {
-                            const p = ((time * 0.5) + (k / eCount)) % 1;
-                            const totalLen = count * segLen;
-                            const ex = startX + p * totalLen;
-                            const segIdx = Math.floor(p * count);
-                            const localP = (p * count) % 1;
-                            const yBase = (segIdx % 2 === 0) ? -20 : 20;
-                            const yNext = (segIdx % 2 === 0) ? 20 : -20;
-                            const ey = y + yBase + localP * (yNext - yBase);
-
-                            ctx.beginPath();
-                            ctx.arc(ex, ey, 7, 0, Math.PI * 2);
-                            ctx.fillStyle = '#fcd34d';
-                            ctx.fill();
-                        }
-                        ctx.shadowBlur = 0;
-                        ctx.fillStyle = '#d97706';
-                        ctx.font = 'bold 16px sans-serif';
-                        ctx.fillText("⚡ Conducting! (Delocalized Electron Flow)", 450, y);
-                    } else {
-                        ctx.fillStyle = '#ef4444';
-                        ctx.font = 'bold 16px sans-serif';
-                        ctx.fillText("🚫 Insulator (Localized Electrons)", 450, y);
-                    }
-                };
-
-                drawChain(180, 'insulator', 'Polyethylene (Saturated - No Double Bonds)');
-                drawChain(380, 'conductor', 'Polyacetylene (Conjugated - Alternating Double Bonds)');
+                }
             }
 
             ctx.restore();
@@ -273,42 +253,42 @@ const PolymerLab: React.FC<PolymerLabProps> = ({ topic, onExit }) => {
                 <div className="space-y-4">
                     <div className="grid grid-cols-2 gap-3">
                         <button
-                            onClick={() => { setPolymerConfig({ mode: 'synthesis' }); handleReset(); }}
-                            className={`p-4 flex flex-col items-center justify-center rounded-xl font-bold text-sm border-2 transition-all gap-2 ${polymerConfig.mode === 'synthesis' ? 'border-pink-500 bg-pink-50 text-pink-700 shadow-sm' : 'border-slate-200 text-slate-600 hover:bg-slate-50'}`}
+                            onClick={() => { setPolymerConfig({ mode: 'addition' }); handleReset(); }}
+                            className={`p-4 flex flex-col items-center justify-center rounded-xl font-bold text-sm border-2 transition-all gap-2 ${polymerConfig.mode === 'addition' ? 'border-pink-500 bg-pink-50 text-pink-700 shadow-sm' : 'border-slate-200 text-slate-600 hover:bg-slate-50'}`}
                         >
                             <Factory size={24} />
-                            <span>Ziegler-Natta Synthesis</span>
+                            <span>Addition Polymerization</span>
                         </button>
                         <button
-                            onClick={() => { setPolymerConfig({ mode: 'conductivity' }); handleReset(); }}
-                            className={`p-4 flex flex-col items-center justify-center rounded-xl font-bold text-sm border-2 transition-all gap-2 ${polymerConfig.mode === 'conductivity' ? 'border-pink-500 bg-pink-50 text-pink-700 shadow-sm' : 'border-slate-200 text-slate-600 hover:bg-slate-50'}`}
+                            onClick={() => { setPolymerConfig({ mode: 'condensation' }); handleReset(); }}
+                            className={`p-4 flex flex-col items-center justify-center rounded-xl font-bold text-sm border-2 transition-all gap-2 ${polymerConfig.mode === 'condensation' ? 'border-pink-500 bg-pink-50 text-pink-700 shadow-sm' : 'border-slate-200 text-slate-600 hover:bg-slate-50'}`}
                         >
-                            <Zap size={24} />
-                            <span>Conducting Polymers</span>
+                            <GitCommit size={24} />
+                            <span>Condensation Polymerization</span>
                         </button>
                     </div>
                 </div>
 
                 {/* Explanatory Box based on combination */}
-                <div className="bg-slate-50 p-5 rounded-xl border border-slate-200 text-sm shadow-inner">
-                    {polymerConfig.mode === 'synthesis' ? (
+                <div className="bg-slate-50 p-5 rounded-xl border border-slate-200 text-sm shadow-inner mt-4">
+                    {polymerConfig.mode === 'addition' ? (
                         <div className="space-y-3 text-slate-700">
-                            <h4 className="font-bold text-slate-800 text-base">Addition Polymerization</h4>
+                            <h4 className="font-bold text-slate-800 text-base">Addition Polymerization (Chain Growth)</h4>
                             <p>
-                                <strong>Ziegler-Natta Catalyst:</strong> A mixture of titanium tetrachloride (TiCl₄) and triethylaluminium [Al(C₂H₅)₃].
+                                Molecules of the same or different monomers add together on a large scale to form a polymer, without the elimination of any byproduct molecules.
                             </p>
                             <p>
-                                It operates via coordination polymerization, where monomers (like ethylene) coordinate to the vacant coordination site of the transition metal (Ti) before inserting themselves into the growing polymer chain. This allows for highly stereoregular polymers (like HDPE).
+                                <strong>Example:</strong> Formation of Polyethylene from ethylene using a Ziegler-Natta Catalyst [TiCl₄ + Al(C₂H₅)₃].
                             </p>
                         </div>
                     ) : (
                         <div className="space-y-3 text-slate-700">
-                            <h4 className="font-bold text-slate-800 text-base">Conducting Polymers (Nobel Prize 2000)</h4>
+                            <h4 className="font-bold text-slate-800 text-base">Condensation Polymerization (Step Growth)</h4>
                             <p>
-                                Typically, organic polymers are insulators because their valence electrons are bound in sp³ hybridized covalent bonds (like Polyethylene).
+                                Involves a repetitive condensation reaction between two bi-functional monomers. This process results in the loss of simple molecules such as water, alcohol, etc.
                             </p>
                             <p>
-                                <strong>Conjugated Polymers:</strong> Polymers like Polyacetylene have alternating single and double bonds (sp² hybridization). This creates an extended continuous p-orbital system where π-electrons are highly <strong>delocalized</strong>, allowing them to flow freely along the chain and conduct electricity.
+                                <strong>Example:</strong> Formation of Nylon 6,6 from hexamethylenediamine and adipic acid, accompanied by the removal of H₂O molecules.
                             </p>
                         </div>
                     )}

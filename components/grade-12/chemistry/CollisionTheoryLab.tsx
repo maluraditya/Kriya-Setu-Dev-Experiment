@@ -68,8 +68,8 @@ const CollisionTheoryLab: React.FC<CollisionTheoryLabProps> = ({ topic, onExit }
 
             newParticles.push({
                 id: i,
-                x: Math.random() * logicalWidth,
-                y: Math.random() * logicalHeight,
+                x: Math.random() * 600, // Reduced from logicalWidth to fit graph
+                y: Math.random() * 500,
                 vx: Math.cos(angle) * speed,
                 vy: Math.sin(angle) * speed,
                 radius: 10,
@@ -106,7 +106,7 @@ const CollisionTheoryLab: React.FC<CollisionTheoryLabProps> = ({ topic, onExit }
             p.angle += 0.05;
 
             if (p.x < p.radius) { p.x = p.radius; p.vx *= -1; }
-            if (p.x > width - p.radius) { p.x = width - p.radius; p.vx *= -1; }
+            if (p.x > 600 - p.radius) { p.x = 600 - p.radius; p.vx *= -1; } // Restrict to left partition
             if (p.y < p.radius) { p.y = p.radius; p.vy *= -1; }
             if (p.y > height - p.radius) { p.y = height - p.radius; p.vy *= -1; }
         });
@@ -187,7 +187,7 @@ const CollisionTheoryLab: React.FC<CollisionTheoryLabProps> = ({ topic, onExit }
         ctx.save();
         ctx.scale(dpr, dpr);
 
-        const logicalWidth = 800;
+        const logicalWidth = 1000; // Increased width to fit graph
         const logicalHeight = 500;
 
         // Scale the drawing to fit the canvas proportionally
@@ -214,16 +214,78 @@ const CollisionTheoryLab: React.FC<CollisionTheoryLabProps> = ({ topic, onExit }
         ctx.fillStyle = bgGrad;
         ctx.fillRect(0, 0, logicalWidth, logicalHeight);
 
-        // Container Border
+        // Container Border for particles
         ctx.strokeStyle = '#e2e8f0';
         ctx.lineWidth = 4;
-        ctx.strokeRect(0, 0, logicalWidth, logicalHeight);
+        ctx.strokeRect(0, 0, 600, logicalHeight);
 
-        // Draw a soft grid for scientific feel
+        // Draw a soft grid for scientific feel (only in particles area)
         ctx.strokeStyle = '#f8fafc';
         ctx.lineWidth = 1;
-        for (let x = 0; x < logicalWidth; x += 50) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, logicalHeight); ctx.stroke(); }
-        for (let y = 0; y < logicalHeight; y += 50) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(logicalWidth, y); ctx.stroke(); }
+        for (let x = 0; x < 600; x += 50) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, logicalHeight); ctx.stroke(); }
+        for (let y = 0; y < logicalHeight; y += 50) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(600, y); ctx.stroke(); }
+
+        // --- GRAPH PANEL ---
+        const gx = 660;
+        const gy = 80;
+        const gw = 280;
+        const gh = 300;
+        
+        ctx.fillStyle = '#1e293b';
+        ctx.font = 'bold 20px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText("Energy Profile", gx + gw/2, gy - 25);
+        
+        // Axes
+        ctx.beginPath();
+        ctx.moveTo(gx, gy + gh);
+        ctx.lineTo(gx + gw, gy + gh); // X axis
+        ctx.moveTo(gx, gy + gh);
+        ctx.lineTo(gx, gy - 10); // Y axis
+        ctx.strokeStyle = '#94a3b8';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+        
+        ctx.fillStyle = '#64748b';
+        ctx.font = 'bold 14px sans-serif';
+        ctx.fillText("Reaction Coordinate", gx + gw/2, gy + gh + 45);
+        ctx.save(); ctx.translate(gx - 45, gy + gh/2); ctx.rotate(-Math.PI/2); ctx.fillText("Potential Energy", 0,0); ctx.restore();
+
+        const eReactant = gy + gh - 80;
+        const eProduct = gy + gh - 40; // Exothermic
+        // Peak is purely visual representation of Ea
+        const ePeak = eReactant - currentConfig.activationEnergy;
+
+        // Energy Curve
+        ctx.beginPath();
+        ctx.moveTo(gx, eReactant);
+        ctx.lineTo(gx + 40, eReactant);
+        ctx.bezierCurveTo(gx + 100, eReactant, gx + 90, ePeak, gx + 140, ePeak);
+        ctx.bezierCurveTo(gx + 190, ePeak, gx + 180, eProduct, gx + 240, eProduct);
+        ctx.lineTo(gx + gw, eProduct);
+        
+        ctx.strokeStyle = '#3b82f6';
+        ctx.lineWidth = 4;
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+        ctx.stroke();
+
+        // Activation Energy (Ea) marker
+        ctx.beginPath(); ctx.moveTo(gx + 140, eReactant); ctx.lineTo(gx + 140, ePeak);
+        ctx.strokeStyle = '#ef4444'; ctx.lineWidth = 2; ctx.setLineDash([5,5]); ctx.stroke(); ctx.setLineDash([]);
+        
+        // Label Ea explicitly
+        ctx.fillStyle = '#ef4444'; ctx.font = 'bold 16px sans-serif'; ctx.textAlign='left';
+        ctx.fillText(`Ea`, gx + 150, (eReactant + ePeak)/2 + 5);
+
+        // Average Kinetic Energy Line
+        // Maps 100K-600K range to a visual height on the graph
+        const keY = gy + gh - (currentConfig.temperature * 0.25);
+        ctx.beginPath(); ctx.moveTo(gx, keY); ctx.lineTo(gx + gw, keY);
+        ctx.strokeStyle = '#f59e0b'; ctx.lineWidth = 2; ctx.setLineDash([8,6]); ctx.stroke(); ctx.setLineDash([]);
+        ctx.fillStyle = '#f59e0b'; ctx.font = 'bold 14px sans-serif'; ctx.textAlign='right';
+        ctx.fillText(`Avg Kinetic Energy (${currentConfig.temperature}K)`, gx + gw, keY - 10);
+        ctx.textAlign = 'center'; // reset
 
         // Particles
         particlesRef.current.forEach(p => {
@@ -345,63 +407,61 @@ const CollisionTheoryLab: React.FC<CollisionTheoryLabProps> = ({ topic, onExit }
                 </div>
 
                 <div className="space-y-6">
-                    {/* Temperature */}
-                    <div className="space-y-2">
-                        <label className="text-xs font-bold text-slate-500 uppercase flex justify-between">
-                            <span className="flex items-center gap-1"><Thermometer size={14} /> Temperature (T)</span>
-                            <span className="text-orange-600 font-mono bg-orange-50 px-2 rounded">{config.temperature} K</span>
+                    {/* Temperature Presets */}
+                    <div className="space-y-3">
+                        <label className="text-sm font-bold text-slate-600 uppercase flex items-center gap-2">
+                            <Thermometer size={16} className="text-orange-500" /> Temperature
                         </label>
-                        <input
-                            type="range" min="100" max="600" step="10"
-                            value={config.temperature}
-                            onChange={(e) => setConfig({ ...config, temperature: Number(e.target.value) })}
-                            className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-orange-500"
-                        />
-                        <p className="text-[10px] text-slate-400 italic">Increases average kinetic energy.</p>
+                        <div className="grid grid-cols-3 gap-2">
+                            {[{t: 100, label: "Cold"}, {t: 300, label: "Room"}, {t: 500, label: "Hot"}].map(temp => (
+                                <button
+                                    key={temp.t}
+                                    onClick={() => setConfig({ ...config, temperature: temp.t })}
+                                    className={`p-2 rounded-lg text-sm font-bold border-2 transition-all ${config.temperature === temp.t ? 'border-orange-500 bg-orange-50 text-orange-700' : 'border-slate-200 text-slate-600 hover:bg-slate-50'}`}
+                                >
+                                    {temp.label} <br/>
+                                    <span className="text-xs opacity-75">{temp.t}K</span>
+                                </button>
+                            ))}
+                        </div>
                     </div>
 
-                    {/* Activation Energy */}
-                    <div className="space-y-2">
-                        <label className="text-xs font-bold text-slate-500 uppercase flex justify-between">
-                            <span className="flex items-center gap-1"><Zap size={14} /> Activation Energy (Ea)</span>
-                            <span className="text-purple-600 font-mono bg-purple-50 px-2 rounded">{config.activationEnergy} J</span>
+                    {/* Activation Energy Presets */}
+                    <div className="space-y-3">
+                        <label className="text-sm font-bold text-slate-600 uppercase flex items-center gap-2">
+                            <Zap size={16} className="text-purple-500" /> Activation Energy (Ea)
                         </label>
-                        <input
-                            type="range" min="50" max="300" step="10"
-                            value={config.activationEnergy}
-                            onChange={(e) => setConfig({ ...config, activationEnergy: Number(e.target.value) })}
-                            className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-purple-600"
-                        />
-                        <p className="text-[10px] text-slate-400 italic">Energy threshold for molecules to react on impact.</p>
+                        <div className="grid grid-cols-3 gap-2">
+                            {[{e: 60, label: "Low"}, {e: 120, label: "Med"}, {e: 200, label: "High"}].map(ea => (
+                                <button
+                                    key={ea.e}
+                                    onClick={() => setConfig({ ...config, activationEnergy: ea.e })}
+                                    className={`p-2 rounded-lg text-sm font-bold border-2 transition-all ${config.activationEnergy === ea.e ? 'border-purple-500 bg-purple-50 text-purple-700' : 'border-slate-200 text-slate-600 hover:bg-slate-50'}`}
+                                >
+                                    {ea.label} <br/>
+                                    <span className="text-xs opacity-75">{ea.e}J</span>
+                                </button>
+                            ))}
+                        </div>
                     </div>
 
-                    {/* Steric Factor */}
-                    <div className="space-y-2">
-                        <label className="text-xs font-bold text-slate-500 uppercase flex justify-between">
-                            <span>Steric Factor (P)</span>
-                            <span className="text-emerald-600 font-mono bg-emerald-50 px-2 rounded">{config.stericFactor.toFixed(2)}</span>
-                        </label>
-                        <input
-                            type="range" min="0" max="1" step="0.05"
-                            value={config.stericFactor}
-                            onChange={(e) => setConfig({ ...config, stericFactor: Number(e.target.value) })}
-                            className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-emerald-500"
-                        />
-                        <p className="text-[10px] text-slate-400 italic">Probability of correct collision orientation.</p>
-                    </div>
-
-                    {/* Molecule Count */}
-                    <div className="space-y-2">
-                        <label className="text-xs font-bold text-slate-500 uppercase flex justify-between">
-                            <span className="flex items-center gap-1"><Users size={14} /> Reactant Molecules</span>
-                            <span className="text-blue-600 font-mono bg-blue-50 px-2 rounded">{config.moleculeCount}</span>
-                        </label>
-                        <input
-                            type="range" min="10" max="50" step="5"
-                            value={config.moleculeCount}
-                            onChange={(e) => setConfig({ ...config, moleculeCount: Number(e.target.value) })}
-                            className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-blue-600"
-                        />
+                    {/* Simple Steric Factor Toggle */}
+                    <div className="space-y-3">
+                        <label className="text-sm font-bold text-slate-600 uppercase">Orientation Success</label>
+                        <div className="flex bg-slate-100 rounded-xl p-1">
+                            <button
+                                onClick={() => setConfig({ ...config, stericFactor: 0.1 })}
+                                className={`flex-1 py-2 text-sm font-bold rounded-lg transition-all ${config.stericFactor === 0.1 ? 'bg-white shadow text-slate-800' : 'text-slate-500'}`}
+                            >
+                                Strict (P=0.1)
+                            </button>
+                            <button
+                                onClick={() => setConfig({ ...config, stericFactor: 1.0 })}
+                                className={`flex-1 py-2 text-sm font-bold rounded-lg transition-all ${config.stericFactor === 1.0 ? 'bg-white shadow text-slate-800' : 'text-slate-500'}`}
+                            >
+                                Any Angle (P=1)
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>

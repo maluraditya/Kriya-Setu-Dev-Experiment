@@ -193,9 +193,22 @@ const HaloalkaneLab: React.FC<HaloalkaneLabProps> = ({ topic, onExit }) => {
                     drawBond(cX, centerY, lgX, centerY, 4);
                 }
 
+                // SN2 ANIMATION
                 drawAtom(cX, centerY, 30, COLOR_C, "C");
                 drawAtom(nuX, centerY, 25, COLOR_NU, "Nu⁻");
                 drawAtom(lgX, centerY, 25, COLOR_X, "X");
+
+                if (!isBlocked && progress > 0.4 && progress < 0.8) {
+                    ctx.fillStyle = '#ef4444';
+                    ctx.font = 'bold 16px sans-serif';
+                    ctx.fillText("Backside Attack", nuX + 20, centerY - 40);
+                }
+
+                if (!isBlocked && progress >= 0.8) {
+                    ctx.fillStyle = '#10b981';
+                    ctx.font = 'bold 16px sans-serif';
+                    ctx.fillText("Walden Inversion (100% Inverted)", cX, centerY + 100);
+                }
 
                 ctx.fillStyle = '#1e293b';
                 ctx.font = 'bold 20px sans-serif';
@@ -213,7 +226,8 @@ const HaloalkaneLab: React.FC<HaloalkaneLabProps> = ({ topic, onExit }) => {
 
                 let cX = centerX;
                 let lgX = centerX + 40;
-                let nuX = 50;
+                let nu1X = 50;
+                let nu2X = logicalWidth - 50;
 
                 let step1Progress = Math.min(progress * 2, 1);
                 let step2Progress = Math.max(0, progress * 2 - 1);
@@ -229,7 +243,8 @@ const HaloalkaneLab: React.FC<HaloalkaneLabProps> = ({ topic, onExit }) => {
                 lgX = centerX + 40 + step1Progress * 200;
 
                 if (!isUnstable) {
-                    nuX = 50 + step2Progress * (centerX - 50 - 40);
+                    nu1X = 50 + step2Progress * (centerX - 50 - 45); // Left attack (Inversion)
+                    nu2X = logicalWidth - 50 - step2Progress * (logicalWidth - 50 - centerX - 45); // Right attack (Retention)
                 }
 
                 const tilt = 20 * (1 - step1Progress);
@@ -248,7 +263,8 @@ const HaloalkaneLab: React.FC<HaloalkaneLabProps> = ({ topic, onExit }) => {
 
                 if (step2Progress > 0.1 && !isUnstable) {
                     if (step2Progress < 0.9) ctx.setLineDash([5, 5]);
-                    drawBond(nuX, centerY, cX, centerY, 3);
+                    drawBond(nu1X, centerY, cX, centerY, 3);
+                    drawBond(nu2X, centerY, cX, centerY, 3);
                     ctx.setLineDash([]);
                 }
 
@@ -274,14 +290,30 @@ const HaloalkaneLab: React.FC<HaloalkaneLabProps> = ({ topic, onExit }) => {
 
                 drawAtom(cX, centerY, 30, COLOR_C, "C");
                 drawAtom(lgX, centerY, 25, COLOR_X, "X⁻");
-                drawAtom(nuX, centerY, 25, COLOR_NU, "Nu⁻");
+                
+                // Draw attacking nucleophiles
+                if (!isUnstable && step1Progress > 0.5) {
+                    drawAtom(nu1X, centerY, 25, COLOR_NU, "Nu⁻");
+                    drawAtom(nu2X, centerY, 25, COLOR_NU, "Nu⁻");
+                    
+                    if (step2Progress > 0.2 && step2Progress < 0.8) {
+                        ctx.fillStyle = '#3b82f6';
+                        ctx.font = 'bold 16px sans-serif';
+                        ctx.textAlign = 'center';
+                        ctx.fillText("50% Inversion", nu1X, centerY - 40);
+                        ctx.fillText("50% Retention", nu2X, centerY - 40);
+                    }
+                }
 
                 if (!isUnstable) {
                     ctx.fillStyle = '#1e293b';
                     ctx.font = 'bold 20px sans-serif';
                     ctx.textAlign = 'left';
-                    if (step1Progress < 1) ctx.fillText("Step 1: Leaving Group departs (Rate Determining - Slow)", 30, 40);
-                    else ctx.fillText("Step 2: Nucleophilic Attack on Planar Carbocation (Fast)", 30, 40);
+                    if (step1Progress < 1) {
+                        ctx.fillText("Step 1: Leaving Group departs (Rate Determining - Slow)", 30, 40);
+                    } else {
+                        ctx.fillText("Step 2: Racemization - Attack from BOTH sides of planar intermediate", 30, 40);
+                    }
                 }
             }
 

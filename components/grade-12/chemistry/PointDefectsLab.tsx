@@ -11,16 +11,16 @@ const PointDefectsLab: React.FC<Props> = ({ topic, onExit }) => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const requestRef = useRef<number>();
 
-    const [defectMode, setDefectMode] = useState<'schottky' | 'frenkel'>('schottky');
-    const gridRef = useRef<Array<{ id: number, type: 'cation' | 'anion', x: number, y: number, originalX: number, originalY: number, removed: boolean, interstitial: boolean }>>([]);
+    const [defectMode, setDefectMode] = useState<'schottky' | 'frenkel' | 'metal_excess'>('schottky');
+    const gridRef = useRef<Array<{ id: number, type: 'cation' | 'anion', x: number, y: number, originalX: number, originalY: number, removed: boolean, interstitial: boolean, fCenter: boolean }>>([]);
     const [density, setDensity] = useState(100);
 
     const initializeDefects = useCallback(() => {
         const grid = [];
-        const rows = 6;
-        const cols = 8;
-        const spacing = 60;
-        const startX = 180;
+        const rows = 5;
+        const cols = 7;
+        const spacing = 75; // Increased spacing for larger ions
+        const startX = 140; // Adjusted start pos
         const startY = 100;
         let id = 0;
         for (let r = 0; r < rows; r++) {
@@ -33,7 +33,8 @@ const PointDefectsLab: React.FC<Props> = ({ topic, onExit }) => {
                     originalX: startX + c * spacing,
                     originalY: startY + r * spacing,
                     removed: false,
-                    interstitial: false
+                    interstitial: false,
+                    fCenter: false
                 });
             }
         }
@@ -72,18 +73,29 @@ const PointDefectsLab: React.FC<Props> = ({ topic, onExit }) => {
         const x = (clickX - offsetX) / drawScale;
         const y = (clickY - offsetY) / drawScale;
 
-        const clickedIon = gridRef.current.find(i => Math.hypot(i.x - x, i.y - y) < 30 && !i.removed);
+        const clickedIon = gridRef.current.find(i => Math.hypot(i.x - x, i.y - y) < 40 && !i.removed);
 
         if (clickedIon) {
             if (defectMode === 'schottky') {
-                clickedIon.removed = true;
-                const neighbor = gridRef.current.find(i => !i.removed && i.type !== clickedIon.type && Math.hypot(i.x - clickedIon.x, i.y - clickedIon.y) < 70);
-                if (neighbor) neighbor.removed = true;
-            } else {
+                if (clickedIon.type === 'cation') {
+                    clickedIon.removed = true;
+                    const neighbor = gridRef.current.find(i => !i.removed && i.type === 'anion' && Math.hypot(i.x - clickedIon.x, i.y - clickedIon.y) < 85);
+                    if (neighbor) neighbor.removed = true;
+                } else if (clickedIon.type === 'anion') {
+                    clickedIon.removed = true;
+                    const neighbor = gridRef.current.find(i => !i.removed && i.type === 'cation' && Math.hypot(i.x - clickedIon.x, i.y - clickedIon.y) < 85);
+                    if (neighbor) neighbor.removed = true;
+                }
+            } else if (defectMode === 'frenkel') {
                 if (clickedIon.type === 'cation' && !clickedIon.interstitial) {
-                    clickedIon.x += 30;
-                    clickedIon.y += 30;
+                    clickedIon.x += 35;
+                    clickedIon.y += 35;
                     clickedIon.interstitial = true;
+                }
+            } else if (defectMode === 'metal_excess') {
+                if (clickedIon.type === 'anion') {
+                    clickedIon.removed = true;
+                    clickedIon.fCenter = true;
                 }
             }
         }
@@ -141,16 +153,33 @@ const PointDefectsLab: React.FC<Props> = ({ topic, onExit }) => {
             ctx.fillStyle = '#1e293b';
             ctx.font = 'bold 22px sans-serif';
             ctx.textAlign = 'left';
-            ctx.fillText(`Defect Type: ${defectMode === 'schottky' ? 'Schottky (Vacancy)' : 'Frenkel (Dislocation)'}`, 30, 40);
+            const titleMap = { 'schottky': 'Schottky Defect (Vacancy)', 'frenkel': 'Frenkel Defect (Interstitial)', 'metal_excess': 'Metal Excess (F-Centers)' };
+            ctx.fillText(`Defect Type: ${titleMap[defectMode]}`, 30, 40);
 
-            const totalOriginal = 48;
+            const totalOriginal = 35; // 5x7 grid
             let currentCount = 0;
             grid.forEach(i => { if (!i.removed && !i.interstitial) currentCount++; });
 
             grid.forEach(ion => {
-                if (ion.removed) {
+                if (ion.fCenter) {
+                    // Draw F-Center (Electron)
                     ctx.beginPath();
                     ctx.arc(ion.originalX, ion.originalY, 20, 0, Math.PI * 2);
+                    ctx.fillStyle = '#fef08a';
+                    ctx.shadowBlur = 15;
+                    ctx.shadowColor = '#eab308';
+                    ctx.fill();
+                    ctx.shadowBlur = 0;
+                    ctx.fillStyle = '#a16207';
+                    ctx.font = 'bold 20px sans-serif';
+                    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+                    ctx.fillText('e⁻', ion.originalX, ion.originalY);
+                    return;
+                }
+
+                if (ion.removed) {
+                    ctx.beginPath();
+                    ctx.arc(ion.originalX, ion.originalY, 25, 0, Math.PI * 2);
                     ctx.fillStyle = 'rgba(0,0,0,0.05)';
                     ctx.fill();
                     ctx.strokeStyle = '#cbd5e1';
@@ -164,9 +193,8 @@ const PointDefectsLab: React.FC<Props> = ({ topic, onExit }) => {
                 let x = ion.x;
                 let y = ion.y;
 
-                ctx.arc(x, y, ion.type === 'cation' ? 18 : 28, 0, Math.PI * 2);
-
-                const radius = ion.type === 'cation' ? 18 : 28;
+                const radius = ion.type === 'cation' ? 22 : 32; // Increased radii
+                ctx.arc(x, y, radius, 0, Math.PI * 2);
                 const grad = ctx.createRadialGradient(x - radius / 3, y - radius / 3, radius / 5, x, y, radius);
                 grad.addColorStop(0, '#ffffff');
                 grad.addColorStop(0.3, ion.type === 'cation' ? '#3b82f6' : '#22c55e');
@@ -265,13 +293,21 @@ const PointDefectsLab: React.FC<Props> = ({ topic, onExit }) => {
                     </div>
                     <div className="p-4 flex flex-col gap-4 w-full flex-1 overflow-y-auto max-h-[35vh] lg:max-h-[350px]">
                         <div className="space-y-4">
-                            <label className="text-xs font-bold text-slate-500 uppercase">Select Defect Mode</label>
-                            <div className="flex bg-slate-100 p-1 rounded-lg">
-                                <button onClick={() => setDefectMode('schottky')} className={`flex-1 py-2 px-2 rounded font-bold text-sm transition-all ${defectMode === 'schottky' ? 'bg-white shadow text-red-600' : 'text-slate-500'}`}>Schottky</button>
-                                <button onClick={() => setDefectMode('frenkel')} className={`flex-1 py-2 px-2 rounded font-bold text-sm transition-all ${defectMode === 'frenkel' ? 'bg-white shadow text-green-600' : 'text-slate-500'}`}>Frenkel</button>
+                            <label className="text-sm font-bold text-slate-600 uppercase">Stoichiometric Defects</label>
+                            <div className="grid grid-cols-2 gap-3 mb-2">
+                                <button onClick={() => setDefectMode('schottky')} className={`p-3 rounded-lg font-bold text-sm border-2 transition-all ${defectMode === 'schottky' ? 'bg-red-50 shadow text-red-700 border-red-500' : 'text-slate-600 border-slate-200 hover:bg-slate-50'}`}>Schottky (Vacancy)</button>
+                                <button onClick={() => setDefectMode('frenkel')} className={`p-3 rounded-lg font-bold text-sm border-2 transition-all ${defectMode === 'frenkel' ? 'bg-green-50 shadow text-green-700 border-green-500' : 'text-slate-600 border-slate-200 hover:bg-slate-50'}`}>Frenkel (Interstitial)</button>
                             </div>
-                            <p className="text-xs text-slate-600 p-3 bg-slate-50 rounded border mt-4 leading-relaxed">
-                                {defectMode === 'schottky' ? "Equal number of cations and anions are missing from lattice sites. Density decreases. Common in NaCl, KCl." : "Smaller ion (usually cation) is dislocated to an interstitial site. Density remains same. Common in ZnS, AgCl."}
+
+                            <label className="text-sm font-bold text-slate-600 uppercase">Non-Stoichiometric</label>
+                            <div className="grid grid-cols-1 gap-3">
+                                <button onClick={() => setDefectMode('metal_excess')} className={`p-3 rounded-lg font-bold text-sm border-2 transition-all ${defectMode === 'metal_excess' ? 'bg-amber-50 shadow text-amber-700 border-amber-500' : 'text-slate-600 border-slate-200 hover:bg-slate-50'}`}>Metal Excess (F-Centers)</button>
+                            </div>
+
+                            <p className="text-sm text-slate-600 p-4 bg-slate-50 rounded-xl border border-slate-200 mt-4 leading-relaxed">
+                                {defectMode === 'schottky' && <span><strong>Schottky Defect:</strong> Equal number of cations and anions are missing from lattice sites. Density decreases. Common in highly ionic NaCl, KCl.</span>}
+                                {defectMode === 'frenkel' && <span><strong>Frenkel Defect:</strong> Smaller ion (usually cation) is dislocated to an interstitial site. Density remains unchanged. Common in ZnS, AgCl.</span>}
+                                {defectMode === 'metal_excess' && <span><strong>Metal Excess Defect (F-Centers):</strong> Anions are missing from lattice sites, and the holes are occupied by electrons (F-Centers). This imparts distinct colors to the crystals (e.g., yellow NaCl).</span>}
                             </p>
                         </div>
                     </div>
