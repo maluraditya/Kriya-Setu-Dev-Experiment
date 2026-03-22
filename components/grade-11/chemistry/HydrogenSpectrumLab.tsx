@@ -52,7 +52,7 @@ interface Props {
 const HydrogenSpectrumLab: React.FC<Props> = ({ topic, onExit }) => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const [currentN, setCurrentN] = useState<number>(1);
-    const [targetEnergy, setTargetEnergy] = useState<string>('');
+    const [targetLevel, setTargetLevel] = useState<number>(2);
     const [spectralLines, setSpectralLines] = useState<SpectralLine[]>([]);
     const [isAlertVisible, setIsAlertVisible] = useState(false);
     const [alertMessage, setAlertMessage] = useState('');
@@ -92,7 +92,7 @@ const HydrogenSpectrumLab: React.FC<Props> = ({ topic, onExit }) => {
             const radius = getOrbitRadius(n, maxRadius);
             ctx.beginPath();
             ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
-            ctx.strokeStyle = n === currentN ? '#38bdf8' : '#334155';
+            ctx.strokeStyle = n === currentN ? '#38bdf8' : 'rgba(51, 65, 85, 0.4)'; // Dimmer unselected orbits
             ctx.lineWidth = n === currentN ? 2 : 1;
             ctx.setLineDash([4, 4]);
             ctx.stroke();
@@ -134,6 +134,12 @@ const HydrogenSpectrumLab: React.FC<Props> = ({ topic, onExit }) => {
         return () => cancelAnimationFrame(animationFrameId);
     }, [currentN]);
 
+    useEffect(() => {
+        if (targetLevel <= currentN && currentN < maxN) {
+            setTargetLevel(currentN + 1);
+        }
+    }, [currentN, maxN]);
+
     // Make sure canvas size is responsive
     useEffect(() => {
         const handleResize = () => {
@@ -150,41 +156,20 @@ const HydrogenSpectrumLab: React.FC<Props> = ({ topic, onExit }) => {
         return () => window.removeEventListener('resize', handleResize);
     }, []);
 
-    const handleFirePhoton = () => {
+    const handleFirePhoton = (targetOverride?: number) => {
         if (isAnimating) return;
 
-        const energyInput = parseFloat(targetEnergy);
-        if (isNaN(energyInput) || energyInput <= 0) {
-            showAlert("Please enter a valid positive energy value in eV.");
+        const target = targetOverride || targetLevel;
+        if (target <= currentN || target > maxN) {
+            showAlert("Please select a higher orbit to jump to.");
             return;
         }
 
-        const currentE = calculateEnergy(currentN);
-        let matchedN = -1;
-
-        // Look for a higher energy level that exactly matches currentE + energyInput
-        for (let n = currentN + 1; n <= maxN; n++) {
-            const possibleE = calculateEnergy(n);
-            const diff = possibleE - currentE;
-            // Allow a small floating-point margin of error (0.05 eV)
-            if (Math.abs(diff - energyInput) < 0.05) {
-                matchedN = n;
-                break;
-            }
-        }
-
-        if (matchedN !== -1) {
-            // Success! Electron jumps up
-            setIsAnimating(true);
-            setTimeout(() => {
-                setCurrentN(matchedN);
-                setTargetEnergy('');
-                setIsAnimating(false);
-            }, 500); // UI feedback delay
-        } else {
-            // Missed quantization
-            showAlert(`A photon with ${energyInput} eV passes straight through. It doesn't match an exact energy gap!`);
-        }
+        setIsAnimating(true);
+        setTimeout(() => {
+            setCurrentN(target);
+            setIsAnimating(false);
+        }, 500); // UI feedback delay
     };
 
     const handleDeexcite = (targetN: number) => {
@@ -236,46 +221,80 @@ const HydrogenSpectrumLab: React.FC<Props> = ({ topic, onExit }) => {
         </div>
     );
 
+    const handleReset = () => {
+        if (isAnimating) return;
+        setIsAnimating(true);
+        setTimeout(() => {
+            setCurrentN(1);
+            setSpectralLines([]);
+            setIsAnimating(false);
+        }, 300);
+    };
+
     const controlsCombo = (
-        <div className="w-full flex justify-between gap-4">
-            {/* Blaster */}
+        <div className="w-full flex justify-between gap-6 p-2">
+            {/* Absorption */}
             <div className="flex-1 flex flex-col justify-center">
-                <div className="text-[10px] uppercase font-bold text-amber-500 tracking-widest mb-2 flex items-center gap-1"><Zap size={12} /> Photon Absorption</div>
-                <div className="flex gap-2">
-                    <input
-                        type="number" step="0.01" placeholder="Energy (eV)" value={targetEnergy}
-                        onChange={(e) => setTargetEnergy(e.target.value)}
-                        className="w-full bg-slate-950/50 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-amber-400"
-                    />
-                    <button onClick={handleFirePhoton} disabled={isAnimating || currentN === maxN}
-                        className="bg-amber-500 hover:bg-amber-400 text-slate-900 font-bold px-4 py-2 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
-                        FIRE
-                    </button>
-                </div>
+                <div className="text-[10px] uppercase font-bold text-amber-500 tracking-widest mb-3 flex items-center gap-1"><Zap size={12} /> Excite Electron (Jump Up)</div>
+                {currentN === maxN ? (
+                    <div className="text-sm font-bold text-amber-500/80 bg-slate-900 border border-amber-500/20 px-4 py-3 rounded-xl text-center">
+                        Highest orbit reached. Cannot excite further.
+                    </div>
+                ) : (
+                    <div className="flex flex-wrap gap-2">
+                        {[...Array(maxN)].map((_, i) => {
+                            const n = i + 1;
+                            if (n <= currentN) return null;
+                            const energyReq = (calculateEnergy(n) - calculateEnergy(currentN)).toFixed(2);
+                            return (
+                                <button key={n} onClick={() => { setTargetLevel(n); handleFirePhoton(); }} disabled={isAnimating}
+                                    className="bg-slate-800 hover:bg-amber-500 hover:text-slate-900 text-amber-400 font-bold px-3 py-2 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all border border-slate-700 hover:border-amber-400 text-xs flex flex-col items-center">
+                                    <span>Jump to n={n}</span>
+                                    <span className="text-[9px] opacity-70">+{energyReq} eV</span>
+                                </button>
+                            );
+                        })}
+                    </div>
+                )}
             </div>
 
             <div className="w-px bg-slate-700/50 hidden md:block" />
 
             {/* Emission */}
-            <div className="flex-[1.5] flex flex-col justify-center max-w-sm">
-                <div className="text-[10px] uppercase font-bold text-brand-secondary tracking-widest mb-2">Photon Emission (Drop)</div>
-                <div className="flex flex-wrap gap-2">
-                    {currentN === 1 ? (
-                        <span className="text-xs text-slate-500 italic py-2">Ground state reached.</span>
-                    ) : (
-                        [...Array(maxN - 1)].map((_, i) => {
+            <div className="flex-[1.2] flex flex-col justify-center">
+                <div className="text-[10px] uppercase font-bold text-brand-secondary tracking-widest mb-3 flex items-center justify-between">
+                    <span><ArrowDown size={12} className="inline mr-1" /> Emit Photon (Drop Down)</span>
+                </div>
+                {currentN === 1 ? (
+                    <div className="text-sm font-bold text-brand-secondary/80 bg-slate-900 border border-brand-secondary/20 px-4 py-3 rounded-xl text-center">
+                        Ground state reached. Cannot drop further.
+                    </div>
+                ) : (
+                    <div className="flex flex-wrap gap-2">
+                        {[...Array(maxN - 1)].map((_, i) => {
                             const targetN = i + 1;
                             if (targetN >= currentN) return null;
-                            const dropE = Math.abs(calculateEnergy(currentN) - calculateEnergy(targetN)).toFixed(2);
                             return (
                                 <button key={targetN} onClick={() => handleDeexcite(targetN)} disabled={isAnimating}
-                                    className="flex items-center gap-1 bg-slate-800 hover:bg-slate-700 px-3 py-1.5 rounded-lg border border-slate-600 transition-all font-mono text-xs">
-                                    <span className="text-slate-300 flex items-center gap-1">n={currentN} <ArrowDown size={10} className="text-brand-secondary" /> n={targetN}</span>
+                                    className="flex flex-col items-center bg-slate-800 hover:bg-brand-secondary hover:text-slate-900 px-3 py-2 rounded-lg border border-slate-700 hover:border-brand-secondary transition-all font-bold text-brand-secondary text-xs">
+                                    <span>Drop to n={targetN}</span>
+                                    <span className="text-[9px] opacity-70">Emit {getSeriesName(targetN).split(' ')[0]}</span>
                                 </button>
                             );
-                        })
-                    )}
-                </div>
+                        })}
+                    </div>
+                )}
+            </div>
+            
+            <div className="w-px bg-slate-700/50 hidden md:block" />
+
+            {/* Reset */}
+            <div className="flex flex-col justify-center gap-2">
+                <button onClick={handleReset} disabled={isAnimating || (currentN === 1 && spectralLines.length === 0)}
+                    className="flex flex-col items-center justify-center gap-1 bg-slate-800 hover:bg-red-500 hover:text-white text-slate-400 px-4 py-3 rounded-lg border border-slate-700 transition-all font-bold text-xs disabled:opacity-50 disabled:cursor-not-allowed h-full">
+                    <X size={16} />
+                    <span>RESET</span>
+                </button>
             </div>
         </div>
     );
