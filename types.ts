@@ -43,7 +43,7 @@ export interface Topic {
   description: string;
   thumbnailIcon: string;
   thumbnailUrl?: string; // Optional URL for custom thumbnail images
-  imageUrl?: string; // For AI generated image
+  imageUrl?: string; // Main image URL for topic card
   coverImage?: string; // Static override
   youtubeVideoIds: string[]; // For embedded videos
 
