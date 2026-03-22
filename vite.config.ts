@@ -5,9 +5,6 @@ import { VitePWA } from 'vite-plugin-pwa';
 
 export default defineConfig(({ mode }) => {
     const env = loadEnv(mode, '.', '');
-    // const isProduction = mode === 'production'; // This line is no longer needed
-    // const base = isProduction ? '/Excellent-NEET-Experiencial-Learning/' : '/'; // This line is no longer needed
-
     return {
       base: './',
       server: {
