@@ -14,6 +14,12 @@ const ReloadPrompt: React.FC = () => {
     onRegisterError(error) {
       console.log('SW registration error', error);
     },
+    onNeedRefresh() {
+      console.log('New content available, refresh needed');
+    },
+    onOfflineReady() {
+      console.log('Offline ready');
+    },
   });
 
   const close = () => {

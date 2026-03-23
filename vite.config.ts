@@ -15,7 +15,6 @@ export default defineConfig(({ mode }) => {
         react(),
         VitePWA({
           registerType: 'prompt',
-          injectRegister: 'inline',
           includeAssets: ['logo.png', 'images/**/*', 'favicon.ico'],
           manifest: {
             id: '/',
