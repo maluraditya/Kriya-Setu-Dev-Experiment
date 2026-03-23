@@ -14,9 +14,9 @@ export default defineConfig(({ mode }) => {
       plugins: [
         react(),
         VitePWA({
-          registerType: 'autoUpdate',
+          registerType: 'prompt',
           injectRegister: 'inline',
-          includeAssets: ['logo.png', 'images/**/*'],
+          includeAssets: ['logo.png', 'images/**/*', 'favicon.ico'],
           manifest: {
             id: '/',
             start_url: '/',
@@ -41,11 +41,14 @@ export default defineConfig(({ mode }) => {
             ]
           },
           workbox: {
-            globPatterns: ['**/*.{js,css,html,ico,png,svg,json,manifest,webmanifest}'],
-            maximumFileSizeToCacheInBytes: 5 * 1024 * 1024, // 5MB
+            globPatterns: [
+              '**/*.{js,css,html,ico,png,svg,json,manifest,webmanifest}',
+              'images/**/*.{png,jpg,jpeg,svg,webp}'
+            ],
+            maximumFileSizeToCacheInBytes: 10 * 1024 * 1024, // 10MB
             cleanupOutdatedCaches: true,
             clientsClaim: true,
-            skipWaiting: true,
+            skipWaiting: false, // Changed to false for 'prompt' strategy
             navigateFallback: 'index.html',
             runtimeCaching: [
               {
@@ -54,7 +57,7 @@ export default defineConfig(({ mode }) => {
                 options: {
                   cacheName: 'google-fonts-cache',
                   expiration: {
-                    maxEntries: 10,
+                    maxEntries: 20,
                     maxAgeSeconds: 60 * 60 * 24 * 365
                   },
                   cacheableResponse: {
@@ -68,7 +71,7 @@ export default defineConfig(({ mode }) => {
                 options: {
                   cacheName: 'google-fonts-online',
                   expiration: {
-                    maxEntries: 10,
+                    maxEntries: 20,
                     maxAgeSeconds: 60 * 60 * 24 * 365
                   },
                   cacheableResponse: {

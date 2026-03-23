@@ -76,96 +76,109 @@ const WaveOpticsLab: React.FC<WaveOpticsLabProps> = ({ topic, onExit }) => {
             ctx.fillStyle = '#0f172a';
             ctx.fillRect(0, 0, width, height);
 
-            const colorRGB = getWavelengthColor(wavelength);
-            const waveColorBase = `rgba(${colorRGB.r}, ${colorRGB.g}, ${colorRGB.b}`;
-
-            // --- Simulation Setup ---
-            const d_pixels = slitSeparation * 20; // visual scaling
-            const D_pixels = 300 + screenDistance * 200; // Screen X pos
-            const s1 = { x: 100, y: centerY - d_pixels / 2 };
-            const s2 = { x: 100, y: centerY + d_pixels / 2 };
-
-            // Draw Slit Barrier
-            ctx.fillStyle = '#475569';
-            const slitWidth = 10;
-            const barrierWidth = 12;
-            ctx.fillRect(s1.x - barrierWidth / 2, 0, barrierWidth, centerY - d_pixels / 2 - slitWidth / 2); // Top
-            ctx.fillRect(s1.x - barrierWidth / 2, centerY - d_pixels / 2 + slitWidth / 2, barrierWidth, d_pixels - slitWidth); // Middle
-            ctx.fillRect(s1.x - barrierWidth / 2, centerY + d_pixels / 2 + slitWidth / 2, barrierWidth, height - (centerY + d_pixels / 2 + slitWidth / 2)); // Bottom
-
-            // Draw Incident plane waves (left side)
-            ctx.strokeStyle = `${waveColorBase}, 0.3)`;
-            ctx.lineWidth = 2;
-            const waveSpacing = wavelength / 15; // Visual scaling for lambda
-            for (let x = (time % waveSpacing); x < s1.x - barrierWidth / 2; x += waveSpacing) {
-                ctx.beginPath();
-                ctx.moveTo(x, 0);
-                ctx.lineTo(x, height);
-                ctx.stroke();
+            // --- Validation ---
+            if (isNaN(wavelength) || isNaN(slitSeparation) || isNaN(screenDistance) || 
+                wavelength <= 0 || slitSeparation <= 0 || screenDistance <= 0) {
+              animationRef.current = requestAnimationFrame(render);
+              return;
             }
 
-            // --- Draw Radiating Circular Waves (Huygens Principle) ---
-            ctx.lineWidth = 1.5;
-            for (let r = (time % waveSpacing); r < D_pixels - s1.x; r += waveSpacing) {
-                const opacity = Math.max(0, 1 - r / (D_pixels - s1.x + 100)); // fade out
-                ctx.strokeStyle = `${waveColorBase}, ${opacity * 0.4})`;
+            try {
+                const colorRGB = getWavelengthColor(wavelength);
+                const waveColorBase = `rgba(${colorRGB.r}, ${colorRGB.g}, ${colorRGB.b}`;
 
-                // Slit 1
-                ctx.beginPath(); ctx.arc(s1.x, s1.y, r, -Math.PI / 2, Math.PI / 2); ctx.stroke();
-                // Slit 2
-                ctx.beginPath(); ctx.arc(s2.x, s2.y, r, -Math.PI / 2, Math.PI / 2); ctx.stroke();
-            }
+                // --- Simulation Setup ---
+                const d_pixels = slitSeparation * 20; // visual scaling
+                const D_pixels = 300 + screenDistance * 200; // Screen X pos
+                const s1 = { x: 100, y: centerY - d_pixels / 2 };
+                const s2 = { x: 100, y: centerY + d_pixels / 2 };
 
-            // --- Draw Screen & Interference Pattern (Right Side) ---
-            const screenX = D_pixels;
+                // Draw Slit Barrier
+                ctx.fillStyle = '#475569';
+                const slitWidth = 10;
+                const barrierWidth = 12;
+                ctx.fillRect(s1.x - barrierWidth / 2, 0, barrierWidth, centerY - d_pixels / 2 - slitWidth / 2); // Top
+                ctx.fillRect(s1.x - barrierWidth / 2, centerY - d_pixels / 2 + slitWidth / 2, barrierWidth, d_pixels - slitWidth); // Middle
+                ctx.fillRect(s1.x - barrierWidth / 2, centerY + d_pixels / 2 + slitWidth / 2, barrierWidth, height - (centerY + d_pixels / 2 + slitWidth / 2)); // Bottom
 
-            // Screen Line
-            ctx.strokeStyle = '#334155';
-            ctx.lineWidth = 4;
-            ctx.beginPath(); ctx.moveTo(screenX, 20); ctx.lineTo(screenX, height - 20); ctx.stroke();
-
-            ctx.fillStyle = '#94a3b8'; ctx.font = '12px sans-serif';
-            ctx.fillText('Screen', screenX - 20, 15);
-
-            // Calculate Intensity graph: I = 4 I0 cos^2 (pi * d * y / lambda * D)
-            // Visually map y to screen height centered at centerY
-            ctx.beginPath();
-            ctx.strokeStyle = `${waveColorBase}, 0.8)`;
-            ctx.lineWidth = 2;
-
-            for (let y = 20; y < height - 20; y += 2) {
-                // Precise Path difference delta = d * sin(theta) ≈ d * (y - centerY) / D
-                const pathDiff = (slitSeparation * (y - centerY)) / (screenDistance * 100);
-                // phase = 2pi * pathDiff / lambda_visual
-                const phase = (2 * Math.PI * pathDiff) / (wavelength / 100);
-
-                // Intensity factor
-                const intensity = Math.pow(Math.cos(phase / 2), 2);
-
-                // Draw Intensity Graph Curve spreading to the right
-                const graphX = screenX + 10 + intensity * 60;
-                if (y === 20) ctx.moveTo(graphX, y);
-                else ctx.lineTo(graphX, y);
-
-                // Draw bright fringes physically on the screen line
-                if (intensity > 0.1) {
-                    ctx.fillStyle = `${waveColorBase}, ${intensity})`;
-                    ctx.fillRect(screenX - 4, y, 8, 2);
+                // Draw Incident plane waves (left side)
+                ctx.strokeStyle = `${waveColorBase}, 0.3)`;
+                ctx.lineWidth = 2;
+                const waveSpacing = Math.max(1, wavelength / 15); // Visual scaling for lambda, ensure > 0
+                for (let x = (time % waveSpacing); x < s1.x - barrierWidth / 2; x += waveSpacing) {
+                    ctx.beginPath();
+                    ctx.moveTo(x, 0);
+                    ctx.lineTo(x, height);
+                    ctx.stroke();
                 }
+
+                // --- Draw Radiating Circular Waves (Huygens Principle) ---
+                ctx.lineWidth = 1.5;
+                for (let r = (time % waveSpacing); r < D_pixels - s1.x; r += waveSpacing) {
+                    const opacity = Math.max(0, 1 - r / (D_pixels - s1.x + 100)); // fade out
+                    ctx.strokeStyle = `${waveColorBase}, ${opacity * 0.4})`;
+
+                    // Slit 1
+                    ctx.beginPath(); ctx.arc(s1.x, s1.y, r, -Math.PI / 2, Math.PI / 2); ctx.stroke();
+                    // Slit 2
+                    ctx.beginPath(); ctx.arc(s2.x, s2.y, r, -Math.PI / 2, Math.PI / 2); ctx.stroke();
+                }
+
+                // --- Draw Screen & Interference Pattern (Right Side) ---
+                const screenX = D_pixels;
+
+                // Screen Line
+                ctx.strokeStyle = '#334155';
+                ctx.lineWidth = 4;
+                ctx.beginPath(); ctx.moveTo(screenX, 20); ctx.lineTo(screenX, height - 20); ctx.stroke();
+
+                ctx.fillStyle = '#94a3b8'; ctx.font = '12px sans-serif';
+                ctx.fillText('Screen', screenX - 20, 15);
+
+                // Calculate Intensity graph: I = 4 I0 cos^2 (pi * d * y / lambda * D)
+                // Visually map y to screen height centered at centerY
+                ctx.beginPath();
+                ctx.strokeStyle = `${waveColorBase}, 0.8)`;
+                ctx.lineWidth = 2;
+
+                for (let y = 20; y < height - 20; y += 2) {
+                    // Precise Path difference delta = d * sin(theta) ≈ d * (y - centerY) / D
+                    const pathDiff = (slitSeparation * (y - centerY)) / (screenDistance * 100);
+                    // phase = 2pi * pathDiff / lambda_visual
+                    const phase = (2 * Math.PI * pathDiff) / (wavelength / 100);
+
+                    // Intensity factor
+                    const intensity = Math.pow(Math.cos(phase / 2), 2);
+
+                    // Draw Intensity Graph Curve spreading to the right
+                    const graphX = screenX + 10 + intensity * 60;
+                    if (y === 20) ctx.moveTo(graphX, y);
+                    else ctx.lineTo(graphX, y);
+
+                    // Draw bright fringes physically on the screen line
+                    if (intensity > 0.1) {
+                        ctx.fillStyle = `${waveColorBase}, ${intensity})`;
+                        ctx.fillRect(screenX - 4, y, 8, 2);
+                    }
+                }
+                ctx.stroke();
+
+                // Label Graph
+                ctx.fillStyle = `${waveColorBase}, 0.8)`;
+                ctx.fillText('Intensity', screenX + 25, 15);
+
+                // Draw Central Maxima Line (Axis)
+                ctx.strokeStyle = 'rgba(255,255,255,0.1)';
+                ctx.setLineDash([5, 5]);
+                ctx.beginPath(); ctx.moveTo(s1.x, centerY); ctx.lineTo(screenX + 80, centerY); ctx.stroke();
+                ctx.setLineDash([]);
+
+                animationRef.current = requestAnimationFrame(render);
+            } catch (error) {
+                console.error("WaveOptics render error:", error);
+                // Attempt to recover by continuing the loop
+                animationRef.current = requestAnimationFrame(render);
             }
-            ctx.stroke();
-
-            // Label Graph
-            ctx.fillStyle = `${waveColorBase}, 0.8)`;
-            ctx.fillText('Intensity', screenX + 25, 15);
-
-            // Draw Central Maxima Line (Axis)
-            ctx.strokeStyle = 'rgba(255,255,255,0.1)';
-            ctx.setLineDash([5, 5]);
-            ctx.beginPath(); ctx.moveTo(s1.x, centerY); ctx.lineTo(screenX + 80, centerY); ctx.stroke();
-            ctx.setLineDash([]);
-
-            animationRef.current = requestAnimationFrame(render);
         };
 
         animationRef.current = requestAnimationFrame(render);

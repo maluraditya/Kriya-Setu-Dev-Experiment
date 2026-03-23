@@ -65,6 +65,7 @@ import TiPlasmidCanvas from './components/grade-12/biology/TiPlasmidCanvas';
 // Shared / Utils
 import { MaxwellBoltzmannChart, PotentialEnergyDiagram } from './components/Charts';
 import Assistant from './components/Assistant';
+import ReloadPrompt from './components/ReloadPrompt';
 import Breadcrumbs from './components/Breadcrumbs';
 import { startDashboardTour, startTopicTour } from './components/TourGuide';
 import { RotateCcw, Activity, ArrowLeft, Home, Battery, Box, Magnet, FlaskConical, Layers, Cuboid, Grid, Percent, AlertTriangle, Info, GraduationCap, HelpCircle, Maximize2, Minimize2 } from 'lucide-react';
@@ -376,6 +377,13 @@ const App: React.FC = () => {
       Topic: Responsive UI Sandbox
       Concept: Exploring a completely new layout container for future modules.
         Simulation: Edge - to - edge canvas with floating glassmorphic sidebars on desktop and native - feeling bottom sheets on mobile.
+      `;
+    } else if (activeTopicId === 'wave_optics') {
+      return `
+        Topic: Wave Optics - Interference & Young's Double Slit Experiment (YDSE) (NCERT Class 12, Unit 6)
+        Concept: Light behaves as a wave. Interference occurs when waves overlap.
+        Formula: Fringe width β = λD/d.
+        Simulation: Interactive YDSE setup with wavelength, slit separation, and screen distance controls.
       `;
     }
     return "User is on the curriculum dashboard.";
@@ -1118,6 +1126,9 @@ const App: React.FC = () => {
 
       {/* AI Assistant */}
       < Assistant contextData={aiContext} />
+
+      {/* PWA Update Prompt */}
+      < ReloadPrompt />
 
       {/* --- FOOTER --- */}
       < footer className="relative bg-slate-950 py-14 mt-16 overflow-hidden" >
