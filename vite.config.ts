@@ -13,6 +13,13 @@ export default defineConfig(({ mode }) => {
       },
       plugins: [
         react(),
+        {
+          name: 'html-transform',
+          transformIndexHtml(html) {
+            const siteUrl = process.env.VITE_SITE_URL || 'https://excellent-academy.demo';
+            return html.replace(/%VITE_SITE_URL%/g, siteUrl);
+          }
+        },
         VitePWA({
           registerType: 'prompt',
           includeAssets: ['logo.png', 'images/**/*', 'favicon.ico'],
