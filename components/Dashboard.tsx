@@ -60,7 +60,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onSelectTopic, activeSubject, set
       <div className="absolute top-[20%] right-[-10%] w-[40%] h-[60%] bg-brand-secondary/10 rounded-full blur-[120px] pointer-events-none -z-10" />
 
       {/* Hero Section */}
-      <div className="text-center mb-10 sm:mb-16 space-y-4 sm:space-y-6 pt-4 sm:pt-8">
+      <div className="text-center mb-10 sm:mb-16 space-y-4 sm:space-y-6 pt-4 sm:pt-8" id="tour-welcome">
         <div className="inline-block px-4 py-1.5 rounded-full bg-slate-900/5 border border-slate-900/10 backdrop-blur-md mb-4 animate-in fade-in slide-in-from-bottom-2 duration-700">
           <span className="text-xs font-bold tracking-widest uppercase bg-gradient-to-r from-brand-primary to-brand-secondary bg-clip-text text-transparent">
             Next-Gen Interactive Learning
@@ -127,7 +127,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onSelectTopic, activeSubject, set
 
       {/* Topics Grid */}
       {filteredTopics.length > 0 ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-8 xl:gap-10">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-8 xl:gap-10" id="tour-topic-grid">
           {filteredTopics.map((topic, index) => {
             // Apply theme colors based on subject
             let themeColor = 'blue';

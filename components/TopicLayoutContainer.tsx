@@ -34,7 +34,7 @@ const TopicLayoutContainer: React.FC<TopicLayoutContainerProps> = ({
             </div>
 
             {/* 1. Main Interaction Area (Left Side Desktop / Top Half Mobile) */}
-            <div className="relative h-[55vh] flex-none lg:h-full lg:flex-1 flex flex-col items-center justify-center shrink-0 border-b lg:border-b-0 lg:border-r border-white/10 overflow-hidden bg-slate-900/50">
+            <div className="relative h-[55vh] flex-none lg:h-full lg:flex-1 flex flex-col items-center justify-center shrink-0 border-b lg:border-b-0 lg:border-r border-white/10 overflow-hidden bg-slate-900/50" id="tour-simulation">
 
                 {/* Optional Floating Top Nav */}
                 {FloatingNavComponent && (
@@ -69,7 +69,7 @@ const TopicLayoutContainer: React.FC<TopicLayoutContainerProps> = ({
             </div>
 
             {/* 2. Content Explorer Panel (Right Side Desktop / Bottom Half Mobile) */}
-            <div className="flex-1 lg:flex-none w-full lg:w-[450px] xl:w-[500px] 2xl:w-[600px] shrink-0 bg-slate-50 lg:bg-white text-slate-900 overflow-y-auto custom-scrollbar lg:shadow-[-10px_0_30px_rgba(0,0,0,0.5)] z-40 relative">
+            <div className="flex-1 lg:flex-none w-full lg:w-[450px] xl:w-[500px] 2xl:w-[600px] shrink-0 bg-slate-50 lg:bg-white text-slate-900 overflow-y-auto custom-scrollbar lg:shadow-[-10px_0_30px_rgba(0,0,0,0.5)] z-40 relative" id="tour-content">
 
                 {/* Sticky Header with Navigation Breadcrumbs */}
                 <div className="bg-white/80 backdrop-blur-md border-b border-slate-200 sticky top-0 z-10 px-8 py-4">

@@ -1573,7 +1573,7 @@ const TextbookContent: React.FC<TextbookContentProps> = ({ topic, layout = 'lega
 
   if (topic?.id === 'atoms') {
     return (
-      <div className="prose prose-slate prose-lg max-w-none font-sans">
+      <div className="prose prose-slate prose-lg max-w-none font-sans" id="tour-content">
         <h1 className="font-display text-3xl font-bold text-brand-primary mb-6">Atoms: The Nuclear Model</h1>
         <p className="lead text-xl text-slate-600 mb-8">
           The atom is mostly empty space. Rutherford's groundbreaking experiment in 1911 shattered the "Plum Pudding" model and revealed the true structure of matter.
@@ -1645,7 +1645,7 @@ const TextbookContent: React.FC<TextbookContentProps> = ({ topic, layout = 'lega
           <li>Electrons get ionized (knocked out), but the α-particle's trajectory is essentially unchanged</li>
         </ul>
 
-        <div className="bg-rose-50 p-6 rounded-xl border-l-4 border-rose-500 my-6">
+        <div className="bg-rose-50 p-6 rounded-xl border-l-4 border-rose-500 my-6" id="tour-real-world">
           <h4 className="font-bold text-rose-900 mb-2">🏟️ Analogy: The Football Stadium</h4>
           <p className="text-sm text-rose-800">
             If an Atom were the size of a football stadium:
