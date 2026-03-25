@@ -12,7 +12,7 @@ const TextbookContent: React.FC<TextbookContentProps> = ({ topic, layout = 'lega
     <div className="mt-12 mb-12" id="tour-videos">
       <h3 className="text-xl font-display font-bold text-brand-primary mb-6 flex items-center">
         <span className="w-1 h-8 bg-brand-secondary mr-3 rounded-full"></span>
-        Video Resources
+        Video Sections
       </h3>
       <div className="grid gap-8">
         {topic?.youtubeVideoIds.map((vid) => (

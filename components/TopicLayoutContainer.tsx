@@ -90,28 +90,6 @@ const TopicLayoutContainer: React.FC<TopicLayoutContainerProps> = ({
                         <TextbookContent topic={topic} layout="unified" />
                     </div>
 
-                    {/* Video Section appended seamlessly */}
-                    {topic.youtubeVideoIds && topic.youtubeVideoIds.length > 0 && (
-                        <div>
-                            <h3 className="font-display text-xl font-bold text-slate-800 border-b-2 border-brand-secondary inline-block pb-1 mb-4">Video Summary</h3>
-                            <div className="flex flex-col gap-6">
-                                {topic.youtubeVideoIds.map(vid => (
-                                    <div key={vid} className="rounded-2xl overflow-hidden shadow-lg border border-slate-200 bg-black aspect-video relative group">
-                                        <div className="absolute inset-0 flex items-center justify-center pointer-events-none group-hover:opacity-0 transition-opacity z-10 w-full h-full text-white bg-black/20">
-                                            {/* Minimal play icon overlay before load if needed */}
-                                        </div>
-                                        <iframe
-                                            className="absolute top-0 left-0 w-full h-full"
-                                            src={`https://www.youtube-nocookie.com/embed/${vid}?rel=0&modestbranding=1`}
-                                            title="Educational Video"
-                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                            allowFullScreen
-                                        ></iframe>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    )}
                 </div>
             </div>
         </div>

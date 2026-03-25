@@ -12,7 +12,7 @@ export const TOPICS_11TH: Topic[] = [
         branch: 'Mechanics',
         grade: '11th',
         thumbnailUrl: '/images/thumbnails/11th-physics/thumb_solids_1771662772975.png',
-        youtubeVideoIds: ['video1', 'video2'] // Placeholders as none provided yet
+        youtubeVideoIds: ['L7gOIFgYl2k'] 
     },
     {
         id: 'fluid-dynamics',
@@ -25,7 +25,7 @@ export const TOPICS_11TH: Topic[] = [
         branch: 'Mechanics',
         grade: '11th',
         thumbnailUrl: '/images/thumbnails/11th-physics/thumb_fluids_1771662792973.png',
-        youtubeVideoIds: [] // Add videos later if needed
+        youtubeVideoIds: ['eJ_Sx_VP5dY'] 
     },
     {
         id: 'pascals-law',
@@ -38,7 +38,7 @@ export const TOPICS_11TH: Topic[] = [
         branch: 'Mechanics',
         grade: '11th',
         thumbnailUrl: '/images/thumbnails/11th-physics/thumb_pascals_1771662812204.png',
-        youtubeVideoIds: []
+        youtubeVideoIds: ['h2IBnGURgHY']
     },
     {
         id: 'carnot-engine',
@@ -51,7 +51,7 @@ export const TOPICS_11TH: Topic[] = [
         branch: 'Thermodynamics',
         grade: '11th',
         thumbnailUrl: '/images/thumbnails/11th-physics/thumb_carnot_1771662842471.png',
-        youtubeVideoIds: []
+        youtubeVideoIds: ['IMXcixHO9u0']
     },
     {
         id: 'thermodynamic-processes',
@@ -64,7 +64,7 @@ export const TOPICS_11TH: Topic[] = [
         branch: 'Thermodynamics',
         grade: '11th',
         thumbnailUrl: '/images/thumbnails/11th-physics/thumb_thermo_1771662859751.png',
-        youtubeVideoIds: []
+        youtubeVideoIds: ['w3MEJoTW2Oo']
     },
     {
         id: 'kinetic-theory',
@@ -77,7 +77,7 @@ export const TOPICS_11TH: Topic[] = [
         branch: 'Statistical Mechanics',
         grade: '11th',
         thumbnailUrl: '/images/thumbnails/11th-physics/thumb_kinetic_1771662889485.png',
-        youtubeVideoIds: []
+        youtubeVideoIds: ['k4FvOpHU0jo']
     },
     {
         id: 'equipartition',
@@ -90,7 +90,7 @@ export const TOPICS_11TH: Topic[] = [
         branch: 'Statistical Mechanics',
         grade: '11th',
         thumbnailUrl: '/images/thumbnails/11th-physics/thumb_equipartition_1771662906243.png',
-        youtubeVideoIds: []
+        youtubeVideoIds: ['qyLrCR15rBY']
     },
     {
         id: 'shm-spring',
@@ -103,7 +103,7 @@ export const TOPICS_11TH: Topic[] = [
         branch: 'Oscillations',
         grade: '11th',
         thumbnailUrl: '/images/thumbnails/11th-physics/thumb_shm_1771662927209.png',
-        youtubeVideoIds: []
+        youtubeVideoIds: ['m3CtyV35s8U']
     },
     {
         id: 'standing-waves',
@@ -116,7 +116,7 @@ export const TOPICS_11TH: Topic[] = [
         branch: 'Oscillations',
         grade: '11th',
         thumbnailUrl: '/images/thumbnails/11th-physics/thumb_waves_1771662957415.png',
-        youtubeVideoIds: []
+        youtubeVideoIds: ['mQdp4Be9qM8']
     },
     {
         id: 'hydrogen-spectrum',
@@ -129,7 +129,7 @@ export const TOPICS_11TH: Topic[] = [
         branch: 'Physical Chemistry',
         grade: '11th',
         thumbnailUrl: '/images/thumbnails/11th-chemistry/thumb_hydrogen.png',
-        youtubeVideoIds: []
+        youtubeVideoIds: ['tigyyU8nZWI']
     },
     {
         id: 'atomic-orbitals',
@@ -142,7 +142,7 @@ export const TOPICS_11TH: Topic[] = [
         branch: 'Physical Chemistry',
         grade: '11th',
         thumbnailUrl: '/images/thumbnails/11th-chemistry/thumb_atomic_orbitals.png',
-        youtubeVideoIds: []
+        youtubeVideoIds: ['nNkw_0c8vY0']
     },
     {
         id: 'vsepr-theory',
@@ -155,7 +155,7 @@ export const TOPICS_11TH: Topic[] = [
         branch: 'Physical Chemistry',
         grade: '11th',
         thumbnailUrl: '/images/thumbnails/11th-chemistry/thumb_vsepr.png',
-        youtubeVideoIds: []
+        youtubeVideoIds: ['nxebQZUVvTg']
     },
     {
         id: 'sigma-pi-bonds',
@@ -168,7 +168,7 @@ export const TOPICS_11TH: Topic[] = [
         branch: 'Physical Chemistry',
         grade: '11th',
         thumbnailUrl: '/images/thumbnails/11th-chemistry/thumb_sigma_pi.png',
-        youtubeVideoIds: []
+        youtubeVideoIds: ['pT8nrBrTOm4']
     },
     {
         id: 'isothermal-work',
@@ -181,7 +181,7 @@ export const TOPICS_11TH: Topic[] = [
         branch: 'Physical Chemistry',
         grade: '11th',
         thumbnailUrl: '/images/thumbnails/11th-chemistry/thumb_isothermal_work.png',
-        youtubeVideoIds: []
+        youtubeVideoIds: ['S4wX2RA9Iw0']
     },
     {
         id: 'extensive-intensive-properties',
@@ -194,7 +194,7 @@ export const TOPICS_11TH: Topic[] = [
         branch: 'Physical Chemistry',
         grade: '11th',
         thumbnailUrl: '/images/thumbnails/11th-chemistry/thumb_extensive_intensive.png',
-        youtubeVideoIds: []
+        youtubeVideoIds: ['hsUeKdjdl1g']
     },
     {
         id: 'buffer-solutions',
@@ -207,7 +207,7 @@ export const TOPICS_11TH: Topic[] = [
         branch: 'Physical Chemistry',
         grade: '11th',
         thumbnailUrl: '/images/thumbnails/11th-chemistry/thumb_buffer_solutions.png',
-        youtubeVideoIds: []
+        youtubeVideoIds: ['8U5tP6GL9wM']
     },
     {
         id: 'le-chatelier-equilibrium',
@@ -220,7 +220,7 @@ export const TOPICS_11TH: Topic[] = [
         branch: 'Physical Chemistry',
         grade: '11th',
         thumbnailUrl: '/images/thumbnails/11th-chemistry/thumb_le_chatelier.png',
-        youtubeVideoIds: []
+        youtubeVideoIds: ['bZFN6-B46xk']
     },
     {
         id: 'qualitative-analysis-organic',
@@ -233,7 +233,7 @@ export const TOPICS_11TH: Topic[] = [
         branch: 'Organic Chemistry',
         grade: '11th',
         thumbnailUrl: '/images/thumbnails/11th-chemistry/thumb_qualitative_analysis.png',
-        youtubeVideoIds: []
+        youtubeVideoIds: ['kv5lWm0Afwg']
     },
     {
         id: 'quantitative-analysis-organic',
@@ -246,7 +246,7 @@ export const TOPICS_11TH: Topic[] = [
         branch: 'Organic Chemistry',
         grade: '11th',
         thumbnailUrl: '/images/thumbnails/11th-chemistry/thumb_quantitative_analysis.png',
-        youtubeVideoIds: []
+        youtubeVideoIds: ['4t0J4GhiDlw']
     },
     {
         id: 'ethane-conformations',
@@ -259,7 +259,7 @@ export const TOPICS_11TH: Topic[] = [
         branch: 'Organic Chemistry',
         grade: '11th',
         thumbnailUrl: '/images/thumbnails/11th-chemistry/thumb_ethane_conformations.png',
-        youtubeVideoIds: []
+        youtubeVideoIds: ['kdurI-JHj2M']
     },
     {
         id: 'stereoisomerism-geometrical',
@@ -272,6 +272,6 @@ export const TOPICS_11TH: Topic[] = [
         branch: 'Organic Chemistry',
         grade: '11th',
         thumbnailUrl: '/images/thumbnails/11th-chemistry/thumb_geometrical_isomerism.png',
-        youtubeVideoIds: []
+        youtubeVideoIds: ['cBd4n_lYsbQ']
     }
 ];
