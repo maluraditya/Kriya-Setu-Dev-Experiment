@@ -5,6 +5,8 @@ import TopicLayoutContainer from '../../TopicLayoutContainer';
 interface TensileTestLabProps {
     topic: any;
     onExit: () => void;
+    mode?: 'tensile' | 'youngs';
+    setMode?: (m: 'tensile' | 'youngs') => void;
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -91,7 +93,7 @@ function stressAt(curve: { e: number; s: number }[], strain: number): number {
 /* ════════════════════════════════════════════════════════════
    COMPONENT
    ════════════════════════════════════════════════════════════ */
-const TensileTestCanvas: React.FC<TensileTestLabProps> = ({ topic, onExit }) => {
+const TensileTestCanvas: React.FC<TensileTestLabProps> = ({ topic, onExit, mode, setMode }) => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const animRef = useRef(0);
 
@@ -560,9 +562,16 @@ const TensileTestCanvas: React.FC<TensileTestLabProps> = ({ topic, onExit }) => 
         </div>
     );
 
+    const floatingNav = setMode ? (
+        <div className="flex bg-slate-800/80 backdrop-blur rounded-xl p-1 shadow-lg border border-slate-700/50 relative z-[200]">
+            <button onClick={() => setMode('tensile')} className={`px-4 py-1.5 text-xs font-bold rounded-lg transition-all ${mode === 'tensile' ? 'bg-blue-500 text-white shadow-md' : 'text-slate-400 hover:text-white hover:bg-white/10'}`}>Stress-Strain Curve</button>
+            <button onClick={() => setMode('youngs')} className={`px-4 py-1.5 text-xs font-bold rounded-lg transition-all ${mode === 'youngs' ? 'bg-blue-500 text-white shadow-md' : 'text-slate-400 hover:text-white hover:bg-white/10'}`}>Young's Modulus</button>
+        </div>
+    ) : undefined;
+
     return (
         <TopicLayoutContainer topic={topic} onExit={onExit}
-            SimulationComponent={simulationCombo} ControlsComponent={controlsCombo} />
+            SimulationComponent={simulationCombo} ControlsComponent={controlsCombo} FloatingNavComponent={floatingNav} />
     );
 };
 

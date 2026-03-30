@@ -14,6 +14,45 @@ export const TOPICS_11TH: Topic[] = [
         thumbnailUrl: '/images/thumbnails/11th-physics/thumb_solids_1771662772975.png',
         youtubeVideoIds: ['L7gOIFgYl2k'] 
     },
+/* deleted youngs modulus */
+
+
+
+
+
+
+
+
+
+
+
+
+    {
+        id: 'elastic-potential-energy',
+        title: 'Elastic Potential Energy (Spring-Mass System)',
+        subject: 'Physics',
+        unit: 'Unit VIII',
+        chapter: 'Mechanical Properties of Solids',
+        description: 'Discover how work done on a horizontal spring is stored as energy. Interact with mass and stiffness to visualize the area under the Force-Displacement curve and observe real-time oscillation.',
+        thumbnailIcon: 'Activity',
+        branch: 'Mechanics',
+        grade: '11th',
+        thumbnailUrl: '/images/thumbnails/11th-physics/thumb_elastic_energy.png',
+        youtubeVideoIds: ['L7gOIFgYl2k']
+    },
+    {
+        id: 'stokes-law',
+        title: "Stokes' Law and Terminal Velocity",
+        subject: 'Physics',
+        unit: 'Unit IX',
+        chapter: 'Mechanical Properties of Fluids',
+        description: "Discover how viscous drag balances gravity to produce terminal velocity. Drop spheres into Water, Oil, and Glycerin and watch force vectors balance in real-time.",
+        thumbnailIcon: 'Activity',
+        branch: 'Mechanics',
+        grade: '11th',
+        thumbnailUrl: '/images/thumbnails/11th-physics/thumb_stokes_law.png',
+        youtubeVideoIds: ['L7gOIFgYl2k']
+    },
     {
         id: 'fluid-dynamics',
         title: 'Bernoulli’s Principle and its Applications',
@@ -67,6 +106,19 @@ export const TOPICS_11TH: Topic[] = [
         youtubeVideoIds: ['w3MEJoTW2Oo']
     },
     {
+        id: 'heat-transfer-blackbody-radiation',
+        title: 'Heat Transfer and Blackbody Radiation',
+        subject: 'Physics',
+        unit: 'Unit X',
+        chapter: 'Thermal Properties of Matter',
+        description: 'Compare conduction, convection, and radiation in one thermal lab. Track heat flow, convection currents, Wien peak shift, and blackbody power as temperature changes.',
+        thumbnailIcon: 'Activity',
+        branch: 'Thermodynamics',
+        grade: '11th',
+        thumbnailUrl: '/images/thumbnails/11th-physics/thumb_thermo_1771662859751.png',
+        youtubeVideoIds: ['w3MEJoTW2Oo']
+    },
+    {
         id: 'kinetic-theory',
         title: 'Pressure of an Ideal Gas (Kinetic Theory)',
         subject: 'Physics',
@@ -77,6 +129,19 @@ export const TOPICS_11TH: Topic[] = [
         branch: 'Statistical Mechanics',
         grade: '11th',
         thumbnailUrl: '/images/thumbnails/11th-physics/thumb_kinetic_1771662889485.png',
+        youtubeVideoIds: ['k4FvOpHU0jo']
+    },
+    {
+        id: 'mean-free-path',
+        title: 'Mean Free Path of Gas Molecules',
+        subject: 'Physics',
+        unit: 'Unit XII',
+        chapter: 'Kinetic Theory',
+        description: 'Visualize the zig-zag random motion of a tracked gas molecule. Discover how increasing density or molecular size dramatically shortens the mean free path using l = 1/(√2 nπd²).',
+        thumbnailIcon: 'Activity',
+        branch: 'Statistical Mechanics',
+        grade: '11th',
+        thumbnailUrl: '/images/thumbnails/11th-physics/thumb_mean_free_path.png',
         youtubeVideoIds: ['k4FvOpHU0jo']
     },
     {
@@ -93,6 +158,19 @@ export const TOPICS_11TH: Topic[] = [
         youtubeVideoIds: ['qyLrCR15rBY']
     },
     {
+        id: 'molecular-interaction',
+        title: 'Molecular Interaction & Surface Tension',
+        subject: 'Physics',
+        unit: 'Unit IX',
+        chapter: 'Mechanical Properties of Fluids',
+        description: 'Discover how atoms attract at a distance but repel when squeezed. Visualize the Lennard-Jones potential, drag molecules to interact, and see how unbalanced forces at a liquid surface create surface tension.',
+        thumbnailIcon: 'Activity',
+        branch: 'Mechanics',
+        grade: '11th',
+        thumbnailUrl: '/images/thumbnails/11th-physics/thumb_molecular_interaction.png',
+        youtubeVideoIds: ['L7gOIFgYl2k']
+    },
+    {
         id: 'shm-spring',
         title: 'Spring-Mass System and Simple Harmonic Motion',
         subject: 'Physics',
@@ -103,6 +181,19 @@ export const TOPICS_11TH: Topic[] = [
         branch: 'Oscillations',
         grade: '11th',
         thumbnailUrl: '/images/thumbnails/11th-physics/thumb_shm_1771662927209.png',
+        youtubeVideoIds: ['m3CtyV35s8U']
+    },
+    {
+        id: 'simple-pendulum',
+        title: 'The Simple Pendulum',
+        subject: 'Physics',
+        unit: 'Unit XIII',
+        chapter: 'Oscillations',
+        description: 'Explore the Simple Pendulum — discover that T = 2π√(L/g) depends only on length and gravity, not on mass or amplitude (within small angles). Drag the bob, measure period, and verify SHM.',
+        thumbnailIcon: 'Activity',
+        branch: 'Oscillations',
+        grade: '11th',
+        thumbnailUrl: '/images/thumbnails/11th-physics/thumb_simple_pendulum.png',
         youtubeVideoIds: ['m3CtyV35s8U']
     },
     {

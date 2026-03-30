@@ -70,6 +70,389 @@ const TextbookContent: React.FC<TextbookContentProps> = ({ topic, layout = 'lega
           </p>
         </div>
 
+        {/* MERGED */}
+
+
+
+
+
+
+
+        <h3 className="text-2xl font-display font-bold text-brand-primary mt-12 mb-6 border-t border-slate-200 pt-8">Young's Modulus</h3>
+        <p className="lead text-xl text-slate-600 mb-8">
+          Young's Modulus (Y) is the ratio of tensile stress to longitudinal strain within the elastic limit. It quantifies a material's <strong>stiffness</strong> — its resistance to being stretched or compressed.
+        </p>
+
+        <h3 className="text-xl font-display font-bold text-brand-dark mt-8 mb-4">I. Concept Foundation — Hooke's Law</h3>
+        <p>
+          Robert Hooke observed that for small deformations, the <strong>stress developed in a body is directly proportional to the strain produced</strong>. Young's Modulus is the proportionality constant specifically for materials undergoing changes in length.
+        </p>
+        <div className="my-6 p-4 bg-slate-100 rounded-xl border border-slate-300">
+          <p className="font-mono text-xl text-brand-primary text-center">Hooke's Law: σ = Y × ε</p>
+          <p className="text-sm text-slate-600 mt-2 text-center">Valid only in the linear (elastic) region of the stress-strain curve.</p>
+        </div>
+
+        <h3 className="text-xl font-display font-bold text-brand-dark mt-8 mb-4">II. The Formulas</h3>
+        <div className="my-6 p-5 bg-blue-50 rounded-xl border border-blue-200 space-y-3">
+          <p className="font-mono text-lg text-brand-primary text-center">Tensile Stress (σ) = F / A</p>
+          <p className="font-mono text-lg text-brand-primary text-center">Longitudinal Strain (ε) = ΔL / L</p>
+          <div className="border-t border-blue-200 pt-3">
+            <p className="font-mono text-xl text-brand-primary text-center font-bold">Y = σ / ε = (F × L) / (A × ΔL)</p>
+          </div>
+          <ul className="list-disc ml-6 mt-3 text-sm text-slate-700">
+            <li><strong>F:</strong> Applied force (N)</li>
+            <li><strong>A:</strong> Cross-sectional area = πr² (m²)</li>
+            <li><strong>L:</strong> Original length (m)</li>
+            <li><strong>ΔL:</strong> Elongation or compression (m)</li>
+          </ul>
+          <p className="text-sm text-slate-600 mt-2 text-center">
+            <strong>SI Unit:</strong> Nm⁻² or Pascal (Pa) — since strain is dimensionless.
+          </p>
+        </div>
+
+        <h3 className="text-xl font-display font-bold text-brand-dark mt-8 mb-4">III. Graph Explanation</h3>
+        <p>
+          On a stress-strain curve, the region from the origin (O) to the proportional limit (A) is a <strong>straight line</strong> where Hooke's Law is obeyed. The <strong>slope</strong> of this linear portion represents the Young's Modulus of the material.
+        </p>
+        <p className="mt-2">
+          A steeper slope means a higher Young's Modulus — the material is <em>stiffer</em> and resists deformation more effectively. Beyond the yield point, the material undergoes permanent plastic deformation, and Y is no longer applicable.
+        </p>
+
+        <h3 className="text-xl font-display font-bold text-brand-dark mt-8 mb-4">IV. Molecular Level Understanding</h3>
+        <p>
+          When a wire is stretched, work is done against internal <strong>inter-atomic forces</strong>. This work is stored as elastic potential energy within the molecular lattice. The tighter the coupling between atoms, the higher the Young's Modulus.
+        </p>
+
+        <h3 className="text-xl font-display font-bold text-brand-dark mt-8 mb-4">V. NCERT Table 8.1 — Young's Modulus Values</h3>
+        <table className="w-full text-sm mt-4">
+          <thead>
+            <tr className="border-b">
+              <th className="text-left py-2">Material</th>
+              <th className="text-center">Y (10⁹ Pa)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td className="py-1"><strong>Steel</strong></td><td className="text-center">200</td></tr>
+            <tr><td className="py-1"><strong>Copper</strong></td><td className="text-center">110</td></tr>
+            <tr><td className="py-1"><strong>Brass</strong></td><td className="text-center">100</td></tr>
+            <tr><td className="py-1"><strong>Aluminum</strong></td><td className="text-center">70</td></tr>
+            <tr><td className="py-1"><strong>Bone (Femur)</strong></td><td className="text-center">9.4</td></tr>
+          </tbody>
+        </table>
+
+        <h3 className="text-xl font-display font-bold text-brand-dark mt-8 mb-4">VI. Real-World Applications</h3>
+
+        <div className="bg-amber-50 p-6 rounded-xl border-l-4 border-amber-500 my-4">
+          <h4 className="font-bold text-amber-900 mb-2">🔩 Steel vs. Rubber — Who's More Elastic?</h4>
+          <p className="text-sm">
+            In daily language, rubber seems "more elastic." But in physics, <strong>Steel is far more elastic</strong> (Y = 200 GPa vs. ~0.01 GPa for rubber). Why? A steel wire resists stretching far more effectively — it requires a significantly larger force to produce a small change in length. That resistance is what physics calls "elasticity."
+          </p>
+        </div>
+
+        <div className="bg-emerald-50 p-6 rounded-xl border-l-4 border-emerald-500 my-4">
+          <h4 className="font-bold text-emerald-900 mb-2">🏗️ Engineering: Bridge Design</h4>
+          <p className="text-sm">
+            Bridges use steel beams because of their high Young's Modulus. The sagging (δ) of a beam under a load is <strong>inversely proportional to Y</strong>. A high Y ensures the bridge remains stiff and safe under heavy traffic loads.
+          </p>
+        </div>
+
+        <div className="bg-sky-50 p-6 rounded-xl border-l-4 border-sky-500 my-4">
+          <h4 className="font-bold text-sky-900 mb-2">🦴 Nature: Human Thighbone (Femur)</h4>
+          <p className="text-sm">
+            The femur has Y = 9.4 × 10⁹ Pa. This allows it to support the weight of the upper body with a compression of only about <strong>0.0091%</strong>, maintaining skeletal integrity under heavy loads.
+          </p>
+        </div>
+
+        <div className="bg-purple-50 p-6 rounded-xl border-l-4 border-purple-500 my-4">
+          <h4 className="font-bold text-purple-900 mb-2">🏗️ Industrial: Crane Ropes</h4>
+          <p className="text-sm">
+            Cranes use thick ropes made of braided steel wires. By calculating the required cross-sectional area based on the material's yield strength and Y, engineers ensure the rope doesn't permanently stretch while lifting 10-tonne loads.
+          </p>
+        </div>
+
+        <h3 className="text-xl font-display font-bold text-brand-dark mt-8 mb-4">VII. Simulation Guide</h3>
+        <div className="my-6 p-5 bg-slate-50 rounded-xl border border-slate-200 shadow-sm space-y-4">
+          <p className="text-sm font-bold text-brand-primary">Step-by-Step Discovery:</p>
+          <ol className="list-decimal pl-6 space-y-3 text-sm">
+            <li>
+              <strong>Step 1:</strong> Select "Steel," set Length to 1 m and Radius to 10 mm. Add 100 kN force.<br />
+              <span className="text-slate-500">→ Observe: ΔL ≈ 1.59 mm. Stress is 318 MPa.</span>
+            </li>
+            <li>
+              <strong>Step 2:</strong> Keep Force constant, change material to "Copper."<br />
+              <span className="text-slate-500">→ The rod stretches significantly more! Copper has Y = 110 GPa vs. Steel's 200 GPa.</span>
+            </li>
+            <li>
+              <strong>Step 3:</strong> Double the Radius to 20 mm (keeping Copper).<br />
+              <span className="text-slate-500">→ ΔL drops to one-fourth! Area = πr² means doubling r quadruples A.</span>
+            </li>
+          </ol>
+          <div className="bg-blue-50 p-3 rounded-lg border border-blue-200 mt-3">
+            <p className="text-sm text-blue-800 text-center">
+              <strong>Learning Outcome:</strong> ΔL is <em>directly proportional</em> to Force and Length, but <em>inversely proportional</em> to Area and Young's Modulus.
+            </p>
+          </div>
+        </div>
+
+        <VideoSection />
+      </div>
+    );
+  }
+
+  if (topic?.id === 'elastic-potential-energy') {
+    return (
+      <div className="prose prose-slate prose-lg max-w-none font-sans" id="tour-content">
+        <h1 className="font-display text-3xl font-bold text-brand-primary mb-6">Elastic Potential Energy in a Stretched Wire</h1>
+        <p className="lead text-xl text-slate-600 mb-8">
+          When a wire is put under tensile stress, work is done against the internal inter-atomic forces.
+          This work is stored in the wire as <strong>elastic potential energy</strong> — and it's the reason a stretched bow can launch an arrow or a compressed spring can push a ball.
+        </p>
+
+        <h3 className="text-xl font-display font-bold text-brand-dark mt-8 mb-4">I. Concept Foundation — The Work-Energy Theorem</h3>
+        <p>
+          The <strong>Work-Energy Theorem</strong> states that the work done on a body by a net force equals its change in energy.
+          In the context of stretching a solid, the "force" is the deforming (tensile) force and the "energy" is stored
+          elastically within the material's molecular lattice.
+        </p>
+        <p>
+          As long as the deformation is within the <strong>elastic limit</strong>, the wire "remembers" its original shape.
+          When the force is removed, the stored energy is released and the wire regains its original length — just like a spring.
+        </p>
+
+        <h3 className="text-xl font-display font-bold text-brand-dark mt-8 mb-4">II. Molecular-Level Physics</h3>
+        <p>
+          In a crystalline solid, atoms sit at equilibrium positions governed by attractive and repulsive forces from surrounding atoms.
+          Displacing an atom from its equilibrium position leads to restoring forces, much like a tiny spring connecting each pair.
+        </p>
+        <p>
+          The work done to move these atoms <em>against</em> the restoring forces is stored as <strong>potential energy</strong>
+          within the molecular lattice. This is elastic potential energy — it exists because the atoms have been shifted from their
+          lowest-energy configuration.
+        </p>
+
+        <h3 className="text-xl font-display font-bold text-brand-dark mt-8 mb-4">III. Formula & Derivation</h3>
+        <div className="my-6 p-4 bg-slate-100 rounded-xl border border-slate-300 space-y-3">
+          <p className="text-sm text-slate-600">
+            For a wire of original length <strong>L</strong>, cross-sectional area <strong>A</strong>, and Young's Modulus
+            <strong> Y</strong>, the force required for an elongation <em>l</em> is:
+          </p>
+          <p className="font-mono text-lg text-brand-primary text-center">F = YAl / L</p>
+
+          <p className="text-sm text-slate-600">
+            For a further infinitesimal elongation <em>dl</em>, work done dW = F × dl. Integrating from 0 to the total elongation <em>l</em>:
+          </p>
+          <p className="font-mono text-lg text-brand-primary text-center">W = ∫₀ˡ (YAl / L) dl = YAl² / 2L</p>
+
+          <p className="text-sm text-slate-600">This can be rewritten in multiple equivalent forms:</p>
+          <div className="bg-blue-50 p-3 rounded-lg border border-blue-200">
+            <p className="font-mono text-blue-800 text-center text-lg">U = ½ × F × ΔL</p>
+            <p className="font-mono text-blue-800 text-center text-sm mt-1">= ½ × stress × strain × volume</p>
+            <p className="font-mono text-blue-800 text-center text-sm mt-1">= ½ × Y × ε² × volume</p>
+          </div>
+        </div>
+
+        <h3 className="text-xl font-display font-bold text-brand-dark mt-8 mb-4">IV. Energy Density</h3>
+        <p>
+          The elastic potential energy <strong>per unit volume</strong> is called the <em>energy density</em> (u):
+        </p>
+        <div className="my-4 p-4 bg-amber-50 rounded-xl border border-amber-200">
+          <p className="font-mono text-xl text-amber-800 text-center">u = ½ × σ × ε</p>
+          <p className="text-sm text-amber-700 mt-2 text-center">where σ is stress and ε is strain</p>
+        </div>
+        <p>
+          This means a material under high stress <em>and</em> high strain stores more energy per unit volume.
+          This is why thin wires under heavy loads can store dangerously large amounts of energy relative to their size.
+        </p>
+
+        <h3 className="text-xl font-display font-bold text-brand-dark mt-8 mb-4">V. Graph Interpretation — Area = Energy</h3>
+        <p>
+          On a <strong>Force vs. Extension</strong> graph, the work done (and thus stored energy) is exactly equal to the
+          <strong> area of the shaded triangle</strong> under the straight line. Since F is linearly proportional to ΔL
+          (within the elastic limit), the graph is a straight line from the origin, and the area is:
+        </p>
+        <div className="my-4 p-3 bg-green-50 rounded-xl border border-green-200">
+          <p className="font-mono text-green-800 text-center text-lg">Area of triangle = ½ × base × height = ½ × ΔL × F</p>
+        </div>
+        <p className="text-sm text-slate-500">
+          <strong>Key insight:</strong> This relationship holds <em>only</em> within the elastic limit.
+          Beyond the yield point, the graph curves and the energy is used for permanent (plastic) deformation — it is
+          <em> not</em> fully recoverable as potential energy.
+        </p>
+
+        <h3 className="text-xl font-display font-bold text-brand-dark mt-8 mb-4">VI. Real-World Applications</h3>
+        <div className="grid gap-4">
+          <div className="p-4 bg-white rounded-xl border border-slate-200 shadow-sm">
+            <p className="text-sm font-bold text-brand-primary">🏹 Archery</p>
+            <p className="text-sm text-slate-600 mt-1">
+              A stretched bow-string possesses elastic potential energy. When the archer releases the string, this stored
+              energy converts into kinetic energy of the arrow, propelling it at great speeds.
+            </p>
+          </div>
+          <div className="p-4 bg-white rounded-xl border border-slate-200 shadow-sm">
+            <p className="text-sm font-bold text-brand-primary">🌏 Earthquakes</p>
+            <p className="text-sm text-slate-600 mt-1">
+              Fault lines in Earth's crust act like "compressed springs," storing massive amounts of elastic potential energy
+              over decades. When the fault suddenly readjusts, this stored energy is released as seismic waves — an earthquake.
+            </p>
+          </div>
+          <div className="p-4 bg-white rounded-xl border border-slate-200 shadow-sm">
+            <p className="text-sm font-bold text-brand-primary">🏗️ Crane Ropes</p>
+            <p className="text-sm text-slate-600 mt-1">
+              Steel wire ropes used in cranes are designed so that the energy stored during lifting remains within the safety
+              margin of the material's elastic limit, preventing snapping or permanent deformation.
+            </p>
+          </div>
+          <div className="p-4 bg-white rounded-xl border border-slate-200 shadow-sm">
+            <p className="text-sm font-bold text-brand-primary">🌉 Bridge Beams</p>
+            <p className="text-sm text-slate-600 mt-1">
+              Beams in bridges are designed to sustain loads by storing energy elastically. Engineers ensure that even under
+              maximum traffic, the stored energy does not exceed the elastic limit to avoid permanent sagging.
+            </p>
+          </div>
+        </div>
+
+        <h3 className="text-xl font-display font-bold text-brand-dark mt-8 mb-4">VII. Simulation Guide</h3>
+        <div className="my-6 p-5 bg-slate-50 rounded-xl border border-slate-200 shadow-sm space-y-4">
+          <p className="text-sm font-bold text-brand-primary">Step-by-Step Discovery:</p>
+          <ol className="list-decimal pl-6 space-y-3 text-sm">
+            <li>
+              <strong>Step 1:</strong> Select "Steel," set Length to 2 m. Gradually increase load to 500 N.<br />
+              <span className="text-slate-500">→ The graph draws a triangle. Note the shaded area and "Stored Energy" value.</span>
+            </li>
+            <li>
+              <strong>Step 2:</strong> Reset and switch to "Copper" (lower Y than Steel). Apply the same 500 N.<br />
+              <span className="text-slate-500">→ The extension is larger, the triangle is wider, and the stored energy is higher! A less stiff material stretches more, storing more energy for the same force.</span>
+            </li>
+            <li>
+              <strong>Step 3:</strong> Reduce the wire radius and increase force until stress exceeds the Yield Strength.<br />
+              <span className="text-slate-500">→ The wire turns red and shows "BEYOND YIELD." The energy is no longer fully recoverable as elastic potential energy.</span>
+            </li>
+          </ol>
+          <div className="bg-blue-50 p-3 rounded-lg border border-blue-200 mt-3">
+            <p className="text-sm text-blue-800 text-center">
+              <strong>Learning Outcome:</strong> Elastic potential energy is the <em>area under the Force-Extension curve</em>.
+              It depends on the material's stiffness (Y), the applied force, and the wire's geometry (L, A).
+            </p>
+          </div>
+        </div>
+
+        <VideoSection />
+      </div>
+    );
+  }
+
+  if (topic?.id === 'stokes-law') {
+    return (
+      <div className="prose prose-slate prose-lg max-w-none font-sans" id="tour-content">
+        <h1 className="font-display text-3xl font-bold text-brand-primary mb-6">Stokes’ Law and Terminal Velocity</h1>
+        <p className="lead text-xl text-slate-600 mb-8">
+          When an object falls through a fluid, it doesn't accelerate forever. It reaches a maximum constant speed called
+          <strong> terminal velocity</strong>. Stokes' Law explains the invisible frictional force from the fluid that makes this happen.
+        </p>
+
+        <h3 className="text-xl font-display font-bold text-brand-dark mt-8 mb-4">I. Viscosity & Stokes' Law</h3>
+        <p>
+          When a body moves through a fluid, it drags the layers of fluid in contact with it. This creates relative motion between different layers of the fluid, resulting in an internal frictional force known as <strong>viscosity</strong>.
+        </p>
+        <p>
+          In 1851, George Gabriel Stokes stated that the viscous drag force (F) on a spherical body of radius <em>a</em> moving with velocity <em>v</em> through a fluid of viscosity <em>η</em> is:
+        </p>
+        <div className="my-6 p-4 bg-slate-100 rounded-xl border border-slate-300">
+          <p className="font-mono text-xl text-brand-primary text-center">F = 6πηav</p>
+          <p className="text-sm text-slate-600 mt-2 text-center">This is known as <strong>Stokes’ Law</strong>.</p>
+        </div>
+
+        <h3 className="text-xl font-display font-bold text-brand-dark mt-8 mb-4">II. The Forces in Play</h3>
+        <p>
+          Consider a small sphere dropped into a tall column of a viscous liquid. Three forces act on it:
+        </p>
+        <div className="grid gap-4 my-6">
+          <div className="p-4 bg-red-50 rounded-xl border border-red-100 shadow-sm border-l-4 border-l-red-500">
+            <p className="text-sm font-bold text-red-700">1. Gravity (W = mg)</p>
+            <p className="text-sm text-red-600 mt-1">Acting vertically downwards, trying to accelerate the sphere.</p>
+          </div>
+          <div className="p-4 bg-green-50 rounded-xl border border-green-100 shadow-sm border-l-4 border-l-green-500">
+            <p className="text-sm font-bold text-green-700">2. Buoyant Force (F♭)</p>
+            <p className="text-sm text-green-600 mt-1">Acting upwards, equal to the weight of the liquid displaced by the sphere.</p>
+          </div>
+          <div className="p-4 bg-blue-50 rounded-xl border border-blue-100 shadow-sm border-l-4 border-l-blue-500">
+            <p className="text-sm font-bold text-blue-700">3. Viscous Drag (F_d)</p>
+            <p className="text-sm text-blue-600 mt-1">Acting upwards (opposing motion). Crucially, this force <strong>increases</strong> as the sphere speeds up.</p>
+          </div>
+        </div>
+
+        <h3 className="text-xl font-display font-bold text-brand-dark mt-8 mb-4">III. Reaching Terminal Velocity</h3>
+        <p>
+          Initially, the sphere accelerates. As its speed increases, the upward viscous drag also increases (since F ∝ v).
+          Eventually, the sum of upward forces (buoyancy + drag) exactly equals the downward weight.
+        </p>
+        <p className="bg-amber-50 p-4 rounded-xl border border-amber-200 text-center font-bold text-amber-800 italic">
+          Net Force = 0 → Acceleration = 0 → Constant Velocity
+        </p>
+        <p>
+          This maximum constant velocity is called <strong>terminal velocity (vₜ)</strong>.
+        </p>
+
+        <h3 className="text-xl font-display font-bold text-brand-dark mt-8 mb-4">IV. The Formula</h3>
+        <div className="my-6 p-4 bg-slate-100 rounded-xl border border-slate-300">
+          <p className="text-sm text-slate-600 text-center mb-3">At equilibrium: W = F♭ + 6πηavₜ</p>
+          <p className="font-mono text-2xl text-brand-primary text-center">vₜ = 2a²(ρ - σ)g / 9η</p>
+          <div className="mt-4 grid grid-cols-2 gap-2 text-xs text-slate-500 font-mono">
+            <span>a: Radius of sphere</span>
+            <span>η: Viscosity coefficient</span>
+            <span>ρ: Density of sphere</span>
+            <span>σ: Density of fluid</span>
+          </div>
+        </div>
+
+        <h3 className="text-xl font-display font-bold text-brand-dark mt-8 mb-4">V. Real-World Applications</h3>
+        <div className="grid gap-4">
+          <div className="p-4 bg-white rounded-xl border border-slate-200 shadow-sm">
+            <p className="text-sm font-bold text-brand-primary">🌧️ Raindrops</p>
+            <p className="text-sm text-slate-600 mt-1">
+              Without air viscosity, raindrops falling from 1km high would hit you at 500 km/h! Because of Stokes' Law,
+              they reach a safe terminal velocity (~20-30 km/h) before hitting the ground.
+            </p>
+          </div>
+          <div className="p-4 bg-white rounded-xl border border-slate-200 shadow-sm">
+            <p className="text-sm font-bold text-brand-primary">🌬️ Dust & Mist</p>
+            <p className="text-sm text-slate-600 mt-1">
+              Very fine particles have a tiny radius (a). Since vₜ ∝ a², they reach terminal velocity almost immediately
+              at extremely slow speeds, which is why dust appears to "float" in a room.
+            </p>
+          </div>
+          <div className="p-4 bg-white rounded-xl border border-slate-200 shadow-sm">
+            <p className="text-sm font-bold text-brand-primary">🧪 Falling Ball Viscometer</p>
+            <p className="text-sm text-slate-600 mt-1">
+              In industry, the viscosity of oils is often measured by dropping a calibrated sphere and timing how long it
+              takes to travel a certain distance at terminal velocity.
+            </p>
+          </div>
+        </div>
+
+        <h3 className="text-xl font-display font-bold text-brand-dark mt-8 mb-4">VI. Simulation Guide</h3>
+        <div className="my-6 p-5 bg-slate-50 rounded-xl border border-slate-200 shadow-sm space-y-4">
+          <p className="text-sm font-bold text-brand-primary">Step-by-Step Discovery:</p>
+          <ol className="list-decimal pl-6 space-y-3 text-sm">
+            <li>
+              <strong>Step 1:</strong> Select "Water" and "Steel." Drop the ball. Note how quickly it hits the bottom and the high terminal velocity on the graph.
+            </li>
+            <li>
+              <strong>Step 2:</strong> Change fluid to "Glycerin" (high viscosity). Drop the same ball.<br />
+              <span className="text-slate-500">→ Observation: The ball slows down almost immediately. The blue "Drag" arrow reaches equilibrium with weight/buoyancy much faster.</span>
+            </li>
+            <li>
+              <strong>Step 3:</strong> Increase the "Radius" slider while in Glycerin.<br />
+              <span className="text-slate-500">→ Observation: Even in thick liquid, larger balls fall significantly faster because vₜ depends on the square of the radius (a²).</span>
+            </li>
+          </ol>
+          <div className="bg-blue-50 p-3 rounded-lg border border-blue-200 mt-3">
+            <p className="text-sm text-blue-800 text-center">
+              <strong>Learning Outcome:</strong> Terminal velocity is directly proportional to the square of the radius and inversely proportional to the fluid's viscosity.
+            </p>
+          </div>
+        </div>
+
         <VideoSection />
       </div>
     );
@@ -246,6 +629,124 @@ const TextbookContent: React.FC<TextbookContentProps> = ({ topic, layout = 'lega
     );
   }
 
+  if (topic?.id === 'heat-transfer-blackbody-radiation') {
+    return (
+      <div className="prose prose-slate prose-lg max-w-none font-sans" id="tour-content">
+        <h1 className="font-display text-3xl font-bold text-brand-primary mb-6">Heat Transfer and Blackbody Radiation</h1>
+        <p className="lead text-xl text-slate-600 mb-8">
+          Heat transfer is the flow of energy from a body at higher temperature to a body at lower temperature until thermal equilibrium is reached.
+          In NCERT Class 11, this appears in <strong>Thermal Properties of Matter</strong> through three modes: conduction, convection, and radiation.
+        </p>
+
+        <h3 className="text-xl font-display font-bold text-brand-dark mt-8 mb-4">I. The Three Modes of Heat Transfer</h3>
+        <ol className="list-decimal pl-6 space-y-4">
+          <li>
+            <strong>Conduction:</strong> Heat passes through adjacent particles without bulk motion of matter. It is dominant in solids where neighboring atoms and electrons transfer energy by collision.
+          </li>
+          <li>
+            <strong>Convection:</strong> Heat is carried by the actual motion of fluid. Warm fluid rises because its density falls, while cooler and denser fluid sinks to replace it.
+          </li>
+          <li>
+            <strong>Radiation:</strong> Heat travels through electromagnetic waves. No material medium is required, so radiation is the only mode possible in vacuum.
+          </li>
+        </ol>
+
+        <div className="my-6 p-5 bg-blue-50 rounded-xl border border-blue-200 space-y-3">
+          <p className="font-mono text-lg text-brand-primary text-center">Conduction: H = kA Delta T / L</p>
+          <p className="font-mono text-lg text-brand-primary text-center">Radiation: H = sigma A T^4</p>
+          <ul className="list-disc ml-6 mt-3 text-sm text-slate-700">
+            <li><strong>k:</strong> thermal conductivity of the material</li>
+            <li><strong>A:</strong> cross-sectional area</li>
+            <li><strong>L:</strong> length or thickness</li>
+            <li><strong>Delta T:</strong> temperature difference between hot and cold ends</li>
+            <li><strong>sigma:</strong> Stefan-Boltzmann constant for a perfect blackbody</li>
+          </ul>
+        </div>
+
+        <h3 className="text-xl font-display font-bold text-brand-dark mt-8 mb-4">II. Blackbody Radiation</h3>
+        <p>
+          A <strong>blackbody</strong> is an ideal absorber that takes in all incident radiation and emits energy depending only on its temperature.
+          Real hot objects approximate blackbody behavior, which is why the color of a glowing filament or star changes with temperature.
+        </p>
+
+        <div className="my-6 p-4 bg-rose-50 rounded-xl border border-rose-200 space-y-2">
+          <p className="font-mono text-lg text-rose-700 text-center">Wien&apos;s Law: lambda_max T = constant</p>
+          <p className="text-sm text-slate-600 text-center">
+            As temperature increases, the wavelength of maximum intensity shifts toward shorter wavelengths.
+          </p>
+        </div>
+
+        <h3 className="text-xl font-display font-bold text-brand-dark mt-8 mb-4">III. Conceptual Insights</h3>
+        <ul className="list-disc pl-6 space-y-2 text-sm">
+          <li>Conduction is strongest in good conductors like copper because energy moves more easily through the material.</li>
+          <li>Convection is limited to liquids and gases because the medium itself must move.</li>
+          <li>Radiation does not stop in vacuum, which is why the Sun can heat the Earth across space.</li>
+          <li>The Stefan-Boltzmann law explains why emitted power rises very rapidly as temperature increases.</li>
+        </ul>
+
+        <h3 className="text-xl font-display font-bold text-brand-dark mt-8 mb-4">IV. Real-World Applications</h3>
+
+        <div className="bg-amber-50 p-6 rounded-xl border-l-4 border-amber-500 my-4">
+          <h4 className="font-bold text-amber-900 mb-2">Cooking Utensils</h4>
+          <p className="text-sm">
+            Copper-bottomed utensils spread heat quickly and uniformly because copper has very high thermal conductivity.
+            This improves conduction from the flame to the food.
+          </p>
+        </div>
+
+        <div className="bg-emerald-50 p-6 rounded-xl border-l-4 border-emerald-500 my-4">
+          <h4 className="font-bold text-emerald-900 mb-2">Thermos Flask</h4>
+          <p className="text-sm">
+            A vacuum flask reduces conduction and convection by placing a vacuum between two walls.
+            Silvered surfaces reflect thermal radiation, so all three modes of heat transfer are minimized together.
+          </p>
+        </div>
+
+        <div className="bg-sky-50 p-6 rounded-xl border-l-4 border-sky-500 my-4">
+          <h4 className="font-bold text-sky-900 mb-2">Sea Breeze</h4>
+          <p className="text-sm">
+            Land heats faster than water during the day. Air above land warms, expands, and rises, while cooler air from the sea moves in.
+            This is a classic natural example of convection.
+          </p>
+        </div>
+
+        <div className="bg-purple-50 p-6 rounded-xl border-l-4 border-purple-500 my-4">
+          <h4 className="font-bold text-purple-900 mb-2">Stellar Temperatures</h4>
+          <p className="text-sm">
+            Astronomers estimate the surface temperature of stars using Wien&apos;s displacement law.
+            A star whose spectrum peaks at shorter wavelengths is hotter than one peaking in the red or infrared region.
+          </p>
+        </div>
+
+        <h3 className="text-xl font-display font-bold text-brand-dark mt-8 mb-4">V. Simulation Guide</h3>
+        <div className="my-6 p-5 bg-slate-50 rounded-xl border border-slate-200 shadow-sm space-y-4">
+          <p className="text-sm font-bold text-brand-primary">What to explore in this lab:</p>
+          <ol className="list-decimal pl-6 space-y-3 text-sm">
+            <li>
+              <strong>Conduction station:</strong> keep temperature fixed and increase the area of the rod.
+              <span className="text-slate-500"> The heat flow rises because more cross-section allows more energy transfer per second.</span>
+            </li>
+            <li>
+              <strong>Convection station:</strong> switch the environment between air, water, and vacuum.
+              <span className="text-slate-500"> Circulation becomes stronger in fluids and vanishes in vacuum.</span>
+            </li>
+            <li>
+              <strong>Radiation station:</strong> raise temperature from around 1000 K toward 6000 K.
+              <span className="text-slate-500"> The blackbody glows brighter, total power shoots upward, and the Wien peak shifts left toward visible light.</span>
+            </li>
+          </ol>
+          <div className="bg-blue-50 p-3 rounded-lg border border-blue-200 mt-3">
+            <p className="text-sm text-blue-800 text-center">
+              <strong>Learning Outcome:</strong> Students can compare all three heat-transfer modes and connect blackbody color, intensity, and peak wavelength directly to temperature.
+            </p>
+          </div>
+        </div>
+
+        <VideoSection />
+      </div>
+    );
+  }
+
   if (topic?.id === 'kinetic-theory') {
     return (
       <div className="prose prose-slate prose-lg max-w-none font-sans" id="tour-content">
@@ -290,6 +791,172 @@ const TextbookContent: React.FC<TextbookContentProps> = ({ topic, layout = 'lega
             Road friction heats tyres, raising air temperature inside. By ½m⟨v²⟩ = 3/2 k<sub>B</sub>T, molecules move faster, hit walls harder, and tyre pressure rises — which is why it's recommended to check tyre pressure when cold.
           </p>
         </div>
+
+        <VideoSection />
+      </div>
+    );
+  }
+
+  if (topic?.id === 'mean-free-path') {
+    return (
+      <div className="prose prose-slate prose-lg max-w-none font-sans" id="tour-content">
+        <h1 className="font-display text-3xl font-bold text-brand-primary mb-6">Mean Free Path of Gas Molecules</h1>
+        <p className="lead text-xl text-slate-600 mb-8">
+          The <strong>mean free path (l)</strong> is the average distance a molecule travels between two successive collisions. It explains why gases diffuse slowly despite molecules moving at the speed of sound.
+        </p>
+
+        <h3 className="text-xl font-display font-bold text-brand-dark mt-8 mb-4">The Zig-Zag Path Problem</h3>
+        <p className="text-sm">
+          Gas molecules travel at very high speeds (~500 m/s for nitrogen at room temperature) yet a perfume scent takes minutes to cross a room. This paradox is resolved by the mean free path — molecules constantly collide with each other, following a chaotic zig-zag path rather than a straight line.
+        </p>
+
+        <h3 className="text-xl font-display font-bold text-brand-dark mt-8 mb-4">Derivation — The Collision Cylinder</h3>
+        <p className="text-sm">Consider a single molecule of diameter <strong>d</strong> moving with average speed <strong>⟨v⟩</strong>:</p>
+        <ul className="list-disc pl-6 space-y-2 text-sm">
+          <li>In time Δt, it sweeps out a <strong>collision cylinder</strong> of volume <strong>πd²⟨v⟩Δt</strong></li>
+          <li>Any molecule whose centre lies within this cylinder will be hit</li>
+          <li>Number of collisions = <strong>n · πd²⟨v⟩Δt</strong>, where n is the number density</li>
+          <li>Collision rate = <strong>n · πd²⟨v⟩</strong></li>
+          <li>Accounting for the relative motion of all molecules introduces the factor √2</li>
+        </ul>
+
+        <h3 className="text-xl font-display font-bold text-brand-dark mt-8 mb-4">The Formula</h3>
+        <div className="my-4 p-4 bg-blue-50 rounded-xl border border-blue-200 text-center">
+          <p className="font-mono text-xl text-brand-primary">l = 1 / (√2 · n · π · d²)</p>
+          <p className="text-sm text-slate-600 mt-2">where n = N/V (number density, m⁻³), d = molecular diameter (m)</p>
+        </div>
+
+        <h3 className="text-xl font-display font-bold text-brand-dark mt-8 mb-4">Cause and Effect</h3>
+        <div className="overflow-x-auto my-4">
+          <table className="w-full text-sm border-collapse">
+            <thead>
+              <tr className="bg-slate-100">
+                <th className="p-3 text-left border border-slate-200">Parameter</th>
+                <th className="p-3 text-left border border-slate-200">Change</th>
+                <th className="p-3 text-left border border-slate-200">Effect on l</th>
+                <th className="p-3 text-left border border-slate-200">Why?</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td className="p-3 border border-slate-200 font-bold text-blue-700">Density (n)</td>
+                <td className="p-3 border border-slate-200">n ↑</td>
+                <td className="p-3 border border-slate-200 font-bold text-red-600">l ↓  (l ∝ 1/n)</td>
+                <td className="p-3 border border-slate-200">More targets per unit volume</td>
+              </tr>
+              <tr className="bg-slate-50">
+                <td className="p-3 border border-slate-200 font-bold text-red-700">Diameter (d)</td>
+                <td className="p-3 border border-slate-200">d ↑</td>
+                <td className="p-3 border border-slate-200 font-bold text-red-600">l ↓  (l ∝ 1/d²)</td>
+                <td className="p-3 border border-slate-200">Larger cross-section πd²</td>
+              </tr>
+              <tr>
+                <td className="p-3 border border-slate-200 font-bold text-green-700">Temperature (T)</td>
+                <td className="p-3 border border-slate-200">T ↑ (const. P)</td>
+                <td className="p-3 border border-slate-200 font-bold text-green-600">l ↑</td>
+                <td className="p-3 border border-slate-200">Gas expands → n decreases</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p className="text-sm text-slate-500 mt-1">Note: Increasing temperature at <em>constant volume</em> does not change l (n stays constant).</p>
+
+        <h3 className="text-xl font-display font-bold text-brand-dark mt-8 mb-4">Real-World Applications</h3>
+
+        <div className="bg-amber-50 p-6 rounded-xl border-l-4 border-amber-500 my-4">
+          <h4 className="font-bold text-amber-900 mb-2">🍳 Cooking Smells &amp; Perfume</h4>
+          <p className="text-sm">
+            Despite molecules moving at ~500 m/s, the scent takes several minutes to cross a room. Nitrogen molecules in air collide ~5 billion times per second, making the mean free path just ~70 nm at atmospheric pressure.
+          </p>
+        </div>
+
+        <div className="bg-sky-50 p-6 rounded-xl border-l-4 border-sky-500 my-4">
+          <h4 className="font-bold text-sky-900 mb-2">💡 Vacuum Tubes &amp; Electronics</h4>
+          <p className="text-sm">
+            In highly evacuated vacuum tubes, the number density n is so small that the mean free path becomes comparable to the size of the tube itself. Electrons or gas molecules can travel end-to-end without any collision — essential for CRT screens and electron microscopes.
+          </p>
+        </div>
+
+        <div className="bg-slate-50 p-6 rounded-xl border-l-4 border-slate-500 my-4">
+          <h4 className="font-bold text-slate-900 mb-2">🏭 Industrial Gas Separation</h4>
+          <p className="text-sm">
+            In Knudsen diffusion, gases pass through porous membranes whose pore size is smaller than the mean free path. Under these conditions, each molecule moves independently, allowing separation based on molecular mass.
+          </p>
+        </div>
+
+        <VideoSection />
+      </div>
+    );
+  }
+
+  if (topic?.id === 'molecular-interaction') {
+    return (
+      <div className="prose prose-slate prose-lg max-w-none font-sans" id="tour-content">
+        <h1 className="font-display text-3xl font-bold text-brand-primary mb-6">Molecular Interaction &amp; Surface Tension</h1>
+        <p className="lead text-xl text-slate-600 mb-8">
+          All things are made of atoms — little particles that move in perpetual motion, <strong>attracting</strong> each other when a little distance apart, but <strong>repelling</strong> upon being squeezed into one another. This is the fundamental &quot;Atomic Hypothesis.&quot;
+        </p>
+
+        <h3 className="text-xl font-display font-bold text-brand-dark mt-8 mb-4">The Nature of Molecular Forces</h3>
+        <ul className="list-disc pl-6 space-y-2 text-sm">
+          <li><strong>Attraction:</strong> At distances of a few angstroms (~2 × 10⁻¹⁰ m), molecules attract each other through van der Waals forces</li>
+          <li><strong>Repulsion:</strong> When squeezed closer than the equilibrium distance r₀, the forces become strongly repulsive due to electron cloud overlap</li>
+          <li><strong>Equilibrium:</strong> At r = r₀, the net force is zero — this is the stable separation in a liquid</li>
+        </ul>
+
+        <h3 className="text-xl font-display font-bold text-brand-dark mt-8 mb-4">The Lennard-Jones Potential</h3>
+        <p className="text-sm">The interaction energy between two molecules is modeled by:</p>
+        <div className="my-4 p-4 bg-blue-50 rounded-xl border border-blue-200 text-center">
+          <p className="font-mono text-lg text-brand-primary">U(r) = 4ε[(σ/r)¹² − (σ/r)⁶]</p>
+          <p className="text-sm text-slate-600 mt-1">where ε = well depth, σ = molecular size parameter, r = intermolecular distance</p>
+        </div>
+        <ul className="list-disc pl-6 space-y-2 text-sm">
+          <li><strong>Short range (r &lt; r₀):</strong> The repulsive (σ/r)¹² term dominates → U &gt; 0, molecules repel</li>
+          <li><strong>Medium range (r ≈ r₀):</strong> Forces balance → U is at its minimum (most stable)</li>
+          <li><strong>Long range (r &gt; r₀):</strong> The attractive (σ/r)⁶ term dominates → U &lt; 0, molecules attract</li>
+        </ul>
+
+        <h3 className="text-xl font-display font-bold text-brand-dark mt-8 mb-4">Connection to Surface Tension</h3>
+        <p className="text-sm">
+          A molecule deep inside a liquid is attracted equally in all directions — its net force is zero and its potential energy is at the bulk value. However, a molecule at the <strong>surface</strong> has no neighbors on the air side. The unbalanced inward pull gives it <strong>extra potential energy</strong>.
+        </p>
+        <div className="my-4 p-4 bg-emerald-50 rounded-xl border border-emerald-200 text-center">
+          <p className="font-mono text-lg text-emerald-700">Surface Tension S = F/l = Energy/Area</p>
+          <p className="text-sm text-slate-600 mt-1">The extra energy per unit area at the surface — arising from unbalanced molecular attractions</p>
+        </div>
+
+        <h3 className="text-xl font-display font-bold text-brand-dark mt-8 mb-4">Real-World Applications</h3>
+
+        <div className="bg-amber-50 p-6 rounded-xl border-l-4 border-amber-500 my-4">
+          <h4 className="font-bold text-amber-900 mb-2">💧 Water Droplets on a Lotus Leaf</h4>
+          <p className="text-sm">
+            Water forms spherical droplets because the attraction between water molecules (cohesion) is stronger than their attraction to the leaf surface (adhesion). The obtuse angle of contact θ &gt; 90° makes water bead up rather than spread out.
+          </p>
+        </div>
+
+        <div className="bg-sky-50 p-6 rounded-xl border-l-4 border-sky-500 my-4">
+          <h4 className="font-bold text-sky-900 mb-2">🧴 Detergents as Wetting Agents</h4>
+          <p className="text-sm">
+            Soaps and detergents reduce the molecular interaction (surface tension) of water, allowing it to penetrate fabric fibers and clean effectively. They weaken the cohesion at the water-air interface.
+          </p>
+        </div>
+
+        <div className="bg-emerald-50 p-6 rounded-xl border-l-4 border-emerald-500 my-4">
+          <h4 className="font-bold text-emerald-900 mb-2">🌿 Capillary Action in Plants</h4>
+          <p className="text-sm">
+            Sap and water rise to the top of tall trees through narrow xylem vessels. This capillary action arises from molecular interactions between the water and the vessel walls (adhesion), aided by surface tension effects. The height of capillary rise is h = 2S cosθ/(ρgr).
+          </p>
+        </div>
+
+        <h3 className="text-xl font-display font-bold text-brand-dark mt-8 mb-4">Angle of Contact (θ)</h3>
+        <p className="text-sm">
+          The angle of contact is the angle between the liquid-solid interface and the liquid-air interface. It depends on the relative strengths of adhesive vs cohesive forces:
+        </p>
+        <ul className="list-disc pl-6 space-y-2 text-sm">
+          <li><strong>Acute θ (&lt; 90°):</strong> Adhesion &gt; cohesion — liquid wets the surface (e.g., water on clean glass)</li>
+          <li><strong>θ = 90°:</strong> Adhesion = cohesion — neutral</li>
+          <li><strong>Obtuse θ (&gt; 90°):</strong> Cohesion &gt; adhesion — liquid beads up (e.g., mercury on glass, water on wax)</li>
+        </ul>
 
         <VideoSection />
       </div>
@@ -427,6 +1094,78 @@ const TextbookContent: React.FC<TextbookContentProps> = ({ topic, layout = 'lega
             Earthquake detectors use a heavy mass suspended by a spring. Due to inertia, the mass stays relatively stationary while the ground moves during a quake — the relative SHM of the system records the earth&apos;s tremors.
           </p>
         </div>
+
+        <VideoSection />
+      </div>
+    );
+  }
+
+  if (topic?.id === 'simple-pendulum') {
+    return (
+      <div className="prose prose-slate prose-lg max-w-none font-sans" id="tour-content">
+        <h1 className="font-display text-3xl font-bold text-brand-primary mb-6">The Simple Pendulum</h1>
+        <p className="lead text-xl text-slate-600 mb-8">
+          A simple pendulum is an idealized system consisting of a small bob of mass <strong>m</strong> tied to an inextensible, massless string of length <strong>L</strong> that is fixed to a rigid support. It demonstrates the interplay between gravity and inertia.
+        </p>
+
+        <h3 className="text-xl font-display font-bold text-brand-dark mt-8 mb-4">Definition &amp; Physical Setup</h3>
+        <p className="text-sm">In its equilibrium position, the bob hangs vertically at rest. When displaced by an angle θ, the forces acting on it are:</p>
+        <ul className="list-disc pl-6 space-y-2 text-sm">
+          <li><strong>Tension (T)</strong> — along the string, toward the pivot</li>
+          <li><strong>Weight (mg)</strong> — vertically downward</li>
+        </ul>
+        <p className="text-sm mt-2">The tangential component of gravity (<strong>mgsinθ</strong>) acts as the restoring force.</p>
+
+        <h3 className="text-xl font-display font-bold text-brand-dark mt-8 mb-4">Equation of Motion</h3>
+        <p className="text-sm">Using torque equation τ = Iα:</p>
+        <div className="my-4 p-4 bg-blue-50 rounded-xl border border-blue-200 text-center">
+          <p className="font-mono text-lg text-brand-primary">τ = −L(mg sinθ) = Iα</p>
+          <p className="text-sm text-slate-600 mt-1">where I = mL² (moment of inertia of a point mass)</p>
+        </div>
+
+        <h3 className="text-xl font-display font-bold text-brand-dark mt-8 mb-4">Small Angle Approximation</h3>
+        <p className="text-sm">For small angles (θ &lt; 20°), sinθ ≈ θ (in radians). This gives:</p>
+        <div className="my-4 p-4 bg-emerald-50 rounded-xl border border-emerald-200 text-center">
+          <p className="font-mono text-lg text-emerald-700">α ≈ −(g/L)θ</p>
+          <p className="text-sm text-slate-600 mt-1">This is the defining condition for Simple Harmonic Motion!</p>
+        </div>
+
+        <h3 className="text-xl font-display font-bold text-brand-dark mt-8 mb-4">Time Period &amp; Angular Frequency</h3>
+        <div className="my-4 p-4 bg-purple-50 rounded-xl border border-purple-200 text-center">
+          <p className="font-mono text-lg text-purple-700">T = 2π√(L/g)</p>
+          <p className="font-mono text-md text-purple-600 mt-1">ω = √(g/L)</p>
+        </div>
+        <p className="text-sm"><strong>Key Insight:</strong> The period depends ONLY on length L and gravity g — it is independent of the mass of the bob and (for small angles) the amplitude!</p>
+
+        <h3 className="text-xl font-display font-bold text-brand-dark mt-8 mb-4">Real-World Applications</h3>
+
+        <div className="bg-amber-50 p-6 rounded-xl border-l-4 border-amber-500 my-4">
+          <h4 className="font-bold text-amber-900 mb-2">🎢 Playground Swing</h4>
+          <p className="text-sm">
+            A child on a swing acts as a pendulum. Pushing the swing provides energy to overcome friction (damping), while gravity acts as the restoring force.
+          </p>
+        </div>
+
+        <div className="bg-sky-50 p-6 rounded-xl border-l-4 border-sky-500 my-4">
+          <h4 className="font-bold text-sky-900 mb-2">🕐 Grandfather Clock</h4>
+          <p className="text-sm">
+            These clocks use a pendulum to maintain a precise period. The length is often adjustable to &quot;tune&quot; the clock to T = 2 seconds (a &quot;seconds pendulum&quot;).
+          </p>
+        </div>
+
+        <div className="bg-emerald-50 p-6 rounded-xl border-l-4 border-emerald-500 my-4">
+          <h4 className="font-bold text-emerald-900 mb-2">⛰️ Geological Survey</h4>
+          <p className="text-sm">
+            By measuring the time period of a pendulum of known length, scientists can calculate the local value of g to detect underground mineral deposits or variations in the Earth&apos;s crust.
+          </p>
+        </div>
+
+        <h3 className="text-xl font-display font-bold text-brand-dark mt-8 mb-4">Conditions &amp; Limits</h3>
+        <ul className="list-disc pl-6 space-y-2 text-sm">
+          <li>The motion is only <strong>strictly simple harmonic</strong> for small angular displacements</li>
+          <li>Large angles result in &quot;non-linear&quot; oscillations where the period depends on the amplitude</li>
+          <li>The string should be inextensible and massless (idealized)</li>
+        </ul>
 
         <VideoSection />
       </div>

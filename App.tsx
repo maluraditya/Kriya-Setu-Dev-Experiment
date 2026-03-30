@@ -6,15 +6,22 @@ import TextbookContent from './components/TextbookContent';
 import TopicLayoutContainer from './components/TopicLayoutContainer';
 
 // Grade 11 - Physics
-import TensileTestCanvas from './components/grade-11/physics/TensileTestCanvas';
+import MechanicalPropertiesMaster from './components/grade-11/physics/MechanicalPropertiesMaster';
 import FluidDynamicsLab from './components/grade-11/physics/FluidDynamicsLab';
 import HydraulicBrakeLab from './components/grade-11/physics/HydraulicBrakeLab';
 import CarnotEngineLab from './components/grade-11/physics/CarnotEngineLab';
 import ThermodynamicProcessesLab from './components/grade-11/physics/ThermodynamicProcessesLab';
+import HeatTransferBlackbodyLab from './components/grade-11/physics/HeatTransferBlackbodyLab';
 import KineticTheoryLab from './components/grade-11/physics/KineticTheoryLab';
+import MeanFreePathLab from './components/grade-11/physics/MeanFreePathLab';
 import EquipartitionLab from './components/grade-11/physics/EquipartitionLab';
+import MolecularInteractionLab from './components/grade-11/physics/MolecularInteractionLab';
 import SHMLab from './components/grade-11/physics/SHMLab';
+import SimplePendulumLab from './components/grade-11/physics/SimplePendulumLab';
 import WavesLab from './components/grade-11/physics/WavesLab';
+
+import ElasticPotentialEnergyLab from './components/grade-11/physics/ElasticPotentialEnergyLab';
+import StokesLawLab from './components/grade-11/physics/StokesLawLab';
 
 // Grade 11 - Chemistry
 import HydrogenSpectrumLab from './components/grade-11/chemistry/HydrogenSpectrumLab';
@@ -265,11 +272,28 @@ const App: React.FC = () => {
         Concept: ΔQ = ΔU + ΔW. Four process modes: Isothermal (T const, ΔU=0, ΔQ=ΔW), Adiabatic (Q=0, ΔU=-ΔW), Isochoric (V const, ΔW=0, ΔQ=ΔU), Isobaric (P const, ΔW=PΔV).
         Simulation: Interactive gas cylinder with P-V diagram and energy balance bars.
       `;
+    } else if (activeTopicId === 'heat-transfer-blackbody-radiation') {
+      return `
+        Topic: Heat Transfer and Blackbody Radiation (NCERT Class 11, Chapter 10 - Thermal Properties of Matter)
+        Concept: Heat flows from higher to lower temperature by conduction, convection, or radiation. Conduction follows H = kAΔT/L. Radiation of a blackbody follows H = σAT^4 and Wien's law λmax T = constant.
+        Simulation: Three-station thermal lab with a conductive rod, convection tank, and blackbody spectrum viewer.
+      `;
     } else if (activeTopicId === 'kinetic-theory') {
       return `
         Topic: Pressure of an Ideal Gas - Kinetic Theory (NCERT Class 11, Chapter 12)
         Concept: P = ⅓ n m ⟨v²⟩. Gas pressure arises from elastic molecular collisions against container walls. Temperature is the avg kinetic energy: ½m⟨v²⟩ = 3/2 kBT.
         Simulation: Interactive gas chamber with bouncing molecules, T/V/N controls, collision flashes, and live pressure graph.
+      `;
+    } else if (activeTopicId === 'mean-free-path') {
+      return `
+        Topic: Mean Free Path of Gas Molecules (NCERT Class 11, Chapter 12, Section 12.7)
+        Definition: Mean free path (l) is the average distance a molecule travels between two successive collisions.
+        Formula: l = 1 / (√2 · n · π · d²) where n = number density (N/V), d = molecular diameter.
+        Collision cross-section: πd². Collision cylinder volume in time Δt: πd²⟨v⟩Δt.
+        Cause-Effect: l ∝ 1/n (more crowded → shorter path), l ∝ 1/d² (bigger molecules → shorter path).
+        Temperature at constant pressure: higher T → lower n → larger l.
+        Real-world: explains why perfume diffuses slowly despite high molecular speeds (zig-zag path).
+        Simulation: Live 2D gas box, one red tracked molecule with zig-zag trail, collision flashes, measured vs theory MFP readout, collision cylinder shown, density/diameter/temperature sliders.
       `;
     } else if (activeTopicId === 'equipartition') {
       return `
@@ -278,6 +302,16 @@ const App: React.FC = () => {
         Formulas: U=(f/2)RT, Cv=(f/2)R, Cp=(f/2+1)R, γ=Cp/Cv.
         Simulation: 4 gas types with animated molecules, energy bar graphs, vibration toggle.
       `;
+    } else if (activeTopicId === 'molecular-interaction') {
+      return `
+        Topic: Molecular Interaction & Surface Tension (NCERT Class 11, Chapter 9 & 12)
+        Definition: Molecular interactions are forces of attraction and repulsion between molecules. At a few angstroms (~2Å) molecules attract; when squeezed closer they repel.
+        Potential: Lennard-Jones: U(r) = 4ε[(σ/r)¹² - (σ/r)⁶]. Equilibrium distance r₀ where net force is zero.
+        Surface Tension: Molecules at surface have fewer neighbors → extra potential energy → inward pull → surface tension S = F/l.
+        Formulas: S = F/l (N/m) = Energy/Area. Angle of contact θ depends on relative strength of liquid-solid vs liquid-air interactions.
+        Real-world: Water droplets on lotus leaf (obtuse θ), detergents reduce surface tension (wetting agents), plant sap rises via capillary action.
+        Simulation: Left panel: 2 draggable molecules with Lennard-Jones force vectors (blue=attract, red=repel) + PE graph. Right panel: Liquid surface view showing interior vs surface molecules with unbalanced force arrows. Substance toggle (Water/Hg), Temperature slider.
+      `;
     } else if (activeTopicId === 'shm-spring') {
       return `
         Topic: Spring-Mass System and Simple Harmonic Motion (NCERT Class 11, Chapter 13)
@@ -285,12 +319,44 @@ const App: React.FC = () => {
         Phase: v leads x by π/2, a leads x by π. Energy: KE + PE = ½kA² = constant.
         Simulation: Spring-block on table, velocity/acceleration vectors, 3 sync graphs, energy bars.
       `;
+    } else if (activeTopicId === 'simple-pendulum') {
+      return `
+        Topic: The Simple Pendulum (NCERT Class 11, Chapter 13, Section 13.8)
+        Definition: A simple pendulum is an idealized system consisting of a small bob of mass m tied to an inextensible, massless string of length L fixed to a rigid support.
+        Concept Foundation: Oscillatory motion where a body moves to and fro about a mean position. SHM is when restoring force ∝ displacement.
+        Physics: When displaced by angle θ, forces are tension (T) and weight (mg). Tangential component mgsinθ acts as restoring force.
+        Formulas: τ = −L(mg sin θ), Iα = −mgL sin θ, α = −(g/L) sin θ.
+        Small Angle Approximation: For θ < 20°, sinθ ≈ θ (radians), then α ≈ −(g/L)θ (SHM condition).
+        Angular Frequency: ω = √(g/L), Time Period: T = 2π√(L/g).
+        Key Insight: T depends ONLY on length L and gravity g, NOT on mass of bob or amplitude (within small angles).
+        Derivation: Using τ = Iα with I = mL², substituting yields T = 2π√(L/g).
+        Real Examples: Playground swing (child as bob), Grandfather clock (seconds pendulum T=2s), Tree branches swaying.
+        Industrial: Measuring local g to detect underground mineral deposits.
+        Simulation: Drag bob to change angle, sliders for length/mass, gravity selector (Earth/Moon/Mars), vector display toggle.
+      `;
     } else if (activeTopicId === 'standing-waves') {
       return `
         Topic: Superposition, Reflection & Standing Waves (NCERT Class 11, Chapter 14)
         Concept: y = [2a sin(kx)] cos(ωt). Nodes at sin(kx)=0, antinodes at |sin(kx)|=1.
         Normal modes: νn = nv/(2L), v = √(T/μ). Fixed end → π phase reversal. Free end → no reversal.
         Simulation: Driven string with frequency/tension sliders, node/antinode markers, superposition graphs.
+      `;
+    } else if (activeTopicId === 'youngs-modulus') {
+      return `
+        Topic: Young's Modulus (NCERT Class 11, Unit VIII, Chapter 8 — Mechanical Properties of Solids, Section 8.5.1)
+        Concept: Y = σ/ε = FL/(AΔL). Based on Hooke's Law: σ ∝ ε within elastic limit. Y represents stiffness.
+        Materials (NCERT Table 8.1): Steel 200 GPa, Copper 110 GPa, Brass 100 GPa, Aluminum 70 GPa.
+        Key insight: Doubling radius quadruples area (A=πr²), quartering elongation. Steel > Rubber in elasticity (physics definition).
+        Simulation: Virtual testing rig with material selector, force/length/radius sliders, live stress-strain graph, digital gauges, fracture state.
+      `;
+    } else if (activeTopicId === 'elastic-potential-energy') {
+      return `
+        Topic: Elastic Potential Energy in a Stretched Wire (NCERT Class 11, Section 8.5.5)
+        Concept: Work done against internal inter-atomic forces during stretching is stored as elastic potential energy. 
+        Formula: U = 1/2 * F * ΔL = 1/2 * stress * strain * volume. Energy density u = 1/2 * σ * ε.
+        Visual: On a Force-Extension graph, stored energy represents the area of the shaded triangle under the curve.
+        Real-world concepts: Archery bowstring, fault lines in earthquakes, crane wire ropes.
+        Simulation: Virtual testing lab showing a stretching wire. Right panel shows live Force vs Extension graph plotting the stretching operation with the area under the curve dynamically shading representing Stored Energy (Joules).
       `;
     } else if (activeTopicId === 'atoms') {
       return `
@@ -377,6 +443,14 @@ const App: React.FC = () => {
       Topic: Responsive UI Sandbox
       Concept: Exploring a completely new layout container for future modules.
         Simulation: Edge - to - edge canvas with floating glassmorphic sidebars on desktop and native - feeling bottom sheets on mobile.
+      `;
+    } else if (activeTopicId === 'stokes-law') {
+      return `
+        Topic: Stokes’ Law and Terminal Velocity (NCERT Class 11, Section 9.5.1)
+        Concept: Viscous drag F = 6πηav. Terminal velocity is reach when Weight = Buoyancy + Viscous Drag.
+        Formula: vt = 2a²(ρ-σ)g / 9η.
+        Real-world: Raindrops, dust particles, and falling ball viscometers.
+        Simulation: Virtual cylinder with different fluids (Water, Oil, Glycerin). Ball of different materials (Steel, Lead, Aluminum). Live force vectors and Velocity vs Time graph.
       `;
     } else if (activeTopicId === 'wave_optics') {
       return `
@@ -509,9 +583,25 @@ const App: React.FC = () => {
           />
         )}
 
+        {/* ================== HEAT TRANSFER AND BLACKBODY RADIATION ================== */}
+        {currentScreen === 'TOPIC_VIEW' && activeTopicId === 'heat-transfer-blackbody-radiation' && (
+          <HeatTransferBlackbodyLab
+            topic={currentTopics.find(t => t.id === activeTopicId)!}
+            onExit={goHome}
+          />
+        )}
+
         {/* ================== KINETIC THEORY ================== */}
         {currentScreen === 'TOPIC_VIEW' && activeTopicId === 'kinetic-theory' && (
           <KineticTheoryLab
+            topic={currentTopics.find(t => t.id === activeTopicId)!}
+            onExit={goHome}
+          />
+        )}
+
+        {/* ================== MEAN FREE PATH ================== */}
+        {currentScreen === 'TOPIC_VIEW' && activeTopicId === 'mean-free-path' && (
+          <MeanFreePathLab
             topic={currentTopics.find(t => t.id === activeTopicId)!}
             onExit={goHome}
           />
@@ -525,9 +615,25 @@ const App: React.FC = () => {
           />
         )}
 
+        {/* ================== MOLECULAR INTERACTION ================== */}
+        {currentScreen === 'TOPIC_VIEW' && activeTopicId === 'molecular-interaction' && (
+          <MolecularInteractionLab
+            topic={currentTopics.find(t => t.id === activeTopicId)!}
+            onExit={goHome}
+          />
+        )}
+
         {/* ================== SHM SPRING-MASS ================== */}
         {currentScreen === 'TOPIC_VIEW' && activeTopicId === 'shm-spring' && (
           <SHMLab
+            topic={currentTopics.find(t => t.id === activeTopicId)!}
+            onExit={goHome}
+          />
+        )}
+
+        {/* ================== SIMPLE PENDULUM ================== */}
+        {currentScreen === 'TOPIC_VIEW' && activeTopicId === 'simple-pendulum' && (
+          <SimplePendulumLab
             topic={currentTopics.find(t => t.id === activeTopicId)!}
             onExit={goHome}
           />
@@ -1013,7 +1119,37 @@ const App: React.FC = () => {
         {/* 9. MECHANICAL PROPERTIES OF SOLIDS (CLASS 11) */}
         {
           currentScreen === 'TOPIC_VIEW' && activeTopicId === 'mechanical-properties-solids' && (
-            <TensileTestCanvas
+            <MechanicalPropertiesMaster
+              topic={currentTopics.find(t => t.id === activeTopicId)!}
+              onExit={goHome}
+            />
+          )
+        }
+
+        {/* 9b. YOUNG'S MODULUS (CLASS 11) */}
+        {
+          currentScreen === 'TOPIC_VIEW' && activeTopicId === 'youngs-modulus' && (
+{/* empty */}
+
+
+
+          )
+        }
+
+        {/* 9c. ELASTIC POTENTIAL ENERGY (CLASS 11) */}
+        {
+          currentScreen === 'TOPIC_VIEW' && activeTopicId === 'elastic-potential-energy' && (
+            <ElasticPotentialEnergyLab
+              topic={currentTopics.find(t => t.id === activeTopicId)!}
+              onExit={goHome}
+            />
+          )
+        }
+
+        {/* 9d. STOKES' LAW (CLASS 11) */}
+        {
+          currentScreen === 'TOPIC_VIEW' && activeTopicId === 'stokes-law' && (
+            <StokesLawLab
               topic={currentTopics.find(t => t.id === activeTopicId)!}
               onExit={goHome}
             />
