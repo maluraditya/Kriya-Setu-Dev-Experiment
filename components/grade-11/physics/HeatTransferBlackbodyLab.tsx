@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { RotateCcw } from 'lucide-react';
+import { RotateCcw, Flame, Wind, Sun } from 'lucide-react';
 import TopicLayoutContainer from '../../TopicLayoutContainer';
 
 interface HeatTransferBlackbodyLabProps {
@@ -23,10 +23,10 @@ const ENVIRONMENTS: Record<EnvironmentKey, { label: string; factor: number; colo
     vacuum: { label: 'Vacuum', factor: 0, color: '#7c3aed' },
 };
 
-const STATIONS: { key: Station; label: string; accent: string }[] = [
-    { key: 'conduction', label: 'Conduction', accent: '#f97316' },
-    { key: 'convection', label: 'Convection', accent: '#06b6d4' },
-    { key: 'radiation', label: 'Radiation', accent: '#f43f5e' },
+const STATIONS: { key: Station; label: string; accent: string; icon: React.ReactNode }[] = [
+    { key: 'conduction', label: 'Conduction', accent: '#f97316', icon: <Flame size={18} /> },
+    { key: 'convection', label: 'Convection', accent: '#06b6d4', icon: <Wind size={18} /> },
+    { key: 'radiation', label: 'Radiation', accent: '#f43f5e', icon: <Sun size={18} /> },
 ];
 
 const SIGMA = 5.67e-8;
@@ -97,78 +97,50 @@ const HeatTransferBlackbodyLab: React.FC<HeatTransferBlackbodyLabProps> = ({ top
         const time = Date.now() * 0.001;
 
         ctx.clearRect(0, 0, W, H);
-        const bg = ctx.createLinearGradient(0, 0, 0, H);
-        bg.addColorStop(0, '#f8fafc');
-        bg.addColorStop(1, '#e2e8f0');
-        ctx.fillStyle = bg;
-        ctx.fillRect(0, 0, W, H);
 
         const scale = W < 1000 ? 1 : (W > 1500 ? 1.25 : 1 + (W - 1000) * 0.0005);
-        const fs = (base: number) => Math.max(10, Math.min(base * scale, W * 0.026, H * 0.04));
-        const pad = Math.min(W * 0.03, H * 0.035, scale * 22);
+        const fs = (base: number) => Math.max(10, Math.min(base * scale, W * 0.022, H * 0.035));
+        const pad = Math.min(W * 0.04, H * 0.04, scale * 28);
 
-        ctx.fillStyle = '#0f172a';
-        ctx.font = `bold ${fs(20)}px sans-serif`;
-        ctx.textAlign = 'left';
-        ctx.fillText('Heat Transfer and Blackbody Radiation Lab', pad, pad * 1.25);
+        const stationData = STATIONS.find(s => s.key === activeStation)!;
 
-        ctx.fillStyle = '#475569';
-        ctx.font = `bold ${fs(11)}px sans-serif`;
-        ctx.fillText('Three stations: conduction, convection, and radiation with Wien and Stefan-Boltzmann behavior.', pad, pad * 1.25 + fs(20));
+        const topSectionHeight = H * 0.48; // Slightly smaller top section
+        const bottomSectionY = topSectionHeight + pad * 0.5;
+        const bottomSectionHeight = H - bottomSectionY - pad;
 
-        const topY = pad * 2.6;
-        const cardGap = pad * 0.8;
-        const cardW = (W - pad * 2 - cardGap * 2) / 3;
-        const cardH = Math.min(H * 0.33, 220 * scale);
-
-        STATIONS.forEach((item, index) => {
-            const x = pad + index * (cardW + cardGap);
-            const y = topY;
-            const isActive = activeStation === item.key;
-            const cardBg = ctx.createLinearGradient(x, y, x, y + cardH);
-            cardBg.addColorStop(0, isActive ? '#ffffff' : '#f8fafc');
-            cardBg.addColorStop(1, isActive ? '#f8fafc' : '#eef2f7');
-            ctx.fillStyle = cardBg;
-            roundRect(ctx, x, y, cardW, cardH, 18);
-            ctx.fill();
-            ctx.strokeStyle = isActive ? item.accent : '#cbd5e1';
-            ctx.lineWidth = isActive ? 3 : 1.5;
-            roundRect(ctx, x, y, cardW, cardH, 18);
-            ctx.stroke();
-
-            ctx.fillStyle = item.accent;
-            ctx.font = `bold ${fs(14)}px sans-serif`;
-            ctx.textAlign = 'left';
-            ctx.fillText(item.label.toUpperCase(), x + pad * 0.7, y + pad * 1.1);
-
-            if (item.key === 'conduction') {
-                drawConductionCard(ctx, { x, y, w: cardW, h: cardH, pad, fs, time, temperature: T, materialColor: materialData.color, rate: conductionRate });
-            } else if (item.key === 'convection') {
-                drawConvectionCard(ctx, { x, y, w: cardW, h: cardH, pad, fs, time, temperature: T, strength: convectionStrength, environment: environmentKey });
-            } else {
-                drawRadiationCard(ctx, { x, y, w: cardW, h: cardH, pad, fs, temperature: T, power: radiationPower, peakNm });
-            }
-        });
-
-        const bottomY = topY + cardH + pad;
-        const detailW = W * 0.37;
-        const graphX = pad + detailW + pad;
-        const graphW = W - graphX - pad;
-        const bottomH = H - bottomY - pad;
+        const infoWidth = W * 0.38;
+        const graphX = pad * 2 + infoWidth;
+        const graphWidth = W - infoWidth - pad * 3;
 
         ctx.fillStyle = '#ffffff';
-        roundRect(ctx, pad, bottomY, detailW, bottomH, 18);
+        roundRect(ctx, pad, bottomSectionY, infoWidth, bottomSectionHeight, 16);
         ctx.fill();
-        ctx.strokeStyle = '#cbd5e1';
-        ctx.lineWidth = 1.5;
-        roundRect(ctx, pad, bottomY, detailW, bottomH, 18);
+        ctx.strokeStyle = '#e2e8f0';
+        ctx.lineWidth = 2;
+        roundRect(ctx, pad, bottomSectionY, infoWidth, bottomSectionHeight, 16);
         ctx.stroke();
 
-        ctx.fillStyle = '#0f172a';
-        ctx.font = `bold ${fs(16)}px sans-serif`;
-        ctx.fillText(`${activeStation.toUpperCase()} STATION`, pad + pad * 0.8, bottomY + pad * 1.1);
+        ctx.fillStyle = '#ffffff';
+        roundRect(ctx, graphX, bottomSectionY, graphWidth, bottomSectionHeight, 16);
+        ctx.fill();
+        ctx.strokeStyle = '#e2e8f0';
+        ctx.lineWidth = 2;
+        roundRect(ctx, graphX, bottomSectionY, graphWidth, bottomSectionHeight, 16);
+        ctx.stroke();
 
-        const detailLines = getDetailLines(activeStation, {
+        ctx.fillStyle = stationData.accent;
+        ctx.font = `bold ${fs(18)}px sans-serif`;
+        ctx.textAlign = 'left';
+        ctx.fillText(`${stationData.label.toUpperCase()} SIMULATION`, pad * 2, bottomSectionY + pad * 1.2);
+
+        const descY = bottomSectionY + pad * 2.2;
+        const descMaxWidth = infoWidth - pad * 3;
+        const lineHeight = fs(11) * 1.5;
+
+        ctx.fillStyle = '#334155';
+        ctx.font = `${fs(11)}px sans-serif`;
+
+        const descriptions = getDescriptions(activeStation, {
             materialLabel: materialData.label,
             environmentLabel: environmentData.label,
             conductionRate,
@@ -181,54 +153,126 @@ const HeatTransferBlackbodyLab: React.FC<HeatTransferBlackbodyLabProps> = ({ top
             temperature: T,
         });
 
-        ctx.font = `bold ${fs(12)}px sans-serif`;
-        ctx.fillStyle = '#475569';
-        detailLines.forEach((line, index) => {
-            drawWrappedText(ctx, line, pad + pad * 0.8, bottomY + pad * 2 + index * (fs(12) * 1.6), detailW - pad * 1.6, fs(12) * 1.45);
+        let currentY = descY;
+        descriptions.forEach((line) => {
+            const lines = wrapText(ctx, line, descMaxWidth);
+            lines.forEach((wrappedLine) => {
+                ctx.fillText(wrappedLine, pad * 2, currentY);
+                currentY += lineHeight;
+            });
+            currentY += fs(6);
         });
 
-        const metricY = bottomY + bottomH - pad * 3.8;
-        const metricW = detailW - pad * 1.6;
-        const metricX = pad + pad * 0.8;
-        const metricH = pad * 1.9;
+        const metrics = getMetrics(activeStation, {
+            conductionRate,
+            convectionStrength,
+            radiationPower,
+            peakNm,
+            temperature: T,
+        });
 
-        const metrics = [
-            { label: 'Heat Flow', value: `${conductionRate.toFixed(1)} W`, color: '#f97316' },
-            { label: 'Convection', value: environmentKey === 'vacuum' ? '0.00' : convectionStrength.toFixed(2), color: '#06b6d4' },
-            { label: 'Peak lambda', value: `${peakNm.toFixed(0)} nm`, color: '#f43f5e' },
-        ];
+        const metricHeight = 30;
+        const metricGap = 8;
+        const totalMetricsHeight = metrics.length * metricHeight + (metrics.length - 1) * metricGap;
+        const metricStartY = bottomSectionY + bottomSectionHeight - pad - totalMetricsHeight;
 
         metrics.forEach((metric, index) => {
-            const boxY = metricY + index * (metricH + 10);
+            const my = metricStartY + index * (metricHeight + metricGap);
+
             ctx.fillStyle = '#f8fafc';
-            roundRect(ctx, metricX, boxY, metricW, metricH, 12);
+            roundRect(ctx, pad * 2, my, infoWidth - pad * 3, metricHeight, 8);
             ctx.fill();
             ctx.strokeStyle = '#e2e8f0';
+            ctx.lineWidth = 1;
+            roundRect(ctx, pad * 2, my, infoWidth - pad * 3, metricHeight, 8);
             ctx.stroke();
+
             ctx.fillStyle = metric.color;
-            ctx.font = `bold ${fs(11)}px sans-serif`;
-            ctx.fillText(metric.label.toUpperCase(), metricX + 14, boxY + metricH * 0.42);
-            ctx.fillStyle = '#0f172a';
-            ctx.font = `bold ${fs(16)}px monospace`;
-            ctx.textAlign = 'right';
-            ctx.fillText(metric.value, metricX + metricW - 14, boxY + metricH * 0.66);
+            ctx.font = `bold ${fs(10)}px sans-serif`;
             ctx.textAlign = 'left';
+            ctx.fillText(metric.label.toUpperCase(), pad * 2 + 12, my + metricHeight * 0.6);
+
+            ctx.fillStyle = '#0f172a';
+            ctx.font = `bold ${fs(14)}px monospace`;
+            ctx.textAlign = 'right';
+            ctx.fillText(metric.value, pad * 2 + infoWidth - pad * 3 - 12, my + metricHeight * 0.6);
         });
 
-        ctx.fillStyle = '#ffffff';
-        roundRect(ctx, graphX, bottomY, graphW, bottomH, 18);
-        ctx.fill();
-        ctx.strokeStyle = '#cbd5e1';
-        ctx.lineWidth = 1.5;
-        roundRect(ctx, graphX, bottomY, graphW, bottomH, 18);
-        ctx.stroke();
+        ctx.textAlign = 'left';
 
         if (activeStation === 'conduction') {
-            drawConductionGraph(ctx, { x: graphX, y: bottomY, w: graphW, h: bottomH, pad, fs, currentArea: area, lengthM: length, materialK: materialData.k, deltaT });
+            drawConductionSimulation(ctx, {
+                x: pad,
+                y: pad,
+                w: W - pad * 2,
+                h: topSectionHeight - pad,
+                pad,
+                fs,
+                time,
+                temperature: T,
+                materialColor: materialData.color,
+                rate: conductionRate,
+            });
+            drawConductionGraph(ctx, {
+                x: graphX,
+                y: bottomSectionY,
+                w: graphWidth,
+                h: bottomSectionHeight,
+                pad,
+                fs,
+                currentArea: area,
+                lengthM: length,
+                materialK: materialData.k,
+                deltaT,
+            });
         } else if (activeStation === 'convection') {
-            drawConvectionGraph(ctx, { x: graphX, y: bottomY, w: graphW, h: bottomH, pad, fs, selected: environmentKey, deltaT, areaCm2: area, lengthM: length });
+            drawConvectionSimulation(ctx, {
+                x: pad,
+                y: pad,
+                w: W - pad * 2,
+                h: topSectionHeight - pad,
+                pad,
+                fs,
+                time,
+                temperature: T,
+                strength: convectionStrength,
+                environment: environmentKey,
+            });
+            drawConvectionGraph(ctx, {
+                x: graphX,
+                y: bottomSectionY,
+                w: graphWidth,
+                h: bottomSectionHeight,
+                pad,
+                fs,
+                selected: environmentKey,
+                deltaT,
+                areaCm2: area,
+                lengthM: length,
+            });
         } else {
-            drawSpectrumGraph(ctx, { x: graphX, y: bottomY, w: graphW, h: bottomH, pad, fs, temperature: T, peakNm });
+            drawRadiationSimulation(ctx, {
+                x: pad,
+                y: pad,
+                w: W - pad * 2,
+                h: topSectionHeight - pad,
+                pad,
+                fs,
+                time,
+                temperature: T,
+                power: radiationPower,
+                peakNm,
+            });
+            drawSpectrumGraph(ctx, {
+                x: graphX,
+                y: bottomSectionY,
+                w: graphWidth,
+                h: bottomSectionHeight,
+                pad,
+                fs,
+                temperature: T,
+                peakNm,
+            });
         }
 
         animRef.current = requestAnimationFrame(draw);
@@ -251,8 +295,8 @@ const HeatTransferBlackbodyLab: React.FC<HeatTransferBlackbodyLabProps> = ({ top
     };
 
     const simulationCombo = (
-        <div className="w-full h-full relative bg-slate-50 rounded-2xl overflow-hidden border border-slate-200 shadow-inner flex flex-col">
-            <div className="flex-1 relative min-h-[320px]">
+        <div className="w-full h-full relative bg-gradient-to-br from-slate-100 to-slate-50 rounded-2xl overflow-hidden border border-slate-200 shadow-inner flex flex-col">
+            <div className="flex-1 relative min-h-[350px]">
                 <canvas ref={canvasRef} className="absolute inset-0 w-full h-full object-contain" />
             </div>
         </div>
@@ -264,30 +308,52 @@ const HeatTransferBlackbodyLab: React.FC<HeatTransferBlackbodyLabProps> = ({ top
     const peakNm = WIEN_CONSTANT_NM_K / temperature;
 
     const controlsCombo = (
-        <div className="flex flex-col gap-3 md:gap-4 w-full text-slate-700 p-1 md:p-2">
-            <div className="grid grid-cols-3 gap-2 md:gap-3">
+        <div className="flex flex-col gap-4 w-full text-slate-700 p-2">
+            <div className="flex gap-2">
                 {STATIONS.map((item) => (
                     <button
                         key={item.key}
                         onClick={() => setStation(item.key)}
-                        className={`p-2 md:p-4 rounded-xl border-2 font-bold text-xs md:text-sm transition-all shadow-sm active:scale-95 ${
-                            station === item.key ? 'text-white border-transparent' : 'bg-white text-slate-600 border-slate-200 hover:border-slate-300'
+                        className={`flex-1 flex items-center justify-center gap-2 p-3 md:p-4 rounded-xl border-2 font-bold text-sm transition-all shadow-sm active:scale-95 ${
+                            station === item.key ? 'text-white border-transparent shadow-lg' : 'bg-white text-slate-600 border-slate-200 hover:border-slate-300'
                         }`}
                         style={station === item.key ? { backgroundColor: item.accent } : {}}
                     >
-                        {item.label.toUpperCase()}
+                        {item.icon}
+                        <span className="hidden md:inline">{item.label}</span>
                     </button>
                 ))}
             </div>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-4">
-                <StatCard label="Heat Flow" value={`${conductionRate.toFixed(1)} W`} color="text-orange-600" />
-                <StatCard label="Convection" value={environment === 'vacuum' ? '0.00' : convectionStrength.toFixed(2)} color="text-cyan-600" />
-                <StatCard label="Radiation" value={`${radiationPower.toFixed(1)} W`} color="text-rose-600" />
-                <StatCard label="Peak lambda" value={`${peakNm.toFixed(0)} nm`} color="text-fuchsia-600" />
+
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+                {station === 'conduction' && (
+                    <>
+                        <StatCard label="Heat Flow" value={`${conductionRate.toFixed(1)} W`} color="text-orange-600" />
+                        <StatCard label="Temperature" value={`${temperature} K`} color="text-red-600" />
+                        <StatCard label="Area" value={`${areaCm2.toFixed(1)} cm²`} color="text-blue-600" />
+                        <StatCard label="Length" value={`${lengthM.toFixed(2)} m`} color="text-green-600" />
+                    </>
+                )}
+                {station === 'convection' && (
+                    <>
+                        <StatCard label="Flow Rate" value={environment === 'vacuum' ? '0.00' : convectionStrength.toFixed(2)} color="text-cyan-600" />
+                        <StatCard label="Temperature" value={`${temperature} K`} color="text-red-600" />
+                        <StatCard label="Area" value={`${areaCm2.toFixed(1)} cm²`} color="text-blue-600" />
+                        <StatCard label="Length" value={`${lengthM.toFixed(2)} m`} color="text-green-600" />
+                    </>
+                )}
+                {station === 'radiation' && (
+                    <>
+                        <StatCard label="Radiated Power" value={`${radiationPower.toFixed(2)} W`} color="text-rose-600" />
+                        <StatCard label="Temperature" value={`${temperature} K`} color="text-red-600" />
+                        <StatCard label="Peak λ" value={`${peakNm.toFixed(0)} nm`} color="text-purple-600" />
+                        <StatCard label="Area" value={`${areaCm2.toFixed(1)} cm²`} color="text-blue-600" />
+                    </>
+                )}
             </div>
 
-            <div className="grid lg:grid-cols-2 gap-4 md:gap-6">
-                <div className="space-y-4 p-3 md:p-5 bg-white rounded-xl border border-slate-200 shadow-sm">
+            <div className="grid lg:grid-cols-2 gap-4">
+                <div className="space-y-4 p-4 md:p-5 bg-white rounded-xl border border-slate-200 shadow-sm">
                     <SliderRow label="Temperature" valueLabel={`${temperature} K`} minLabel="300 K" maxLabel="6000 K">
                         <input
                             type="range"
@@ -299,7 +365,7 @@ const HeatTransferBlackbodyLab: React.FC<HeatTransferBlackbodyLabProps> = ({ top
                             className="w-full accent-rose-600 h-2 md:h-3 bg-slate-100 rounded-lg appearance-none cursor-pointer"
                         />
                     </SliderRow>
-                    <SliderRow label="Area" valueLabel={`${areaCm2.toFixed(1)} cm^2`} minLabel="1 cm^2" maxLabel="8 cm^2">
+                    <SliderRow label="Area" valueLabel={`${areaCm2.toFixed(1)} cm²`} minLabel="1 cm²" maxLabel="8 cm²">
                         <input
                             type="range"
                             min="1"
@@ -310,55 +376,71 @@ const HeatTransferBlackbodyLab: React.FC<HeatTransferBlackbodyLabProps> = ({ top
                             className="w-full accent-orange-600 h-2 md:h-3 bg-slate-100 rounded-lg appearance-none cursor-pointer"
                         />
                     </SliderRow>
-                    <SliderRow label="Length" valueLabel={`${lengthM.toFixed(2)} m`} minLabel="0.20 m" maxLabel="1.20 m">
-                        <input
-                            type="range"
-                            min="0.2"
-                            max="1.2"
-                            step="0.05"
-                            value={lengthM}
-                            onChange={(e) => setLengthM(Number(e.target.value))}
-                            className="w-full accent-blue-600 h-2 md:h-3 bg-slate-100 rounded-lg appearance-none cursor-pointer"
-                        />
-                    </SliderRow>
+                    {(station === 'conduction' || station === 'convection') && (
+                        <SliderRow label="Length" valueLabel={`${lengthM.toFixed(2)} m`} minLabel="0.20 m" maxLabel="1.20 m">
+                            <input
+                                type="range"
+                                min="0.2"
+                                max="1.2"
+                                step="0.05"
+                                value={lengthM}
+                                onChange={(e) => setLengthM(Number(e.target.value))}
+                                className="w-full accent-blue-600 h-2 md:h-3 bg-slate-100 rounded-lg appearance-none cursor-pointer"
+                            />
+                        </SliderRow>
+                    )}
                 </div>
 
-                <div className="space-y-4 p-3 md:p-5 bg-white rounded-xl border border-slate-200 shadow-sm">
-                    <div>
-                        <div className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Material</div>
-                        <div className="grid grid-cols-3 gap-2">
-                            {(Object.keys(MATERIALS) as MaterialKey[]).map((key) => (
-                                <button
-                                    key={key}
-                                    onClick={() => setMaterial(key)}
-                                    className={`rounded-xl px-3 py-3 text-xs md:text-sm font-bold border transition-all ${
-                                        material === key ? 'text-white border-transparent' : 'bg-slate-50 text-slate-600 border-slate-200 hover:bg-white'
-                                    }`}
-                                    style={material === key ? { backgroundColor: MATERIALS[key].color } : {}}
-                                >
-                                    {MATERIALS[key].label}
-                                </button>
-                            ))}
+                <div className="space-y-4 p-4 md:p-5 bg-white rounded-xl border border-slate-200 shadow-sm">
+                    {station === 'conduction' && (
+                        <div>
+                            <div className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Material</div>
+                            <div className="grid grid-cols-3 gap-2">
+                                {(Object.keys(MATERIALS) as MaterialKey[]).map((key) => (
+                                    <button
+                                        key={key}
+                                        onClick={() => setMaterial(key)}
+                                        className={`rounded-xl px-3 py-3 text-xs md:text-sm font-bold border transition-all ${
+                                            material === key ? 'text-white border-transparent' : 'bg-slate-50 text-slate-600 border-slate-200 hover:bg-white'
+                                        }`}
+                                        style={material === key ? { backgroundColor: MATERIALS[key].color } : {}}
+                                    >
+                                        {MATERIALS[key].label}
+                                    </button>
+                                ))}
+                            </div>
                         </div>
-                    </div>
+                    )}
 
-                    <div>
-                        <div className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Environment</div>
-                        <div className="grid grid-cols-3 gap-2">
-                            {(Object.keys(ENVIRONMENTS) as EnvironmentKey[]).map((key) => (
-                                <button
-                                    key={key}
-                                    onClick={() => setEnvironment(key)}
-                                    className={`rounded-xl px-3 py-3 text-xs md:text-sm font-bold border transition-all ${
-                                        environment === key ? 'text-white border-transparent' : 'bg-slate-50 text-slate-600 border-slate-200 hover:bg-white'
-                                    }`}
-                                    style={environment === key ? { backgroundColor: ENVIRONMENTS[key].color } : {}}
-                                >
-                                    {ENVIRONMENTS[key].label}
-                                </button>
-                            ))}
+                    {station === 'convection' && (
+                        <div>
+                            <div className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Environment</div>
+                            <div className="grid grid-cols-3 gap-2">
+                                {(Object.keys(ENVIRONMENTS) as EnvironmentKey[]).map((key) => (
+                                    <button
+                                        key={key}
+                                        onClick={() => setEnvironment(key)}
+                                        className={`rounded-xl px-3 py-3 text-xs md:text-sm font-bold border transition-all ${
+                                            environment === key ? 'text-white border-transparent' : 'bg-slate-50 text-slate-600 border-slate-200 hover:bg-white'
+                                        }`}
+                                        style={environment === key ? { backgroundColor: ENVIRONMENTS[key].color } : {}}
+                                    >
+                                        {ENVIRONMENTS[key].label}
+                                    </button>
+                                ))}
+                            </div>
                         </div>
-                    </div>
+                    )}
+
+                    {station === 'radiation' && (
+                        <div className="flex flex-col items-center justify-center h-full text-center py-6">
+                            <div className="w-16 h-16 rounded-full bg-gradient-to-br from-rose-500 to-orange-500 flex items-center justify-center mb-3 shadow-lg">
+                                <Sun size={32} className="text-white" />
+                            </div>
+                            <p className="text-sm text-slate-600">Radiation is independent of material and environment.</p>
+                            <p className="text-xs text-slate-400 mt-1">Only Temperature and Area affect the output.</p>
+                        </div>
+                    )}
 
                     <button
                         onClick={reset}
@@ -382,9 +464,9 @@ const HeatTransferBlackbodyLab: React.FC<HeatTransferBlackbodyLabProps> = ({ top
 };
 
 const StatCard = ({ label, value, color }: { label: string; value: string; color: string }) => (
-    <div className="bg-white rounded-xl p-2 md:p-4 text-center border border-slate-200 shadow-sm">
-        <div className="text-[9px] md:text-xs font-bold text-slate-400 uppercase tracking-widest mb-0.5 md:mb-1">{label}</div>
-        <div className={`text-sm md:text-xl font-bold font-mono tracking-tight ${color}`}>{value}</div>
+    <div className="bg-white rounded-xl p-3 md:p-4 text-center border border-slate-200 shadow-sm">
+        <div className="text-[10px] md:text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">{label}</div>
+        <div className={`text-base md:text-xl font-bold font-mono tracking-tight ${color}`}>{value}</div>
     </div>
 );
 
@@ -414,7 +496,7 @@ const SliderRow = ({
     </div>
 );
 
-function getDetailLines(
+function getDescriptions(
     station: Station,
     values: {
         materialLabel: string;
@@ -428,36 +510,84 @@ function getDetailLines(
         deltaT: number;
         temperature: number;
     }
-) {
+): string[] {
     if (station === 'conduction') {
         return [
-            'Heat flows through adjacent particles without any bulk motion of matter.',
-            `Using ${values.materialLabel}, the rod conducts at H = k A Delta T / L with area ${values.areaCm2.toFixed(1)} cm^2 and length ${values.lengthM.toFixed(2)} m.`,
-            `A larger cross-section raises the heat flow, while a longer rod reduces it. Current temperature difference: ${values.deltaT.toFixed(0)} K.`,
-            'This station is strongest for good conductors such as copper and weakest for poor conductors such as glass.',
+            `Heat flows through adjacent particles without bulk motion of matter.`,
+            `Material: ${values.materialLabel} with thermal conductivity k = ${MATERIALS[values.materialLabel.toLowerCase() as MaterialKey]?.k || 50} W/m·K.`,
+            `Formula: H = k·A·ΔT / L where A = ${values.areaCm2.toFixed(1)} cm², L = ${values.lengthM.toFixed(2)} m, ΔT = ${values.deltaT.toFixed(0)} K.`,
+            `Larger cross-section increases flow; longer length reduces it.`,
         ];
     }
 
     if (station === 'convection') {
         return [
-            'Convection transfers energy through the actual motion of fluid layers.',
-            `The surrounding medium is ${values.environmentLabel}. Hot fluid near the heater becomes less dense and rises while cooler fluid sinks.`,
+            `Convection transfers energy through actual motion of fluid layers.`,
+            `Environment: ${values.environmentLabel}. Hot fluid near heater becomes less dense and rises.`,
             values.environmentLabel === 'Vacuum'
-                ? 'In vacuum, convection stops because there is no fluid to circulate.'
-                : `The circulation strength grows as Delta T increases. The current relative flow index is ${values.convectionStrength.toFixed(2)}.`,
-            'This explains sea breeze, room heating, and boiling water currents.',
+                ? `In vacuum, convection stops because there is no fluid to circulate.`
+                : `Flow strength grows with ΔT. Current relative flow index: ${values.convectionStrength.toFixed(2)}.`,
+            `This explains sea breeze, room heating, and boiling water currents.`,
         ];
     }
 
     return [
-        'Radiation transfers energy through electromagnetic waves and does not require any material medium.',
-        `At ${values.temperature} K, the blackbody emits approximately ${values.radiationPower.toFixed(1)} W from the selected area.`,
-        `Wien predicts lambda_max = 2.9 x 10^6 / T, so the peak is near ${values.peakNm.toFixed(0)} nm.`,
-        'As temperature rises, total power climbs rapidly with T^4 and the peak shifts toward shorter wavelengths.',
+        `Radiation transfers energy via electromagnetic waves without any medium.`,
+        `At ${values.temperature} K, the blackbody emits ~${values.radiationPower.toFixed(2)} W from selected area.`,
+        `Wien's Law: λ_max = 2.9×10⁶ / T ≈ ${values.peakNm.toFixed(0)} nm.`,
+        `Total power scales with T⁴ (Stefan-Boltzmann Law). Higher T shifts peak to shorter wavelengths.`,
     ];
 }
 
-function drawConductionCard(
+function getMetrics(
+    station: Station,
+    values: {
+        conductionRate: number;
+        convectionStrength: number;
+        radiationPower: number;
+        peakNm: number;
+        temperature: number;
+    }
+): { label: string; value: string; color: string }[] {
+    if (station === 'conduction') {
+        return [
+            { label: 'Heat Flow', value: `${values.conductionRate.toFixed(1)} W`, color: '#f97316' },
+            { label: 'Efficiency', value: values.conductionRate > 50 ? 'High' : values.conductionRate > 10 ? 'Medium' : 'Low', color: '#10b981' },
+        ];
+    }
+
+    if (station === 'convection') {
+        return [
+            { label: 'Flow Rate', value: values.convectionStrength === 0 ? 'None' : values.convectionStrength.toFixed(2), color: '#06b6d4' },
+            { label: 'Status', value: values.convectionStrength === 0 ? 'No Flow' : values.convectionStrength > 1 ? 'Strong' : 'Weak', color: '#8b5cf6' },
+        ];
+    }
+
+    return [
+        { label: 'Power', value: `${values.radiationPower.toFixed(2)} W`, color: '#f43f5e' },
+        { label: 'Peak λ', value: `${values.peakNm.toFixed(0)} nm`, color: '#8b5cf6' },
+    ];
+}
+
+function wrapText(ctx: CanvasRenderingContext2D, text: string, maxWidth: number): string[] {
+    const words = text.split(' ');
+    const lines: string[] = [];
+    let currentLine = '';
+
+    for (const word of words) {
+        const testLine = currentLine ? `${currentLine} ${word}` : word;
+        if (ctx.measureText(testLine).width > maxWidth && currentLine) {
+            lines.push(currentLine);
+            currentLine = word;
+        } else {
+            currentLine = testLine;
+        }
+    }
+    if (currentLine) lines.push(currentLine);
+    return lines;
+}
+
+function drawConductionSimulation(
     ctx: CanvasRenderingContext2D,
     params: {
         x: number;
@@ -473,42 +603,79 @@ function drawConductionCard(
     }
 ) {
     const { x, y, w, h, pad, fs, time, temperature, materialColor, rate } = params;
-    const rodX = x + pad * 0.8;
-    const rodY = y + h * 0.45;
-    const rodW = w - pad * 1.6;
-    const rodH = Math.max(22, h * 0.14);
+
+    ctx.fillStyle = '#ffffff';
+    roundRect(ctx, x, y, w, h, 16);
+    ctx.fill();
+    ctx.strokeStyle = '#e2e8f0';
+    ctx.lineWidth = 2;
+    roundRect(ctx, x, y, w, h, 16);
+    ctx.stroke();
+
+    const rodX = x + w * 0.1;
+    const rodY = y + h * 0.42;
+    const rodW = w * 0.8;
+    const rodH = Math.max(30, h * 0.16);
 
     const grad = ctx.createLinearGradient(rodX, 0, rodX + rodW, 0);
     grad.addColorStop(0, '#ef4444');
-    grad.addColorStop(0.5, materialColor);
+    grad.addColorStop(0.35, '#f97316');
+    grad.addColorStop(0.65, materialColor);
     grad.addColorStop(1, '#3b82f6');
     ctx.fillStyle = grad;
-    roundRect(ctx, rodX, rodY, rodW, rodH, 10);
+    roundRect(ctx, rodX, rodY, rodW, rodH, 12);
     ctx.fill();
 
-    const pulseCount = 8;
-    const speed = Math.min(rate / 40, 4);
+    ctx.strokeStyle = '#ffffff';
+    ctx.lineWidth = 3;
+    roundRect(ctx, rodX, rodY, rodW, rodH, 12);
+    ctx.stroke();
+
+    const pulseCount = 15;
+    const speed = Math.min(rate / 30, 5);
     for (let i = 0; i < pulseCount; i++) {
         const offset = ((time * speed + i / pulseCount) % 1) * rodW;
-        ctx.fillStyle = 'rgba(255,255,255,0.75)';
+        ctx.fillStyle = 'rgba(255,255,255,0.9)';
         ctx.beginPath();
         ctx.arc(rodX + offset, rodY + rodH / 2, 4, 0, Math.PI * 2);
         ctx.fill();
     }
 
-    ctx.fillStyle = '#475569';
-    ctx.font = `bold ${fs(11)}px sans-serif`;
-    ctx.fillText(`Hot end: ${temperature} K`, rodX, rodY - 12);
-    ctx.textAlign = 'right';
-    ctx.fillText('Cold end: 300 K', rodX + rodW, rodY + rodH + 24);
+    ctx.fillStyle = '#ef4444';
+    ctx.font = `bold ${fs(14)}px sans-serif`;
+    ctx.textAlign = 'center';
+    ctx.fillText(`HOT: ${temperature} K`, rodX + rodW * 0.15, rodY - 14);
+
+    ctx.fillStyle = '#3b82f6';
+    ctx.fillText(`COLD: ${AMBIENT_TEMPERATURE} K`, rodX + rodW * 0.85, rodY + rodH + 24);
+
+    ctx.fillStyle = '#0f172a';
+    ctx.font = `bold ${fs(18)}px sans-serif`;
+    ctx.textAlign = 'left';
+    ctx.fillText('Heat Flow Through a Solid Rod', x + pad * 1.5, y + pad * 1.1);
+
+    ctx.fillStyle = '#64748b';
+    ctx.font = `${fs(11)}px sans-serif`;
+    ctx.fillText('Particles vibrate and transfer kinetic energy to neighbors', x + pad * 1.5, y + pad * 1.1 + fs(16));
+
     ctx.textAlign = 'left';
 
+    const formulaY = y + h - pad * 1.8;
+    ctx.fillStyle = '#fff7ed';
+    roundRect(ctx, x + pad * 1.5, formulaY, w - pad * 3, 40, 10);
+    ctx.fill();
+    ctx.strokeStyle = '#fed7aa';
+    ctx.lineWidth = 2;
+    roundRect(ctx, x + pad * 1.5, formulaY, w - pad * 3, 40, 10);
+    ctx.stroke();
+
     ctx.fillStyle = '#f97316';
-    ctx.font = `bold ${fs(15)}px monospace`;
-    ctx.fillText(`${rate.toFixed(1)} W`, rodX, y + h - pad * 1.2);
+    ctx.font = `bold ${fs(14)}px monospace`;
+    ctx.textAlign = 'center';
+    ctx.fillText(`H = k · A · ΔT / L = ${rate.toFixed(1)} W`, x + w / 2, formulaY + 25);
 }
 
-function drawConvectionCard(
+function drawConvectionSimulation(
     ctx: CanvasRenderingContext2D,
     params: {
         x: number;
@@ -524,48 +691,92 @@ function drawConvectionCard(
     }
 ) {
     const { x, y, w, h, pad, fs, time, temperature, strength, environment } = params;
-    const tankX = x + w * 0.22;
-    const tankY = y + h * 0.23;
-    const tankW = w * 0.56;
-    const tankH = h * 0.5;
 
-    ctx.fillStyle = environment === 'vacuum' ? '#0f172a' : 'rgba(14, 165, 233, 0.18)';
+    ctx.fillStyle = '#ffffff';
+    roundRect(ctx, x, y, w, h, 16);
+    ctx.fill();
+    ctx.strokeStyle = '#e2e8f0';
+    ctx.lineWidth = 2;
+    roundRect(ctx, x, y, w, h, 16);
+    ctx.stroke();
+
+    const tankX = x + w * 0.22;
+    const tankY = y + h * 0.22;
+    const tankW = w * 0.56;
+    const tankH = h * 0.58;
+
+    const tankBg = environment === 'vacuum' ? '#0f172a' : '#e0f2fe';
+    ctx.fillStyle = tankBg;
     roundRect(ctx, tankX, tankY, tankW, tankH, 14);
     ctx.fill();
+
     ctx.strokeStyle = '#94a3b8';
-    ctx.lineWidth = 2;
+    ctx.lineWidth = 3;
     roundRect(ctx, tankX, tankY, tankW, tankH, 14);
     ctx.stroke();
 
-    ctx.fillStyle = '#ef4444';
-    ctx.fillRect(tankX + tankW * 0.3, tankY + tankH - 10, tankW * 0.4, 10);
+    const heaterGrad = ctx.createLinearGradient(tankX + tankW * 0.2, 0, tankX + tankW * 0.8, 0);
+    heaterGrad.addColorStop(0, '#dc2626');
+    heaterGrad.addColorStop(0.5, '#ef4444');
+    heaterGrad.addColorStop(1, '#dc2626');
+    ctx.fillStyle = heaterGrad;
+    ctx.fillRect(tankX + tankW * 0.2, tankY + tankH - 15, tankW * 0.6, 15);
 
     if (environment !== 'vacuum') {
-        const loopAmp = Math.max(8, Math.min(22, strength * 10));
-        for (let i = 0; i < 12; i++) {
-            const t = time * (0.8 + strength * 0.4) + i * 0.4;
-            const leftRise = ((t % 1) * tankH);
-            const rightFall = (((t + 0.5) % 1) * tankH);
+        const loopAmp = Math.max(12, Math.min(30, strength * 12));
 
-            ctx.fillStyle = 'rgba(255,255,255,0.85)';
+        for (let i = 0; i < 20; i++) {
+            const t = time * (0.6 + strength * 0.5) + i * 0.35;
+            const leftRise = ((t % 1) * tankH * 0.9);
+            const rightFall = (((t + 0.5) % 1) * tankH * 0.9);
+
+            ctx.fillStyle = 'rgba(239, 68, 68, 0.7)';
             ctx.beginPath();
-            ctx.arc(tankX + tankW * 0.35 + Math.sin(t * 6.2) * loopAmp * 0.12, tankY + tankH - leftRise, 3.5, 0, Math.PI * 2);
+            ctx.arc(tankX + tankW * 0.28 + Math.sin(t * 5.5) * loopAmp * 0.2, tankY + tankH - 30 - leftRise, 4.5, 0, Math.PI * 2);
             ctx.fill();
+
+            ctx.fillStyle = 'rgba(59, 130, 246, 0.7)';
             ctx.beginPath();
-            ctx.arc(tankX + tankW * 0.65 + Math.sin((t + 1.2) * 6.2) * loopAmp * 0.12, tankY + rightFall, 3.5, 0, Math.PI * 2);
+            ctx.arc(tankX + tankW * 0.72 + Math.sin((t + 1.5) * 5.5) * loopAmp * 0.2, tankY + tankH - 30 - rightFall, 4.5, 0, Math.PI * 2);
             ctx.fill();
         }
+
+        ctx.strokeStyle = 'rgba(239, 68, 68, 0.3)';
+        ctx.lineWidth = 2;
+        ctx.setLineDash([5, 5]);
+        ctx.beginPath();
+        ctx.moveTo(tankX + tankW * 0.28, tankY + tankH - 50);
+        ctx.quadraticCurveTo(tankX + tankW * 0.1, tankY + tankH * 0.3, tankX + tankW * 0.28, tankY + tankH * 0.15);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(tankX + tankW * 0.72, tankY + tankH * 0.15);
+        ctx.quadraticCurveTo(tankX + tankW * 0.9, tankY + tankH * 0.3, tankX + tankW * 0.72, tankY + tankH - 50);
+        ctx.stroke();
+        ctx.setLineDash([]);
+    } else {
+        ctx.fillStyle = '#94a3b8';
+        ctx.font = `bold ${fs(14)}px sans-serif`;
+        ctx.textAlign = 'center';
+        ctx.fillText('VACUUM - No Convection', tankX + tankW / 2, tankY + tankH / 2);
     }
 
-    ctx.fillStyle = '#06b6d4';
-    ctx.font = `bold ${fs(15)}px monospace`;
-    ctx.fillText(environment === 'vacuum' ? 'No flow' : `${strength.toFixed(2)} flow`, x + pad * 0.8, y + h - pad * 1.2);
-    ctx.fillStyle = '#475569';
-    ctx.font = `bold ${fs(11)}px sans-serif`;
-    ctx.fillText(`${temperature} K heater`, x + pad * 0.8, tankY - 10);
+    ctx.fillStyle = '#0f172a';
+    ctx.font = `bold ${fs(18)}px sans-serif`;
+    ctx.textAlign = 'left';
+    ctx.fillText('Convection in a Fluid Medium', x + pad * 1.5, y + pad * 1.1);
+
+    ctx.fillStyle = '#64748b';
+    ctx.font = `${fs(11)}px sans-serif`;
+    ctx.fillText(`Hot fluid rises, cold fluid sinks — creates circulation currents`, x + pad * 1.5, y + pad * 1.1 + fs(16));
+
+    ctx.fillStyle = '#ef4444';
+    ctx.font = `bold ${fs(12)}px sans-serif`;
+    ctx.fillText(`Heater: ${temperature} K`, tankX, tankY + tankH + 24);
+
+    ctx.textAlign = 'left';
 }
 
-function drawRadiationCard(
+function drawRadiationSimulation(
     ctx: CanvasRenderingContext2D,
     params: {
         x: number;
@@ -574,38 +785,86 @@ function drawRadiationCard(
         h: number;
         pad: number;
         fs: (base: number) => number;
+        time: number;
         temperature: number;
         power: number;
         peakNm: number;
     }
 ) {
-    const { x, y, w, h, pad, fs, temperature, power, peakNm } = params;
-    const cx = x + w * 0.5;
+    const { x, y, w, h, pad, fs, time, temperature, power, peakNm } = params;
+
+    ctx.fillStyle = '#ffffff';
+    roundRect(ctx, x, y, w, h, 16);
+    ctx.fill();
+    ctx.strokeStyle = '#e2e8f0';
+    ctx.lineWidth = 2;
+    roundRect(ctx, x, y, w, h, 16);
+    ctx.stroke();
+
+    const cx = x + w / 2;
     const cy = y + h * 0.52;
-    const radius = Math.min(w, h) * 0.14;
+    const radius = Math.min(w, h) * 0.15;
     const glowColor = blackbodyColor(temperature);
 
     ctx.fillStyle = '#0f172a';
-    roundRect(ctx, x + pad * 0.8, y + h * 0.2, w - pad * 1.6, h * 0.5, 16);
+    roundRect(ctx, x + pad * 1.5, y + h * 0.18, w - pad * 3, h * 0.58, 16);
     ctx.fill();
 
-    for (let i = 3; i >= 1; i--) {
-        ctx.fillStyle = `${glowColor}${Math.round((0.08 + i * 0.05) * 255).toString(16).padStart(2, '0')}`;
+    for (let i = 6; i >= 1; i--) {
+        const alpha = Math.round((0.03 + i * 0.02) * 255).toString(16).padStart(2, '0');
+        ctx.fillStyle = `${glowColor}${alpha}`;
         ctx.beginPath();
-        ctx.arc(cx, cy, radius + i * 14, 0, Math.PI * 2);
+        ctx.arc(cx, cy, radius + i * 20, 0, Math.PI * 2);
         ctx.fill();
     }
-    ctx.fillStyle = glowColor;
+
+    const bodyGrad = ctx.createRadialGradient(cx - radius * 0.3, cy - radius * 0.3, 1, cx, cy, radius);
+    bodyGrad.addColorStop(0, lightenColor(glowColor, 60));
+    bodyGrad.addColorStop(1, glowColor);
+    ctx.fillStyle = bodyGrad;
     ctx.beginPath();
     ctx.arc(cx, cy, radius, 0, Math.PI * 2);
     ctx.fill();
 
+    const rayCount = 12;
+    for (let i = 0; i < rayCount; i++) {
+        const angle = (i / rayCount) * Math.PI * 2 + time * 0.3;
+        const rayLength = radius + 60 + Math.sin(time * 3 + i) * 15;
+        const startX = cx + Math.cos(angle) * (radius + 5);
+        const startY = cy + Math.sin(angle) * (radius + 5);
+        const endX = cx + Math.cos(angle) * rayLength;
+        const endY = cy + Math.sin(angle) * rayLength;
+
+        const rayGrad = ctx.createLinearGradient(startX, startY, endX, endY);
+        rayGrad.addColorStop(0, glowColor);
+        rayGrad.addColorStop(1, 'rgba(255,255,255,0)');
+
+        ctx.strokeStyle = rayGrad;
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.moveTo(startX, startY);
+        ctx.lineTo(endX, endY);
+        ctx.stroke();
+    }
+
+    ctx.fillStyle = '#0f172a';
+    ctx.font = `bold ${fs(18)}px sans-serif`;
+    ctx.textAlign = 'left';
+    ctx.fillText('Blackbody Radiation', x + pad * 1.5, y + pad * 1.1);
+
+    ctx.fillStyle = '#64748b';
+    ctx.font = `${fs(11)}px sans-serif`;
+    ctx.fillText('Electromagnetic emission from a heated object', x + pad * 1.5, y + pad * 1.1 + fs(16));
+
     ctx.fillStyle = '#f43f5e';
-    ctx.font = `bold ${fs(15)}px monospace`;
-    ctx.fillText(`${power.toFixed(1)} W`, x + pad * 0.8, y + h - pad * 1.2);
-    ctx.fillStyle = '#e2e8f0';
-    ctx.font = `bold ${fs(11)}px sans-serif`;
-    ctx.fillText(`peak: ${peakNm.toFixed(0)} nm`, x + pad * 0.8, y + h * 0.34);
+    ctx.font = `bold ${fs(14)}px monospace`;
+    ctx.fillText(`Power: ${power.toFixed(2)} W`, x + pad * 1.5, y + h - pad * 2.8);
+
+    ctx.fillStyle = '#8b5cf6';
+    ctx.font = `bold ${fs(14)}px monospace`;
+    ctx.fillText(`Peak λ: ${peakNm.toFixed(0)} nm`, x + w * 0.55, y + h - pad * 2.8);
+
+    ctx.textAlign = 'left';
 }
 
 function drawConductionGraph(
@@ -624,39 +883,42 @@ function drawConductionGraph(
     }
 ) {
     const { x, y, w, h, pad, fs, currentArea, lengthM, materialK, deltaT } = params;
-    const titleY = y + pad * 1.1;
+
     ctx.fillStyle = '#0f172a';
-    ctx.font = `bold ${fs(16)}px sans-serif`;
-    ctx.fillText('Conduction Law: H proportional to A / L', x + pad * 0.8, titleY);
+    ctx.font = `bold ${fs(15)}px sans-serif`;
+    ctx.fillText('Heat Flow vs Area', x + pad * 1.2, y + pad * 1.3);
 
-    const gx = x + pad * 1.2;
+    const gx = x + pad * 1.5;
     const gy = y + pad * 2.2;
-    const gw = w - pad * 2.1;
-    const gh = h - pad * 3.5;
+    const gw = w - pad * 2.5;
+    const gh = h - pad * 3.8;
 
-    ctx.strokeStyle = '#334155';
-    ctx.lineWidth = 2.5;
+    ctx.strokeStyle = '#e2e8f0';
+    ctx.lineWidth = 2;
     ctx.beginPath();
     ctx.moveTo(gx, gy);
     ctx.lineTo(gx, gy + gh);
     ctx.lineTo(gx + gw, gy + gh);
     ctx.stroke();
 
-    ctx.fillStyle = '#64748b';
-    ctx.font = `bold ${fs(11)}px sans-serif`;
-    ctx.fillText('Area (cm^2)', gx + gw / 2 - 30, gy + gh + 28);
+    ctx.fillStyle = '#94a3b8';
+    ctx.font = `bold ${fs(10)}px sans-serif`;
+    ctx.textAlign = 'center';
+    ctx.fillText('Area (cm²)', gx + gw / 2, gy + gh + 24);
+
     ctx.save();
-    ctx.translate(gx - 36, gy + gh / 2);
+    ctx.translate(gx - 20, gy + gh / 2);
     ctx.rotate(-Math.PI / 2);
-    ctx.fillText('Heat Flow (W)', 0, 0);
+    ctx.fillText('H (W)', 0, 0);
     ctx.restore();
 
     const maxArea = 8;
     const maxFlow = Math.max(1, materialK * 8e-4 * Math.max(deltaT, 1) / Math.max(lengthM, 0.2));
+
     ctx.strokeStyle = '#f97316';
     ctx.lineWidth = 4;
     ctx.beginPath();
-    for (let a = 1; a <= maxArea; a += 0.25) {
+    for (let a = 1; a <= maxArea; a += 0.2) {
         const flow = materialK * (a * 1e-4) * Math.max(deltaT, 1) / Math.max(lengthM, 0.2);
         const px = gx + ((a - 1) / (maxArea - 1)) * gw;
         const py = gy + gh - (flow / maxFlow) * gh;
@@ -668,16 +930,21 @@ function drawConductionGraph(
     const currentFlow = materialK * (currentArea * 1e-4) * Math.max(deltaT, 1) / Math.max(lengthM, 0.2);
     const cx = gx + ((currentArea - 1) / (maxArea - 1)) * gw;
     const cy = gy + gh - (currentFlow / maxFlow) * gh;
-    ctx.fillStyle = '#0f172a';
-    ctx.beginPath();
-    ctx.arc(cx, cy, 7, 0, Math.PI * 2);
-    ctx.fill();
+
     ctx.fillStyle = '#f97316';
-    ctx.font = `bold ${fs(12)}px monospace`;
-    ctx.fillText(`A = ${currentArea.toFixed(1)} cm^2`, gx, y + h - pad * 0.9);
-    ctx.textAlign = 'right';
-    ctx.fillText(`H = ${currentFlow.toFixed(1)} W`, x + w - pad * 0.8, y + h - pad * 0.9);
+    ctx.beginPath();
+    ctx.arc(cx, cy, 8, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = '#ffffff';
+    ctx.lineWidth = 3;
+    ctx.stroke();
+
+    ctx.fillStyle = '#0f172a';
+    ctx.font = `bold ${fs(11)}px monospace`;
     ctx.textAlign = 'left';
+    ctx.fillText(`A = ${currentArea.toFixed(1)} cm²`, gx, y + h - pad * 1.2);
+    ctx.textAlign = 'right';
+    ctx.fillText(`H = ${currentFlow.toFixed(1)} W`, x + w - pad * 1.2, y + h - pad * 1.2);
 }
 
 function drawConvectionGraph(
@@ -696,18 +963,19 @@ function drawConvectionGraph(
     }
 ) {
     const { x, y, w, h, pad, fs, selected, deltaT, areaCm2, lengthM } = params;
-    ctx.fillStyle = '#0f172a';
-    ctx.font = `bold ${fs(16)}px sans-serif`;
-    ctx.fillText('Convection Strength by Medium', x + pad * 0.8, y + pad * 1.1);
 
-    const chartX = x + pad * 1.4;
-    const chartY = y + pad * 2.1;
-    const chartW = w - pad * 2.2;
-    const chartH = h - pad * 3.4;
+    ctx.fillStyle = '#0f172a';
+    ctx.font = `bold ${fs(15)}px sans-serif`;
+    ctx.fillText('Convection by Environment', x + pad * 1.2, y + pad * 1.3);
+
+    const chartX = x + pad * 1.8;
+    const chartY = y + pad * 2.4;
+    const chartW = w - pad * 3;
+    const chartH = h - pad * 4;
     const baseY = chartY + chartH;
 
-    ctx.strokeStyle = '#334155';
-    ctx.lineWidth = 2.5;
+    ctx.strokeStyle = '#e2e8f0';
+    ctx.lineWidth = 2;
     ctx.beginPath();
     ctx.moveTo(chartX, chartY);
     ctx.lineTo(chartX, baseY);
@@ -715,27 +983,39 @@ function drawConvectionGraph(
     ctx.stroke();
 
     const order: EnvironmentKey[] = ['air', 'water', 'vacuum'];
-    const barW = chartW / 5;
-    const maxValue = Math.max(1, ...order.map((key) => ENVIRONMENTS[key].factor * (deltaT / 300) * Math.sqrt(areaCm2 / Math.max(lengthM, 0.2))));
+    const barW = chartW / 4.5;
+    const maxValue = Math.max(1, ENVIRONMENTS.water.factor * (deltaT / 300) * Math.sqrt(areaCm2 / Math.max(lengthM, 0.2)));
 
     order.forEach((key, index) => {
         const value = key === 'vacuum' ? 0 : ENVIRONMENTS[key].factor * (deltaT / 300) * Math.sqrt(areaCm2 / Math.max(lengthM, 0.2));
-        const barH = maxValue === 0 ? 0 : (value / maxValue) * (chartH - 30);
-        const bx = chartX + (index * 1.5 + 0.7) * barW;
+        const barH = maxValue === 0 ? 0 : (value / maxValue) * (chartH - 40);
+        const bx = chartX + (index * 1.4 + 0.5) * barW;
         const by = baseY - barH;
 
-        ctx.fillStyle = key === selected ? ENVIRONMENTS[key].color : 'rgba(148, 163, 184, 0.65)';
-        roundRect(ctx, bx, by, barW * 0.8, barH, 10);
+        const isSelected = key === selected;
+        const color = isSelected ? ENVIRONMENTS[key].color : '#cbd5e1';
+
+        ctx.fillStyle = color;
+        roundRect(ctx, bx, by, barW * 0.9, barH, 8);
         ctx.fill();
 
+        if (isSelected) {
+            ctx.strokeStyle = '#ffffff';
+            ctx.lineWidth = 3;
+            roundRect(ctx, bx, by, barW * 0.9, barH, 8);
+            ctx.stroke();
+        }
+
         ctx.fillStyle = '#475569';
-        ctx.font = `bold ${fs(11)}px sans-serif`;
+        ctx.font = `bold ${fs(10)}px sans-serif`;
         ctx.textAlign = 'center';
-        ctx.fillText(ENVIRONMENTS[key].label, bx + barW * 0.4, baseY + 22);
-        ctx.fillStyle = key === selected ? '#0f172a' : '#64748b';
-        ctx.font = `bold ${fs(12)}px monospace`;
-        ctx.fillText(value.toFixed(2), bx + barW * 0.4, by - 8);
+        ctx.fillText(ENVIRONMENTS[key].label, bx + barW * 0.45, baseY + 18);
+
+        ctx.fillStyle = '#0f172a';
+        ctx.font = `bold ${fs(11)}px monospace`;
+        ctx.fillText(value.toFixed(2), bx + barW * 0.45, by - 8);
     });
+
     ctx.textAlign = 'left';
 }
 
@@ -753,17 +1033,18 @@ function drawSpectrumGraph(
     }
 ) {
     const { x, y, w, h, pad, fs, temperature, peakNm } = params;
+
     ctx.fillStyle = '#0f172a';
-    ctx.font = `bold ${fs(16)}px sans-serif`;
-    ctx.fillText('Blackbody Spectrum', x + pad * 0.8, y + pad * 1.1);
+    ctx.font = `bold ${fs(15)}px sans-serif`;
+    ctx.fillText('Blackbody Spectrum', x + pad * 1.2, y + pad * 1.3);
 
-    const gx = x + pad * 1.2;
-    const gy = y + pad * 2.1;
-    const gw = w - pad * 2.1;
-    const gh = h - pad * 3.3;
+    const gx = x + pad * 1.5;
+    const gy = y + pad * 2.2;
+    const gw = w - pad * 2.5;
+    const gh = h - pad * 3.6;
 
-    ctx.strokeStyle = '#334155';
-    ctx.lineWidth = 2.5;
+    ctx.strokeStyle = '#e2e8f0';
+    ctx.lineWidth = 2;
     ctx.beginPath();
     ctx.moveTo(gx, gy);
     ctx.lineTo(gx, gy + gh);
@@ -772,7 +1053,7 @@ function drawSpectrumGraph(
 
     const minLambda = 200;
     const maxLambda = 2500;
-    const samples = 100;
+    const samples = 120;
     const points: { x: number; y: number; lambda: number; intensity: number }[] = [];
     let maxI = 0;
 
@@ -783,17 +1064,17 @@ function drawSpectrumGraph(
         points.push({ x: 0, y: 0, lambda, intensity });
     }
 
+    ctx.strokeStyle = '#f43f5e';
     ctx.lineWidth = 4;
     ctx.beginPath();
     points.forEach((point, index) => {
         const px = gx + ((point.lambda - minLambda) / (maxLambda - minLambda)) * gw;
-        const py = gy + gh - (point.intensity / maxI) * (gh - 10);
+        const py = gy + gh - (point.intensity / maxI) * (gh - 15);
         point.x = px;
         point.y = py;
         if (index === 0) ctx.moveTo(px, py);
         else ctx.lineTo(px, py);
     });
-    ctx.strokeStyle = '#f43f5e';
     ctx.stroke();
 
     const peakX = gx + ((peakNm - minLambda) / (maxLambda - minLambda)) * gw;
@@ -801,19 +1082,22 @@ function drawSpectrumGraph(
         Math.abs(point.lambda - peakNm) < Math.abs(closest.lambda - peakNm) ? point : closest
     );
 
-    ctx.strokeStyle = '#7c3aed';
+    ctx.strokeStyle = '#8b5cf6';
     ctx.lineWidth = 2;
-    ctx.setLineDash([6, 6]);
+    ctx.setLineDash([8, 8]);
     ctx.beginPath();
     ctx.moveTo(peakX, gy);
     ctx.lineTo(peakX, gy + gh);
     ctx.stroke();
     ctx.setLineDash([]);
 
-    ctx.fillStyle = '#0f172a';
+    ctx.fillStyle = '#8b5cf6';
     ctx.beginPath();
     ctx.arc(peakPoint.x, peakPoint.y, 7, 0, Math.PI * 2);
     ctx.fill();
+    ctx.strokeStyle = '#ffffff';
+    ctx.lineWidth = 2;
+    ctx.stroke();
 
     const visibleX1 = gx + ((380 - minLambda) / (maxLambda - minLambda)) * gw;
     const visibleX2 = gx + ((750 - minLambda) / (maxLambda - minLambda)) * gw;
@@ -824,23 +1108,29 @@ function drawSpectrumGraph(
     visGrad.addColorStop(0.65, '#f59e0b');
     visGrad.addColorStop(1, '#ef4444');
     ctx.fillStyle = visGrad;
-    ctx.fillRect(visibleX1, gy + gh + 14, Math.max(0, visibleX2 - visibleX1), 8);
+    ctx.fillRect(visibleX1, gy + gh + 8, Math.max(0, visibleX2 - visibleX1), 10);
+
+    ctx.fillStyle = '#94a3b8';
+    ctx.font = `bold ${fs(9)}px sans-serif`;
+    ctx.textAlign = 'center';
+    ctx.fillText('Visible Light', (visibleX1 + visibleX2) / 2, gy + gh + 28);
 
     ctx.fillStyle = '#64748b';
-    ctx.font = `bold ${fs(11)}px sans-serif`;
-    ctx.fillText('Wavelength (nm)', gx + gw / 2 - 40, gy + gh + 36);
+    ctx.font = `bold ${fs(10)}px sans-serif`;
+    ctx.fillText('Wavelength (nm)', gx + gw / 2, gy + gh + 45);
+
     ctx.save();
-    ctx.translate(gx - 34, gy + gh / 2);
+    ctx.translate(gx - 18, gy + gh / 2);
     ctx.rotate(-Math.PI / 2);
-    ctx.fillText('Relative Intensity', 0, 0);
+    ctx.fillText('Intensity', 0, 0);
     ctx.restore();
 
-    ctx.fillStyle = '#7c3aed';
-    ctx.font = `bold ${fs(12)}px monospace`;
-    ctx.fillText(`lambda_max = ${peakNm.toFixed(0)} nm`, gx, y + h - pad * 0.9);
-    ctx.textAlign = 'right';
-    ctx.fillText(`T = ${temperature} K`, x + w - pad * 0.8, y + h - pad * 0.9);
+    ctx.fillStyle = '#8b5cf6';
+    ctx.font = `bold ${fs(11)}px monospace`;
     ctx.textAlign = 'left';
+    ctx.fillText(`λ_max = ${peakNm.toFixed(0)} nm`, gx, y + h - pad * 1.2);
+    ctx.textAlign = 'right';
+    ctx.fillText(`T = ${temperature} K`, x + w - pad * 1.2, y + h - pad * 1.2);
 }
 
 function normalizedPlanck(lambdaNm: number, temperature: number) {
@@ -860,28 +1150,12 @@ function blackbodyColor(temperature: number) {
     return '#f8fafc';
 }
 
-function drawWrappedText(
-    ctx: CanvasRenderingContext2D,
-    text: string,
-    x: number,
-    y: number,
-    maxWidth: number,
-    lineHeight: number
-) {
-    const words = text.split(' ');
-    let line = '';
-    let row = 0;
-    for (let i = 0; i < words.length; i++) {
-        const test = line ? `${line} ${words[i]}` : words[i];
-        if (ctx.measureText(test).width > maxWidth && line) {
-            ctx.fillText(line, x, y + row * lineHeight);
-            line = words[i];
-            row += 1;
-        } else {
-            line = test;
-        }
-    }
-    if (line) ctx.fillText(line, x, y + row * lineHeight);
+function lightenColor(hex: string, amount: number): string {
+    const num = parseInt(hex.replace('#', ''), 16);
+    const r = Math.min(255, (num >> 16) + amount);
+    const g = Math.min(255, ((num >> 8) & 0xff) + amount);
+    const b = Math.min(255, (num & 0xff) + amount);
+    return `rgb(${r},${g},${b})`;
 }
 
 function roundRect(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, r: number) {

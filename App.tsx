@@ -15,7 +15,7 @@ import HeatTransferBlackbodyLab from './components/grade-11/physics/HeatTransfer
 import KineticTheoryLab from './components/grade-11/physics/KineticTheoryLab';
 import MeanFreePathLab from './components/grade-11/physics/MeanFreePathLab';
 import EquipartitionLab from './components/grade-11/physics/EquipartitionLab';
-import MolecularInteractionLab from './components/grade-11/physics/MolecularInteractionLab';
+
 import SHMLab from './components/grade-11/physics/SHMLab';
 import SimplePendulumLab from './components/grade-11/physics/SimplePendulumLab';
 import WavesLab from './components/grade-11/physics/WavesLab';
@@ -302,16 +302,7 @@ const App: React.FC = () => {
         Formulas: U=(f/2)RT, Cv=(f/2)R, Cp=(f/2+1)R, γ=Cp/Cv.
         Simulation: 4 gas types with animated molecules, energy bar graphs, vibration toggle.
       `;
-    } else if (activeTopicId === 'molecular-interaction') {
-      return `
-        Topic: Molecular Interaction & Surface Tension (NCERT Class 11, Chapter 9 & 12)
-        Definition: Molecular interactions are forces of attraction and repulsion between molecules. At a few angstroms (~2Å) molecules attract; when squeezed closer they repel.
-        Potential: Lennard-Jones: U(r) = 4ε[(σ/r)¹² - (σ/r)⁶]. Equilibrium distance r₀ where net force is zero.
-        Surface Tension: Molecules at surface have fewer neighbors → extra potential energy → inward pull → surface tension S = F/l.
-        Formulas: S = F/l (N/m) = Energy/Area. Angle of contact θ depends on relative strength of liquid-solid vs liquid-air interactions.
-        Real-world: Water droplets on lotus leaf (obtuse θ), detergents reduce surface tension (wetting agents), plant sap rises via capillary action.
-        Simulation: Left panel: 2 draggable molecules with Lennard-Jones force vectors (blue=attract, red=repel) + PE graph. Right panel: Liquid surface view showing interior vs surface molecules with unbalanced force arrows. Substance toggle (Water/Hg), Temperature slider.
-      `;
+
     } else if (activeTopicId === 'shm-spring') {
       return `
         Topic: Spring-Mass System and Simple Harmonic Motion (NCERT Class 11, Chapter 13)
@@ -352,7 +343,7 @@ const App: React.FC = () => {
     } else if (activeTopicId === 'elastic-potential-energy') {
       return `
         Topic: Elastic Potential Energy in a Stretched Wire (NCERT Class 11, Section 8.5.5)
-        Concept: Work done against internal inter-atomic forces during stretching is stored as elastic potential energy. 
+        Concept: Work done against internal inter-atomic forces during stretching is stored as elastic potential energy.
         Formula: U = 1/2 * F * ΔL = 1/2 * stress * strain * volume. Energy density u = 1/2 * σ * ε.
         Visual: On a Force-Extension graph, stored energy represents the area of the shaded triangle under the curve.
         Real-world concepts: Archery bowstring, fault lines in earthquakes, crane wire ropes.
@@ -362,10 +353,10 @@ const App: React.FC = () => {
       return `
         Topic: Atoms - Rutherford's Alpha Scattering Experiment (NCERT Class 12 Physics, Unit VIII)
         Simulation: Alpha particles being fired at Gold (Au, Z=79) or Aluminum (Al, Z=13) nucleus.
-        
+
         Key NCERT Concepts:
         1. Geiger-Marsden Experiment (1909): Fired α-particles at thin gold foil
-        2. Observations: 
+        2. Observations:
            - Most particles passed straight through (atom is mostly empty space)
            - Some deflected at small angles (positive charge concentrated somewhere)
            - ~1 in 20,000 bounced back at θ > 90° (tiny, dense, positive nucleus)
@@ -374,7 +365,7 @@ const App: React.FC = () => {
         5. Nuclear Model: Nucleus is 10⁻¹⁵ m, atom is 10⁻¹⁰ m (1:100,000 ratio)
         6. Electron shells visualized - electrons orbit but cannot deflect heavy α-particles
         7. Football Stadium Analogy: Nucleus = marble at center, Electrons = flies in stands
-        
+
         The student is viewing the alpha scattering simulation with electron shells.
         Answer based on NCERT Class 12 Physics Chapter on Atoms.
       `;
@@ -615,13 +606,6 @@ const App: React.FC = () => {
           />
         )}
 
-        {/* ================== MOLECULAR INTERACTION ================== */}
-        {currentScreen === 'TOPIC_VIEW' && activeTopicId === 'molecular-interaction' && (
-          <MolecularInteractionLab
-            topic={currentTopics.find(t => t.id === activeTopicId)!}
-            onExit={goHome}
-          />
-        )}
 
         {/* ================== SHM SPRING-MASS ================== */}
         {currentScreen === 'TOPIC_VIEW' && activeTopicId === 'shm-spring' && (
@@ -870,9 +854,9 @@ const App: React.FC = () => {
                   </button>
                 </div>
                 <div className="relative h-[550px] bg-slate-100">
-                  {/* Using a local state for mode switching would be better, but for now reuse solidClassConfig hack or just create a new state variable quickly? 
-                      Cleaner to add a new state. Let's add 'linkageMode' to App state. 
-                      Wait, I haven't added 'linkageMode' to App.tsx top level state yet. 
+                  {/* Using a local state for mode switching would be better, but for now reuse solidClassConfig hack or just create a new state variable quickly?
+                      Cleaner to add a new state. Let's add 'linkageMode' to App state.
+                      Wait, I haven't added 'linkageMode' to App.tsx top level state yet.
                       I will use the 'polyMode' state variable as a temporary proxy like before? NO, that's bad practice.
                       I will add 'linkageMode' state in the next edit or now?
                       I'll add the state variable definition at the top of the file in the same tool call if possible, or just default to 'crossover' and use a local toggle?

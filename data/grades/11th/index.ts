@@ -12,7 +12,7 @@ export const TOPICS_11TH: Topic[] = [
         branch: 'Mechanics',
         grade: '11th',
         thumbnailUrl: '/images/thumbnails/11th-physics/thumb_solids_1771662772975.png',
-        youtubeVideoIds: ['L7gOIFgYl2k'] 
+        youtubeVideoIds: ['L7gOIFgYl2k']
     },
 /* deleted youngs modulus */
 
@@ -64,7 +64,7 @@ export const TOPICS_11TH: Topic[] = [
         branch: 'Mechanics',
         grade: '11th',
         thumbnailUrl: '/images/thumbnails/11th-physics/thumb_fluids_1771662792973.png',
-        youtubeVideoIds: ['eJ_Sx_VP5dY'] 
+        youtubeVideoIds: ['eJ_Sx_VP5dY']
     },
     {
         id: 'pascals-law',
@@ -157,19 +157,7 @@ export const TOPICS_11TH: Topic[] = [
         thumbnailUrl: '/images/thumbnails/11th-physics/thumb_equipartition_1771662906243.png',
         youtubeVideoIds: ['qyLrCR15rBY']
     },
-    {
-        id: 'molecular-interaction',
-        title: 'Molecular Interaction & Surface Tension',
-        subject: 'Physics',
-        unit: 'Unit IX',
-        chapter: 'Mechanical Properties of Fluids',
-        description: 'Discover how atoms attract at a distance but repel when squeezed. Visualize the Lennard-Jones potential, drag molecules to interact, and see how unbalanced forces at a liquid surface create surface tension.',
-        thumbnailIcon: 'Activity',
-        branch: 'Mechanics',
-        grade: '11th',
-        thumbnailUrl: '/images/thumbnails/11th-physics/thumb_molecular_interaction.png',
-        youtubeVideoIds: ['L7gOIFgYl2k']
-    },
+
     {
         id: 'shm-spring',
         title: 'Spring-Mass System and Simple Harmonic Motion',
