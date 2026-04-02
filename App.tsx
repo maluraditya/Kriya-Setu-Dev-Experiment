@@ -742,7 +742,7 @@ const App: React.FC = () => {
                     {isSimulationFullscreen ? <Minimize2 size={20} /> : <Maximize2 size={20} />}
                   </button>
                 </div>
-                <div className={`relative bg - slate - 900 flex flex - col ${isSimulationFullscreen ? 'flex-1' : 'h-[550px]'} `}>
+                <div className={`relative bg-slate-900 flex flex-col ${isSimulationFullscreen ? 'flex-1' : 'h-[550px]'} `}>
                   <GeometricalIsomerismCanvas />
                 </div>
               </div>
@@ -820,14 +820,14 @@ const App: React.FC = () => {
                   <div className="flex gap-4 justify-center">
                     <button
                       onClick={() => setSolidClassConfig(p => ({ ...p, type: 'ionic' }))}
-                      className={`px - 6 py - 3 rounded - xl font - bold transition - all border - 2 flex flex - col items - center gap - 1 ${solidClassConfig.type === 'ionic' ? 'border-brand-primary bg-white text-brand-primary shadow-lg' : 'border-slate-200 text-slate-400 hover:bg-white'} `}
+                      className={`px-6 py-3 rounded-xl font-bold transition-all border-2 flex flex-col items-center gap-1 ${solidClassConfig.type === 'ionic' ? 'border-brand-primary bg-white text-brand-primary shadow-lg' : 'border-slate-200 text-slate-400 hover:bg-white'} `}
                     >
                       <span className="text-sm">Calculator</span>
                       <span>Punnett Square (9:3:3:1)</span>
                     </button>
                     <button
                       onClick={() => setSolidClassConfig(p => ({ ...p, type: 'metallic' }))}
-                      className={`px - 6 py - 3 rounded - xl font - bold transition - all border - 2 flex flex - col items - center gap - 1 ${solidClassConfig.type === 'metallic' ? 'border-brand-primary bg-white text-brand-primary shadow-lg' : 'border-slate-200 text-slate-400 hover:bg-white'} `}
+                      className={`px-6 py-3 rounded-xl font-bold transition-all border-2 flex flex-col items-center gap-1 ${solidClassConfig.type === 'metallic' ? 'border-brand-primary bg-white text-brand-primary shadow-lg' : 'border-slate-200 text-slate-400 hover:bg-white'} `}
                     >
                       <span className="text-sm">Mechanism</span>
                       <span>Meiosis Animation</span>
@@ -889,14 +889,14 @@ const App: React.FC = () => {
                   <div className="flex gap-4 justify-center">
                     <button
                       onClick={() => setPolyMode('synthesis')}
-                      className={`px - 6 py - 3 rounded - xl font - bold transition - all border - 2 flex flex - col items - center gap - 1 ${polyMode === 'synthesis' ? 'border-brand-primary bg-white text-brand-primary shadow-lg' : 'border-slate-200 text-slate-400 hover:bg-white'} `}
+                      className={`px-6 py-3 rounded-xl font-bold transition-all border-2 flex flex-col items-center gap-1 ${polyMode === 'synthesis' ? 'border-brand-primary bg-white text-brand-primary shadow-lg' : 'border-slate-200 text-slate-400 hover:bg-white'} `}
                     >
                       <span className="text-sm">Animation</span>
                       <span>Crossing Over</span>
                     </button>
                     <button
                       onClick={() => setPolyMode('conductivity')}
-                      className={`px - 6 py - 3 rounded - xl font - bold transition - all border - 2 flex flex - col items - center gap - 1 ${polyMode === 'conductivity' ? 'border-brand-primary bg-white text-brand-primary shadow-lg' : 'border-slate-200 text-slate-400 hover:bg-white'} `}
+                      className={`px-6 py-3 rounded-xl font-bold transition-all border-2 flex flex-col items-center gap-1 ${polyMode === 'conductivity' ? 'border-brand-primary bg-white text-brand-primary shadow-lg' : 'border-slate-200 text-slate-400 hover:bg-white'} `}
                     >
                       <span className="text-sm">Interactive Map</span>
                       <span>Distance vs Recombination</span>
@@ -943,8 +943,8 @@ const App: React.FC = () => {
                   <TranscriptionCanvas mode={polyMode === 'synthesis' ? 'prokaryote' : 'eukaryote'} />
                 </div>
                 <div className="p-4 bg-slate-50 border-t border-slate-200 flex justify-center gap-4">
-                  <button onClick={() => setPolyMode('synthesis')} className={`px - 4 py - 2 rounded - lg font - bold ${polyMode === 'synthesis' ? 'bg-brand-primary text-white' : 'bg-white text-slate-500 shadow-sm border'} `}>Prokaryote</button>
-                  <button onClick={() => setPolyMode('conductivity')} className={`px - 4 py - 2 rounded - lg font - bold ${polyMode === 'conductivity' ? 'bg-brand-primary text-white' : 'bg-white text-slate-500 shadow-sm border'} `}>Eukaryote</button>
+                  <button onClick={() => setPolyMode('synthesis')} className={`px-4 py-2 rounded-lg font-bold ${polyMode === 'synthesis' ? 'bg-brand-primary text-white' : 'bg-white text-slate-500 shadow-sm border'} `}>Prokaryote</button>
+                  <button onClick={() => setPolyMode('conductivity')} className={`px-4 py-2 rounded-lg font-bold ${polyMode === 'conductivity' ? 'bg-brand-primary text-white' : 'bg-white text-slate-500 shadow-sm border'} `}>Eukaryote</button>
                 </div>
               </div>
             </div>
