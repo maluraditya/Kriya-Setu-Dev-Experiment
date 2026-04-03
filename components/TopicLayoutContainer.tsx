@@ -52,8 +52,8 @@ const TopicLayoutContainer: React.FC<TopicLayoutContainerProps> = ({
 
                 {/* Visual Canvas containing the Simulation element */}
                 {/* flex-1 allows it to take up all remaining space ABOVE the controls without overlapping them */}
-                <div className="flex-1 w-full flex items-center justify-center pointer-events-auto z-10 p-4 lg:p-8 relative min-h-0">
-                    <div className="w-full h-full max-w-[1600px] max-h-[1600px] relative flex items-center justify-center">
+                <div className="flex-1 w-full flex items-center justify-center pointer-events-auto z-10 p-4 lg:p-8 relative min-h-0 min-w-0">
+                    <div className="w-full h-full max-w-[1600px] max-h-[1600px] relative flex items-center justify-center min-w-0">
                         {SimulationComponent}
                     </div>
                 </div>
