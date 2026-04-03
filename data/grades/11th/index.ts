@@ -27,19 +27,7 @@ export const TOPICS_11TH: Topic[] = [
 
 
 
-    {
-        id: 'elastic-potential-energy',
-        title: 'Elastic Potential Energy (Spring-Mass System)',
-        subject: 'Physics',
-        unit: 'Unit VIII',
-        chapter: 'Mechanical Properties of Solids',
-        description: 'Discover how work done on a horizontal spring is stored as energy. Interact with mass and stiffness to visualize the area under the Force-Displacement curve and observe real-time oscillation.',
-        thumbnailIcon: 'Activity',
-        branch: 'Mechanics',
-        grade: '11th',
-        thumbnailUrl: '/images/thumbnails/11th-physics/thumb_elastic_energy.png',
-        youtubeVideoIds: ['L7gOIFgYl2k']
-    },
+
     {
         id: 'stokes-law',
         title: "Stokes' Law and Terminal Velocity",

@@ -492,19 +492,24 @@ const StokesLawLab: React.FC<StokesLawLabProps> = ({ topic, onExit }) => {
             const lineH = badgeFont + 5;
             const boxH = lineH * 3 + padY * 2;
 
-            // Position at top-left of plot area to avoid overlap with curved approach
-            const badgeX = ax + 20;
-            const badgeY = ay + 20; 
+            // Position box at bottom-right of plot area (usually under the curve)
+            const badgePadding = 20 * sc;
+            const badgeX = ax + aw - boxW - badgePadding;
+            const badgeY = ay + ah - boxH - badgePadding; 
 
-            ctx.fillStyle = `#ffffff`; // Solid background to clear gridlines
+            ctx.shadowColor = 'rgba(0,0,0,0.05)';
+            ctx.shadowBlur = 10;
+            ctx.fillStyle = `#ffffff`; // Solid white background
             rr(ctx, badgeX, badgeY, boxW, boxH, 8); ctx.fill();
-            ctx.fillStyle = `${nowFluid.color}12`;
+            ctx.shadowBlur = 0;
+
+            ctx.fillStyle = `${nowFluid.color}15`; // Light tint
             rr(ctx, badgeX, badgeY, boxW, boxH, 8); ctx.fill();
-            ctx.strokeStyle = `${nowFluid.color}25`; ctx.lineWidth = 1.5;
+            ctx.strokeStyle = `${nowFluid.color}30`; ctx.lineWidth = 1.5;
             rr(ctx, badgeX, badgeY, boxW, boxH, 8); ctx.stroke();
 
             ctx.textAlign = 'left';
-            ctx.fillStyle = `${nowFluid.color}80`;
+            ctx.fillStyle = `${nowFluid.color}90`;
             ctx.fillText(line1, badgeX + padX, badgeY + padY + badgeFont * 0.82);
             ctx.fillStyle = nowFluid.color;
             ctx.font = `bold ${badgeFont + 1}px "Inter", sans-serif`;
@@ -515,10 +520,10 @@ const StokesLawLab: React.FC<StokesLawLabProps> = ({ topic, onExit }) => {
         }
 
         // ─── Formula watermark ───
-        ctx.fillStyle = '#e2e8f060';
-        ctx.font = `bold ${Math.max(14, gOuter.w * 0.028)}px "Inter", serif`;
-        ctx.textAlign = 'right';
-        ctx.fillText('F = 6πηav', ax + aw - 10, ay + ah - 10); // Moved to bottom-right
+        ctx.fillStyle = '#cbd5e180';
+        ctx.font = `bold italic ${Math.max(13, gOuter.w * 0.026)}px "Inter", serif`;
+        ctx.textAlign = 'left';
+        ctx.fillText('Fᵥ = 6πηav', ax + 20 * sc, ay + 30 * sc); // Moved to top-left area
 
         animRef.current = requestAnimationFrame(draw);
     }, []);

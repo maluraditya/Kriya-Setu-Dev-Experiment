@@ -20,7 +20,7 @@ import SHMLab from './components/grade-11/physics/SHMLab';
 import SimplePendulumLab from './components/grade-11/physics/SimplePendulumLab';
 import WavesLab from './components/grade-11/physics/WavesLab';
 
-import ElasticPotentialEnergyLab from './components/grade-11/physics/ElasticPotentialEnergyLab';
+
 import StokesLawLab from './components/grade-11/physics/StokesLawLab';
 
 // Grade 11 - Chemistry
@@ -340,15 +340,7 @@ const App: React.FC = () => {
         Key insight: Doubling radius quadruples area (A=πr²), quartering elongation. Steel > Rubber in elasticity (physics definition).
         Simulation: Virtual testing rig with material selector, force/length/radius sliders, live stress-strain graph, digital gauges, fracture state.
       `;
-    } else if (activeTopicId === 'elastic-potential-energy') {
-      return `
-        Topic: Elastic Potential Energy in a Stretched Wire (NCERT Class 11, Section 8.5.5)
-        Concept: Work done against internal inter-atomic forces during stretching is stored as elastic potential energy.
-        Formula: U = 1/2 * F * ΔL = 1/2 * stress * strain * volume. Energy density u = 1/2 * σ * ε.
-        Visual: On a Force-Extension graph, stored energy represents the area of the shaded triangle under the curve.
-        Real-world concepts: Archery bowstring, fault lines in earthquakes, crane wire ropes.
-        Simulation: Virtual testing lab showing a stretching wire. Right panel shows live Force vs Extension graph plotting the stretching operation with the area under the curve dynamically shading representing Stored Energy (Joules).
-      `;
+
     } else if (activeTopicId === 'atoms') {
       return `
         Topic: Atoms - Rutherford's Alpha Scattering Experiment (NCERT Class 12 Physics, Unit VIII)
@@ -1120,15 +1112,7 @@ const App: React.FC = () => {
           )
         }
 
-        {/* 9c. ELASTIC POTENTIAL ENERGY (CLASS 11) */}
-        {
-          currentScreen === 'TOPIC_VIEW' && activeTopicId === 'elastic-potential-energy' && (
-            <ElasticPotentialEnergyLab
-              topic={currentTopics.find(t => t.id === activeTopicId)!}
-              onExit={goHome}
-            />
-          )
-        }
+
 
         {/* 9d. STOKES' LAW (CLASS 11) */}
         {
