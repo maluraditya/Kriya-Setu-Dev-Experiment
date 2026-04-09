@@ -139,12 +139,12 @@ const HeatTransferBlackbodyLab: React.FC<HeatTransferBlackbodyLabProps> = ({ top
         if (activeStation === 'convection' && environmentKey === 'air') {
             drawHotAirBalloonScene(ctx, {
                 x: pad, y: pad, w: W - pad * 2, h: topSectionHeight,
-                pad, fs, time, temperature: T
+                pad, fs, time, temperature: T, area, length
             });
         } else if (activeStation === 'convection' && environmentKey === 'vacuum') {
             drawVacuumScene(ctx, {
                 x: pad, y: pad, w: W - pad * 2, h: topSectionHeight,
-                pad, fs, time, temperature: T
+                pad, fs, time, temperature: T, area, length
             });
         } else {
             drawPotOnStoveScene(ctx, {
@@ -202,87 +202,61 @@ const HeatTransferBlackbodyLab: React.FC<HeatTransferBlackbodyLabProps> = ({ top
     // Wien's Displacement Law: lambda_max = b / T  (nm)
     const peakNm = WIEN_CONSTANT_NM_K / temperature;
 
-    const descriptions = getDescriptions(station, {
-        materialLabel: MATERIALS[material].label,
-        environmentLabel: ENVIRONMENTS[environment].label,
-        conductionRate,
-        convectionRate,
-        radiationPower,
-        peakNm,
-        lengthM: lengthM,
-        areaCm2: areaCm2,
-        deltaT: deltaT,
-        temperature: temperature,
-    });
+    const descriptions = [
+        // Placeholder as it was removed
+    ];
 
     const simulationCombo = (
         <div className="w-full h-full relative bg-gradient-to-br from-slate-100 to-slate-50 rounded-2xl overflow-hidden border border-slate-200 shadow-inner flex flex-col">
-            <div className="flex-1 relative min-h-[350px]">
+            <div className="flex-1 relative min-h-0">
                 <canvas ref={canvasRef} className="absolute inset-0 w-full h-full object-contain" />
             </div>
         </div>
     );
 
     const controlsCombo = (
-        <div className="flex flex-col xl:flex-row gap-6 w-full text-slate-700 p-2 relative">
-            
-            {/* Left Panel - Information */}
-            <div className="hidden xl:flex flex-col gap-4 w-72 shrink-0 bg-white/80 backdrop-blur-md rounded-2xl p-5 border border-slate-200 shadow-xl animate-in slide-in-from-left duration-700">
-                <div className="flex items-center gap-2 text-brand-primary font-bold border-b border-slate-100 pb-3 mb-1">
-                    <BookOpen size={20} />
-                    <span className="text-sm uppercase tracking-wider">Scientific Context</span>
-                </div>
-                <div className="space-y-4">
-                    {descriptions.map((desc, i) => (
-                        <div key={i} className="flex gap-3 text-[13px] leading-relaxed">
-                            <div className="w-1.5 h-1.5 rounded-full bg-brand-primary/40 shrink-0 mt-1.5" />
-                            <p className="text-slate-600 font-medium">{desc}</p>
-                        </div>
-                    ))}
-                </div>
+        <div className="flex flex-col gap-4 w-full text-slate-700 p-2 relative max-w-5xl mx-auto">
+            {/* Main Center Controls */}
+            <div className="flex gap-2">
+                {STATIONS.map((item) => (
+                    <button
+                        key={item.key}
+                        onClick={() => setStation(item.key)}
+                        className={`flex-1 flex items-center justify-center gap-2 p-3 md:p-4 rounded-xl border-2 font-bold text-sm transition-all shadow-sm active:scale-95 ${
+                            station === item.key ? 'text-white border-transparent shadow-lg scale-105' : 'bg-white text-slate-600 border-slate-200 hover:border-slate-300'
+                        }`}
+                        style={station === item.key ? { backgroundColor: item.accent } : {}}
+                    >
+                        {item.icon}
+                        <span className="hidden md:inline">{item.label}</span>
+                    </button>
+                ))}
             </div>
 
-            {/* Main Center Controls */}
-            <div className="flex-1 flex flex-col gap-4">
-                <div className="flex gap-2">
-                    {STATIONS.map((item) => (
-                        <button
-                            key={item.key}
-                            onClick={() => setStation(item.key)}
-                            className={`flex-1 flex items-center justify-center gap-2 p-3 md:p-4 rounded-xl border-2 font-bold text-sm transition-all shadow-sm active:scale-95 ${
-                                station === item.key ? 'text-white border-transparent shadow-lg scale-105' : 'bg-white text-slate-600 border-slate-200 hover:border-slate-300'
-                            }`}
-                            style={station === item.key ? { backgroundColor: item.accent } : {}}
-                        >
-                            {item.icon}
-                            <span className="hidden md:inline">{item.label}</span>
-                        </button>
-                    ))}
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-2">
+                <StatCard label="Heat Flow" value={`${conductionRate.toFixed(1)} W`} color="text-orange-600" icon={<Zap size={14}/>} />
+                <StatCard label="Convection" value={`${convectionRate.toFixed(1)} W`} color="text-cyan-600" icon={<Droplets size={14}/>} />
+                <StatCard label="Radiation" value={`${radiationPower.toFixed(1)} W`} color="text-rose-600" icon={<CloudSun size={14}/>} />
+                <StatCard label="Peak Lambda" value={`${peakNm.toFixed(0)} nm`} color="text-purple-600" icon={<Activity size={14}/>} />
+            </div>
+
+            <div className="grid md:grid-cols-2 gap-4">
+                <div className="space-y-4 p-4 md:p-5 bg-white rounded-xl border border-slate-200 shadow-sm">
+                    <SliderRow label="Temperature" valueLabel={`${temperature} K`} minLabel="300 K" maxLabel={`${maxTemp} K`}>
+                        <input type="range" min="300" max={maxTemp} step="50" value={temperature} onChange={(e) => setTemperature(Number(e.target.value))} className="w-full accent-rose-600 h-2 md:h-3 bg-slate-100 rounded-lg appearance-none cursor-pointer" />
+                    </SliderRow>
+                    <SliderRow label="Area" valueLabel={`${areaCm2.toFixed(1)} cm²`} minLabel="1 cm²" maxLabel="8 cm²">
+                        <input type="range" min="1" max="8" step="0.5" value={areaCm2} onChange={(e) => setAreaCm2(Number(e.target.value))} className="w-full accent-orange-600 h-2 md:h-3 bg-slate-100 rounded-lg appearance-none cursor-pointer" />
+                    </SliderRow>
+                    {(station === 'conduction' || station === 'convection') && (
+                        <SliderRow label="Length" valueLabel={`${lengthM.toFixed(2)} m`} minLabel="0.20 m" maxLabel="1.20 m">
+                            <input type="range" min="0.2" max="1.2" step="0.05" value={lengthM} onChange={(e) => setLengthM(Number(e.target.value))} className="w-full accent-blue-600 h-2 md:h-3 bg-slate-100 rounded-lg appearance-none cursor-pointer" />
+                        </SliderRow>
+                    )}
                 </div>
 
-                <div className="grid grid-cols-2 lg:grid-cols-4 gap-2">
-                    <StatCard label="Heat Flow" value={`${conductionRate.toFixed(1)} W`} color="text-orange-600" icon={<Zap size={14}/>} />
-                    <StatCard label="Convection" value={`${convectionRate.toFixed(1)} W`} color="text-cyan-600" icon={<Droplets size={14}/>} />
-                    <StatCard label="Radiation" value={`${radiationPower.toFixed(1)} W`} color="text-rose-600" icon={<CloudSun size={14}/>} />
-                    <StatCard label="Peak Lambda" value={`${peakNm.toFixed(0)} nm`} color="text-purple-600" icon={<Activity size={14}/>} />
-                </div>
-
-                <div className="grid lg:grid-cols-2 gap-4">
-                    <div className="space-y-4 p-4 md:p-5 bg-white rounded-xl border border-slate-200 shadow-sm">
-                        <SliderRow label="Temperature" valueLabel={`${temperature} K`} minLabel="300 K" maxLabel={`${maxTemp} K`}>
-                            <input type="range" min="300" max={maxTemp} step="50" value={temperature} onChange={(e) => setTemperature(Number(e.target.value))} className="w-full accent-rose-600 h-2 md:h-3 bg-slate-100 rounded-lg appearance-none cursor-pointer" />
-                        </SliderRow>
-                        <SliderRow label="Area" valueLabel={`${areaCm2.toFixed(1)} cm²`} minLabel="1 cm²" maxLabel="8 cm²">
-                            <input type="range" min="1" max="8" step="0.5" value={areaCm2} onChange={(e) => setAreaCm2(Number(e.target.value))} className="w-full accent-orange-600 h-2 md:h-3 bg-slate-100 rounded-lg appearance-none cursor-pointer" />
-                        </SliderRow>
-                        {(station === 'conduction' || station === 'convection') && (
-                            <SliderRow label="Length" valueLabel={`${lengthM.toFixed(2)} m`} minLabel="0.20 m" maxLabel="1.20 m">
-                                <input type="range" min="0.2" max="1.2" step="0.05" value={lengthM} onChange={(e) => setLengthM(Number(e.target.value))} className="w-full accent-blue-600 h-2 md:h-3 bg-slate-100 rounded-lg appearance-none cursor-pointer" />
-                            </SliderRow>
-                        )}
-                    </div>
-
-                    <div className="space-y-4 p-4 md:p-5 bg-white rounded-xl border border-slate-200 shadow-sm">
+                <div className="space-y-4 flex flex-col">
+                    <div className="space-y-4 p-4 md:p-5 bg-white rounded-xl border border-slate-200 shadow-sm flex-1 flex flex-col justify-between">
                         {station === 'conduction' ? (
                             <div>
                                 <div className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Material</div>
@@ -302,49 +276,24 @@ const HeatTransferBlackbodyLab: React.FC<HeatTransferBlackbodyLabProps> = ({ top
                                 </div>
                             </div>
                         ) : (
-                            <div className="flex flex-col items-center justify-center h-full text-center py-2">
+                            <div className="flex flex-col items-center justify-center h-full text-center py-2 flex-1">
                                 <Sun size={32} className="text-rose-500 mb-2 animate-pulse" />
                                 <p className="text-xs text-slate-500 font-bold">Radiation is independent of material.</p>
                                 <p className="text-[10px] text-slate-400 mt-1 uppercase tracking-tighter">Emission depends only on Temperature and Area.</p>
                             </div>
                         )}
-                        <button onClick={reset} className="flex items-center justify-center gap-2 w-full px-6 py-3 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl border border-slate-200 transition-all font-bold text-sm shadow-sm active:scale-95"><RotateCcw size={16} /> RESET LAB</button>
+                        <button onClick={reset} className="mt-4 flex items-center justify-center gap-2 w-full px-6 py-3 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl border border-slate-200 transition-all font-bold text-sm shadow-sm active:scale-95"><RotateCcw size={16} /> RESET LAB</button>
                     </div>
-                </div>
-            </div>
 
-            {/* Right Panel - Real World Application */}
-            <div className="hidden xl:flex flex-col gap-4 w-72 shrink-0 bg-white/80 backdrop-blur-md rounded-2xl p-5 border border-slate-200 shadow-xl animate-in slide-in-from-right duration-700">
-                <div className="flex items-center gap-2 text-brand-primary font-bold border-b border-slate-100 pb-3 mb-1">
-                    <Activity size={20} />
-                    <span className="text-sm uppercase tracking-wider">Real-World Application</span>
-                </div>
-                <div className="space-y-4">
-                    {station === 'conduction' ? (
-                        <div className="bg-orange-50/50 p-4 rounded-xl border border-orange-100">
-                            <h4 className="font-bold text-orange-700 text-sm mb-2">Conduction</h4>
-                            <p className="text-[12px] text-orange-900/70 leading-relaxed italic">"Transfer of energy between adjacent molecules through collisions. The metal handle gets hot as energy travels from the pot."</p>
+                    {/* Live Output */}
+                    <div className="p-4 bg-slate-900 rounded-xl border border-slate-700 shadow-inner flex justify-between items-center">
+                        <div className="flex items-center gap-2">
+                            <Zap size={16} className="text-brand-secondary" />
+                            <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Live Output</span>
                         </div>
-                    ) : station === 'convection' ? (
-                        <div className="bg-cyan-50/50 p-4 rounded-xl border border-cyan-100">
-                            <h4 className="font-bold text-cyan-700 text-sm mb-2">Convection</h4>
-                            <p className="text-[12px] text-cyan-900/70 leading-relaxed italic">"Movement of a hot fluid. Hot water rises from the bottom and cold water sinks, creating circulation currents."</p>
-                        </div>
-                    ) : (
-                        <div className="bg-rose-50/50 p-4 rounded-xl border border-rose-100">
-                            <h4 className="font-bold text-rose-700 text-sm mb-2">Radiation</h4>
-                            <p className="text-[12px] text-rose-900/70 leading-relaxed italic">"Emission of electromagnetic rays. The burner emits infrared waves that travel through space to heat the pot bottom."</p>
-                        </div>
-                    )}
-                    
-                    <div className="p-4 bg-slate-900 rounded-2xl border border-white/10 shadow-inner mt-4">
-                        <div className="flex items-center justify-between mb-2">
-                            <span className="text-[10px] font-bold text-slate-400 uppercase">Live Output</span>
-                            <Zap size={12} className="text-brand-secondary" />
-                        </div>
-                        <div className="text-xl font-mono font-bold text-white tracking-tighter">
+                        <div className="text-xl md:text-2xl font-mono font-bold text-white tracking-tighter">
                             {station === 'conduction' ? formatWatts(conductionRate) : station === 'convection' ? formatWatts(convectionRate) : formatWatts(radiationPower)}
-                            <span className="text-xs ml-1 text-slate-400">(SI)</span>
+                            <span className="text-xs md:text-sm ml-2 text-slate-400">(SI)</span>
                         </div>
                     </div>
                 </div>
@@ -381,39 +330,15 @@ const SliderRow = ({ label, valueLabel, minLabel, maxLabel, children }: { label:
     </div>
 );
 
-function getDescriptions(station: Station, values: any): string[] {
-    if (station === 'conduction') {
-        return [
-            "Conduction: transfer of energy between adjacent molecules.",
-            `Highlight: Metal Handle. Heat travels from the boiling water through the solid handle to the hand.`,
-            `Rate depends on Material (k) and cross-section area (A).`,
-            "Formula: H = k·A·ΔT / L"
-        ];
-    }
-    if (station === 'convection') {
-        return [
-            "Convection: movement of a hot fluid.",
-            `Highlight: Water Inside. Heated water at the bottom becomes less dense and rises, while cooler water sinks.`,
-            "This creates circular currents that distribute thermal energy throughout the liquid.",
-            "Example: Rising bubbles and circular flow."
-        ];
-    }
-    return [
-        "Radiation: Energy transfer via Infrared Waves.",
-        "Source: Heating Element. Energy travels through the gap via electromagnetic radiation.",
-        "Unlike conduction or convection, radiation does not require a material medium.",
-        "Stefan-Boltzmann Law: Net power P = σ A (T⁴ - T₀⁴), where T₀ is ambient temperature.",
-        <span>Formula: P = σ A (T<sup>4</sup> - T<sub>0</sub><sup>4</sup>)</span>
-    ];
-}
-
 // --- UNIFIED SCENE DRAWING ---
 
 function drawHotAirBalloonScene(ctx: CanvasRenderingContext2D, p: any) {
-    const { x, y, w, h, time, temperature, pad, fs } = p;
+    const { x, y, w, h, time, temperature, area = 4, length = 0.6, pad, fs } = p;
     const centerX = x + w / 2;
     const centerY = y + h * 0.55;
-    const balloonR = Math.min(w, h) * 0.15;
+    
+    const areaScale = Math.sqrt(area / 4);
+    const balloonR = Math.min(w, h) * 0.15 * areaScale;
 
     // Background sky
     ctx.fillStyle = '#bae6fd';
@@ -438,7 +363,9 @@ function drawHotAirBalloonScene(ctx: CanvasRenderingContext2D, p: any) {
     }
 
     // Balloon Animation (Vertical float)
-    const floatY = Math.sin(time * 2) * 10;
+    const deltaT = Math.max(temperature - 300, 0);
+    const speed = 1 + deltaT / 500;
+    const floatY = Math.sin(time * speed * 2) * (10 + deltaT / 100);
     const by = centerY + floatY;
 
     // Envelope
@@ -450,27 +377,35 @@ function drawHotAirBalloonScene(ctx: CanvasRenderingContext2D, p: any) {
     ctx.bezierCurveTo(centerX - balloonR, by + balloonR * 0.5, centerX - balloonR * 1.5, by - balloonR * 1.5, centerX, by - balloonR * 1.5);
     ctx.fill();
 
-    // Basket
+    // Basket & Ropes
+    const ropeLen = 5 + (length * 15);
+    ctx.strokeStyle = '#475569'; ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(centerX - balloonR * 0.3, by + balloonR * 0.8); ctx.lineTo(centerX - balloonR * 0.2, by + balloonR + ropeLen);
+    ctx.moveTo(centerX + balloonR * 0.3, by + balloonR * 0.8); ctx.lineTo(centerX + balloonR * 0.2, by + balloonR + ropeLen);
+    ctx.stroke();
+
     ctx.fillStyle = '#78350f';
-    ctx.fillRect(centerX - balloonR * 0.2, by + balloonR + 10, balloonR * 0.4, balloonR * 0.3);
+    ctx.fillRect(centerX - balloonR * 0.2, by + balloonR + ropeLen, balloonR * 0.4, balloonR * 0.3);
 
     // Heat Waves from Burner
     const burnerX = centerX;
-    const burnerY = by + balloonR + 5;
+    const burnerY = by + balloonR + ropeLen - 5;
     for (let i = 0; i < 4; i++) {
-        const t = (time * 2 + i / 4) % 1;
+        const t = (time * speed * 2 + i / 4) % 1;
         const alpha = 1 - t;
+        const flameH = 20 + deltaT / 30;
         ctx.strokeStyle = `rgba(249, 115, 22, ${alpha})`;
-        ctx.lineWidth = 3;
+        ctx.lineWidth = 3 * areaScale;
         ctx.beginPath();
-        ctx.moveTo(burnerX - 10, burnerY - t * 40);
-        ctx.quadraticCurveTo(burnerX, burnerY - 15 - t * 40, burnerX + 10, burnerY - t * 40);
+        ctx.moveTo(burnerX - 10 * areaScale, burnerY - t * flameH);
+        ctx.quadraticCurveTo(burnerX, burnerY - 15 * areaScale - t * flameH, burnerX + 10 * areaScale, burnerY - t * flameH);
         ctx.stroke();
     }
 }
 
 function drawVacuumScene(ctx: CanvasRenderingContext2D, p: any) {
-    const { x, y, w, h, pad, fs } = p;
+    const { x, y, w, h, pad, fs, time, temperature, area, length } = p;
     const centerX = x + w / 2;
     const centerY = y + h / 2;
 
@@ -753,7 +688,8 @@ function drawConvectionGraph(ctx: any, p: any) {
 
     const order: EnvironmentKey[] = ['air', 'water', 'vacuum'];
     const barW = gw / 5;
-    const maxValue = ENVIRONMENTS.water.h * (8 * 1e-4) * deltaT;
+    const maxDeltaT = 1500;
+    const maxValue = ENVIRONMENTS.water.h * (8 * 1e-4) * maxDeltaT;
 
     order.forEach((key, index) => {
         const val = key === 'vacuum' ? 0 : ENVIRONMENTS[key].h * (areaCm2 * 1e-4) * deltaT;

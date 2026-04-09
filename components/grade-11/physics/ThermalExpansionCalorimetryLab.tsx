@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { RotateCcw, Thermometer, Layers, Droplets, BookOpen, Activity, Flame, Maximize2, Zap } from 'lucide-react';
+import { RotateCcw, Thermometer, Layers, Droplets, Activity, Flame, Maximize2, Zap } from 'lucide-react';
 import TopicLayoutContainer from '../../TopicLayoutContainer';
 
 interface ThermalExpansionCalorimetryLabProps {
@@ -113,36 +113,42 @@ const ThermalExpansionCalorimetryLab: React.FC<ThermalExpansionCalorimetryLabPro
 
         ctx.clearRect(0, 0, W, H);
 
-        const pad = Math.min(W * 0.04, H * 0.04, 28);
-        const innerH = H - pad * 3;
-        const topSectionHeight = state.station === 'phase_change' ? innerH * 0.45 : innerH * 0.6;
-        const bottomSectionHeight = innerH - topSectionHeight;
-        const bottomSectionY = pad * 2 + topSectionHeight;
+        const pad = Math.min(W * 0.03, H * 0.03, 16);
+        const gap = pad;
+        const availableW = W - pad * 2 - gap;
+        const leftWidth = availableW * 0.55;
+        const rightWidth = availableW - leftWidth;
+        // Decrease padding at the bottom by ensuring availableH leaves enough space
+        const availableH = H - pad * 2; // Reduced bottom padding constraint
+        
+        const leftX = pad;
+        const rightX = pad + leftWidth + gap;
+        const topSectionY = pad;
 
-        // Draw upper visually-appealing box
+        // Draw left visually-appealing box (Simulation)
         ctx.fillStyle = '#f8fafc';
-        roundRect(ctx, pad, pad, W - pad * 2, topSectionHeight, 16);
+        roundRect(ctx, leftX, topSectionY, leftWidth, availableH, 12);
         ctx.fill();
         ctx.strokeStyle = '#e2e8f0'; ctx.lineWidth = 2;
-        roundRect(ctx, pad, pad, W - pad * 2, topSectionHeight, 16);
+        roundRect(ctx, leftX, topSectionY, leftWidth, availableH, 12);
         ctx.stroke();
 
-        // Draw lower mathematically-focused box
+        // Draw right mathematically-focused box (Graph)
         ctx.fillStyle = '#ffffff';
-        roundRect(ctx, pad, bottomSectionY, W - pad * 2, bottomSectionHeight, 16);
+        roundRect(ctx, rightX, topSectionY, rightWidth, availableH, 12);
         ctx.fill();
         ctx.strokeStyle = '#e2e8f0'; ctx.lineWidth = 2;
-        roundRect(ctx, pad, bottomSectionY, W - pad * 2, bottomSectionHeight, 16);
+        roundRect(ctx, rightX, topSectionY, rightWidth, availableH, 12);
         ctx.stroke();
 
-        const fs = (base: number) => Math.max(10, Math.min(base, W * 0.025, H * 0.035));
+        const fs = (base: number) => Math.max(9, Math.min(base, W * 0.02, H * 0.03));
 
         if (state.station === 'expansion') {
-            drawExpansionScene(ctx, { x: pad, y: pad, w: W - pad * 2, h: topSectionHeight, state, fs, time });
-            drawExpansionGraph(ctx, { x: pad, y: bottomSectionY, w: W - pad * 2, h: bottomSectionHeight, state, fs });
+            drawExpansionScene(ctx, { x: leftX, y: topSectionY, w: leftWidth, h: availableH, state, fs, time, pad });
+            drawExpansionGraph(ctx, { x: rightX, y: topSectionY, w: rightWidth, h: availableH, state, fs, pad });
         } else if (state.station === 'phase_change') {
-            drawPhaseChangeScene(ctx, { x: pad, y: pad, w: W - pad * 2, h: topSectionHeight, state, fs, time });
-            drawPhaseChangeGraph(ctx, { x: pad, y: bottomSectionY, w: W - pad * 2, h: bottomSectionHeight, state, fs });
+            drawPhaseChangeScene(ctx, { x: leftX, y: topSectionY, w: leftWidth, h: availableH, state, fs, time, pad });
+            drawPhaseChangeGraph(ctx, { x: rightX, y: topSectionY, w: rightWidth, h: availableH, state, fs, pad });
             
             if (state.phasePlaying) {
                 const stats = calculatePhaseState(state.phaseIceMass, state.phaseHeaterPower, state.phaseTime);
@@ -153,8 +159,8 @@ const ThermalExpansionCalorimetryLab: React.FC<ThermalExpansionCalorimetryLabPro
                 }
             }
         } else {
-            drawCalorimetryScene(ctx, { x: pad, y: pad, w: W - pad * 2, h: topSectionHeight, state, fs, time });
-            drawCalorimetryGraph(ctx, { x: pad, y: bottomSectionY, w: W - pad * 2, h: bottomSectionHeight, state, fs });
+            drawCalorimetryScene(ctx, { x: leftX, y: topSectionY, w: leftWidth, h: availableH, state, fs, time, pad });
+            drawCalorimetryGraph(ctx, { x: rightX, y: topSectionY, w: rightWidth, h: availableH, state, fs, pad });
             
             if (state.calDropped && state.calMixTime < 1) {
                 setCalMixTime(prev => Math.min(1, prev + 0.02));
@@ -203,40 +209,15 @@ const ThermalExpansionCalorimetryLab: React.FC<ThermalExpansionCalorimetryLabPro
     const descriptions = getDescriptions(station, { expMaterial, expDimension, calDropped, phaseStateLabel });
 
     const simulationCombo = (
-        <div className="w-full h-full relative bg-gradient-to-br from-slate-100 to-slate-50 rounded-2xl overflow-hidden border border-slate-200 shadow-inner flex flex-col">
-            <div className="flex-1 relative min-h-[450px]">
-                <canvas ref={canvasRef} className="absolute inset-0 w-full h-full object-contain" />
+        <div className="w-full h-full relative bg-slate-50 rounded-2xl overflow-hidden border border-slate-200 shadow-inner flex flex-col">
+            <div className="flex-1 relative w-full h-full">
+                <canvas ref={canvasRef} className="absolute inset-0 w-full h-full" />
             </div>
         </div>
     );
 
     const controlsCombo = (
-        <div className="flex flex-col xl:flex-row gap-6 w-full text-slate-700 p-2 relative">
-            <div className="hidden xl:flex flex-col gap-4 w-72 shrink-0 bg-white/80 backdrop-blur-md rounded-2xl p-5 border border-slate-200 shadow-xl">
-                <div className="flex items-center gap-2 text-brand-primary font-bold border-b border-slate-100 pb-3 mb-1">
-                    <BookOpen size={20} />
-                    <span className="text-sm uppercase tracking-wider">Scientific Context</span>
-                </div>
-                <div className="space-y-4">
-                    {descriptions.map((desc, i) => (
-                        <div key={i} className="flex gap-3 text-[13px] leading-relaxed">
-                            <div className="w-1.5 h-1.5 rounded-full bg-brand-primary/40 shrink-0 mt-1.5" />
-                            <p className="text-slate-600 font-medium">{desc}</p>
-                        </div>
-                    ))}
-                </div>
-                <div className="mt-auto pt-4 border-t border-slate-100">
-                    <div className="bg-slate-50 rounded-xl p-3">
-                        <p className="text-[10px] font-bold text-slate-400 uppercase mb-2">Simulation Status</p>
-                        <div className="text-sm font-bold text-brand-primary">
-                            {station === 'expansion' ? `Scale factor: ${expVal.toFixed(6)}` : 
-                             station === 'phase_change' ? `State: ${phaseStateLabel}` : 
-                             calDropped ? `Equilibrium: ${Tf.toFixed(1)} °C` : 'Awaiting Drop'}
-                        </div>
-                    </div>
-                </div>
-            </div>
-
+        <div className="flex flex-col gap-4 w-full text-slate-700 p-2 relative">
             <div className="flex-1 flex flex-col gap-4">
                 <div className="flex gap-2">
                     {STATIONS.map((item) => (
@@ -565,17 +546,27 @@ function drawExpansionScene(ctx: CanvasRenderingContext2D, p: any) {
 }
 
 function drawExpansionGraph(ctx: CanvasRenderingContext2D, p: any) {
-    const { x, y, w, h, state, fs } = p;
-    const pad = 30;
+    const { x, y, w, h, state, fs, pad: passedPad } = p;
+    const pad = passedPad || 30;
     
     ctx.fillStyle = '#0f172a'; ctx.font = `bold ${fs(16)}px sans-serif`; ctx.textAlign = 'left';
     ctx.fillText(state.expMaterial === 'water' ? 'Anomalous Expansion: Volume vs Temp' : 'Fractional Change vs Temperature', x + pad, y + pad);
 
-    const gx = x + pad * 2; const gy = y + pad * 2;
-    const gw = w - pad * 4; const gh = h - pad * 3.5;
+    const gx = x + pad * 3.5; const gy = y + pad * 2;
+    const gw = w - pad * 5.5; const gh = h - pad * 5; // decreased bottom margin
     
-    ctx.strokeStyle = '#cbd5e1'; ctx.lineWidth = 2; ctx.beginPath();
+    ctx.strokeStyle = '#94a3b8'; ctx.lineWidth = 2; ctx.beginPath();
     ctx.moveTo(gx, gy); ctx.lineTo(gx, gy + gh); ctx.lineTo(gx + gw, gy + gh); ctx.stroke();
+
+    // Axis Labels
+    ctx.fillStyle = '#64748b'; ctx.font = `bold ${fs(10)}px sans-serif`; ctx.textAlign = 'center';
+    ctx.fillText('Temperature (°C)', gx + gw / 2, gy + gh + pad * 1.5);
+    
+    ctx.save();
+    ctx.translate(gx - pad * 2.5, gy + gh / 2);
+    ctx.rotate(-Math.PI / 2);
+    ctx.fillText(state.expMaterial === 'water' ? 'Rel. Volume' : 'ΔL / L₀', 0, 0);
+    ctx.restore();
 
     ctx.strokeStyle = EXPANSION_MATERIALS[state.expMaterial].color; ctx.lineWidth = 4; 
     ctx.beginPath();
@@ -596,8 +587,8 @@ function drawExpansionGraph(ctx: CanvasRenderingContext2D, p: any) {
         const cy = gy + gh - ((c_vol - 1.0) / 0.002) * gh;
         ctx.fillStyle = '#ef4444'; ctx.beginPath(); ctx.arc(cx,cy,6,0,Math.PI*2); ctx.fill();
         
-        ctx.fillStyle = '#64748b'; ctx.font = `${fs(12)}px sans-serif`;
-        ctx.fillText("4°C Minimum", gx + (4/15)*gw - 30, gy + gh + 20);
+        ctx.fillStyle = '#64748b'; ctx.font = `${fs(10)}px sans-serif`;
+        ctx.fillText("4°C Min", gx + (4/15)*gw, gy + gh + 15);
     } else {
         const maxT = 400;
         const maxMultiplier = state.expDimension === 'linear' ? 1 : state.expDimension === 'area' ? 2 : 3;
@@ -697,20 +688,30 @@ function drawPhaseChangeScene(ctx: CanvasRenderingContext2D, p: any) {
 }
 
 function drawPhaseChangeGraph(ctx: CanvasRenderingContext2D, p: any) {
-    const { x, y, w, h, state, fs } = p;
-    const pad = 30;
+    const { x, y, w, h, state, fs, pad: passedPad } = p;
+    const pad = passedPad || 30;
     
     const stats = calculatePhaseState(state.phaseIceMass, state.phaseHeaterPower, state.phaseTime);
     
     ctx.fillStyle = '#0f172a'; ctx.font = `bold ${fs(16)}px sans-serif`; ctx.textAlign = 'left';
     ctx.fillText('Heating Curve: Temp vs Heat Added (Joules)', x + pad, y + pad);
 
-    const gx = x + pad * 2.5; const gy = y + pad * 2;
-    const gw = w - pad * 4; const gh = h - pad * 3.5;
+    const gx = x + pad * 3; const gy = y + pad * 2;
+    const gw = w - pad * 5; const gh = h - pad * 5; // decreased bottom margin
     
     // Axes
-    ctx.strokeStyle = '#cbd5e1'; ctx.lineWidth = 2; ctx.beginPath();
+    ctx.strokeStyle = '#94a3b8'; ctx.lineWidth = 2; ctx.beginPath();
     ctx.moveTo(gx, gy); ctx.lineTo(gx, gy + gh); ctx.lineTo(gx + gw, gy + gh); ctx.stroke();
+
+    // Axis Labels
+    ctx.fillStyle = '#64748b'; ctx.font = `bold ${fs(10)}px sans-serif`; ctx.textAlign = 'center';
+    ctx.fillText('Heat Added (Joules)', gx + gw / 2, gy + gh + pad * 1.5);
+    
+    ctx.save();
+    ctx.translate(gx - pad * 2.5, gy + gh / 2);
+    ctx.rotate(-Math.PI / 2);
+    ctx.fillText('Temperature (°C)', 0, 0);
+    ctx.restore();
 
     const m = state.phaseIceMass * 1e-3;
     const e_steam = m * 2000 * 50;
@@ -842,17 +843,27 @@ function drawCalorimetryScene(ctx: CanvasRenderingContext2D, p: any) {
 }
 
 function drawCalorimetryGraph(ctx: CanvasRenderingContext2D, p: any) {
-    const { x, y, w, h, state, fs } = p;
-    const pad = 30;
+    const { x, y, w, h, state, fs, pad: passedPad } = p;
+    const pad = passedPad || 30;
     
     ctx.fillStyle = '#0f172a'; ctx.font = `bold ${fs(16)}px sans-serif`; ctx.textAlign = 'left';
     ctx.fillText('Thermal Equilibrium Curve (Temp vs Time)', x + pad, y + pad);
 
-    const gx = x + pad * 2.5; const gy = y + pad * 2;
-    const gw = w - pad * 4; const gh = h - pad * 3.5;
+    const gx = x + pad * 3.5; const gy = y + pad * 2;
+    const gw = w - pad * 5.5; const gh = h - pad * 5; // decreased bottom margin
     
-    ctx.strokeStyle = '#cbd5e1'; ctx.lineWidth = 2; ctx.beginPath();
+    ctx.strokeStyle = '#94a3b8'; ctx.lineWidth = 2; ctx.beginPath();
     ctx.moveTo(gx, gy); ctx.lineTo(gx, gy + gh); ctx.lineTo(gx + gw, gy + gh); ctx.stroke();
+
+    // Axis Labels
+    ctx.fillStyle = '#64748b'; ctx.font = `bold ${fs(10)}px sans-serif`; ctx.textAlign = 'center';
+    ctx.fillText('Mixing Time (relative)', gx + gw / 2, gy + gh + pad * 1.5);
+    
+    ctx.save();
+    ctx.translate(gx - pad * 2.5, gy + gh / 2);
+    ctx.rotate(-Math.PI / 2);
+    ctx.fillText('Temperature (°C)', 0, 0);
+    ctx.restore();
 
     const T1 = state.calHotTemp; const T2 = state.calWaterTemp;
     const maxT = Math.max(T1, T2) + 10;

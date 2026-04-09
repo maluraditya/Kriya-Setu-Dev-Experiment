@@ -34,7 +34,7 @@ const TopicLayoutContainer: React.FC<TopicLayoutContainerProps> = ({
             </div>
 
             {/* 1. Main Interaction Area (Left Side Desktop / Top Half Mobile) */}
-            <div className="relative h-[55vh] flex-none lg:h-full lg:flex-1 flex flex-col items-center justify-start shrink-0 border-b lg:border-b-0 lg:border-r border-white/10 overflow-y-auto custom-scrollbar bg-slate-900/50" id="tour-simulation">
+            <div className="relative h-[55vh] flex-none lg:h-full lg:flex-1 flex flex-col items-center justify-start shrink-0 border-b lg:border-b-0 lg:border-r border-white/10 overflow-hidden bg-slate-900/50" id="tour-simulation">
 
                 {/* Optional Floating Top Nav */}
                 {FloatingNavComponent && (
@@ -52,7 +52,7 @@ const TopicLayoutContainer: React.FC<TopicLayoutContainerProps> = ({
 
                 {/* Visual Canvas containing the Simulation element */}
                 {/* flex-1 allows it to take up all remaining space ABOVE the controls without overlapping them */}
-                <div className="flex-1 w-full flex items-center justify-center pointer-events-auto z-10 p-4 lg:p-8 relative min-h-[400px]">
+                <div className="flex-1 w-full flex items-center justify-center pointer-events-auto z-10 p-4 lg:p-6 relative min-h-0">
                     <div className="w-full h-full max-w-[1600px] max-h-[1600px] relative flex items-center justify-center">
                         {SimulationComponent}
                     </div>
@@ -60,7 +60,7 @@ const TopicLayoutContainer: React.FC<TopicLayoutContainerProps> = ({
 
                 {/* Bottom Control Bar / Overlay naturally flowing at the bottom */}
                 {ControlsComponent && (
-                    <div className="w-full px-4 pb-4 lg:px-8 lg:pb-8 shrink-0 flex justify-center z-30 pointer-events-auto">
+                    <div className="w-full px-4 pb-4 lg:px-6 lg:pb-6 shrink-0 flex justify-center z-30 pointer-events-auto">
                         <div className="w-full lg:w-[600px] xl:w-[700px] 2xl:w-[800px] bg-slate-900/90 backdrop-blur-2xl border border-white/10 shadow-2xl rounded-3xl p-4 md:p-6 flex flex-col gap-4">
                             {ControlsComponent}
                         </div>
