@@ -1,0 +1,38 @@
+<svg width="400" height="300" viewBox="0 0 400 300" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="400" height="300" fill="#f8fafc" />
+  
+  <!-- Left Side: Gymnosperm (Pine Cone Theme) -->
+  <rect x="0" y="0" width="200" height="300" fill="#f1f5f9" opacity="0.5" />
+  
+  <!-- Stylized Pine Cone -->
+  <path d="M100 60 L140 180 Q100 220 60 180 Z" fill="#166534" />
+  <path d="M100 80 L130 110 M100 110 L135 140 M100 140 L130 170" stroke="#f1f5f9" stroke-width="4" stroke-linecap="round" />
+  <path d="M100 80 L70 110 M100 110 L65 140 M100 140 L70 170" stroke="#f1f5f9" stroke-width="4" stroke-linecap="round" />
+  
+  <!-- Naked Seed -->
+  <circle cx="115" cy="130" r="6" fill="#fbbf24" />
+  <text x="100" y="250" text-anchor="middle" font-family="sans-serif" font-weight="bold" font-size="16" fill="#1e293b">GYMNOSPERM</text>
+  <text x="100" y="270" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#64748b">NAKED SEEDS</text>
+
+  <!-- Divider -->
+  <line x1="200" y1="40" x2="200" y2="260" stroke="#e2e8f0" stroke-width="2" stroke-dasharray="4 4" />
+
+  <!-- Right Side: Angiosperm (Flower Theme) -->
+  <!-- Flower Shape -->
+  <circle cx="300" cy="130" r="35" fill="#f59e0b" opacity="0.2" />
+  <circle cx="300" cy="130" r="15" fill="#f59e0b" />
+  
+  <!-- Petals -->
+  <ellipse cx="300" cy="85" rx="15" ry="25" fill="#f43f5e" />
+  <ellipse cx="300" cy="175" rx="15" ry="25" fill="#f43f5e" />
+  <ellipse cx="345" cy="130" rx="25" ry="15" fill="#f43f5e" />
+  <ellipse cx="255" cy="130" rx="25" ry="15" fill="#f43f5e" />
+
+  <!-- Fruit/Enclosed Seed -->
+  <circle cx="330" cy="160" r="20" fill="#ef4444" />
+  <circle cx="330" cy="160" r="5" fill="#ffffff" opacity="0.5" />
+  
+  <text x="300" y="250" text-anchor="middle" font-family="sans-serif" font-weight="bold" font-size="16" fill="#1e293b">ANGIOSPERM</text>
+  <text x="300" y="270" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#64748b">ENCLOSED SEEDS</text>
+</svg>

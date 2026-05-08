@@ -33,7 +33,6 @@ const SemiconductorLab: React.FC<SemiconductorLabProps> = ({ topic, onExit }) =>
     
     // Playback control state
     const [playbackSpeed, setPlaybackSpeed] = useState(0.5); // 0.5 is the new default (slower)
-    const [stepMode, setStepMode] = useState(false);
 
     // Particle refs for animation
     const holesRef = useRef<Particle[]>([]);
@@ -192,7 +191,7 @@ const SemiconductorLab: React.FC<SemiconductorLabProps> = ({ topic, onExit }) =>
             };
 
             // Calculate state transitions
-            if (joined && !stepMode) {
+            if (joined) {
                 phaseTimerRef.current += speedScale;
                 const pt = phaseTimerRef.current;
                 
@@ -202,7 +201,7 @@ const SemiconductorLab: React.FC<SemiconductorLabProps> = ({ topic, onExit }) =>
             }
 
             // Recombination logic
-            if (joined && depletionWidth < 80 && (phase === 'depletion' || phase === 'efield' || (!stepMode && phaseTimerRef.current > 100))) {
+            if (joined && depletionWidth < 80 && (phase === 'depletion' || phase === 'efield' || phaseTimerRef.current > 100)) {
                 holesRef.current.forEach((hole) => {
                     if (!hole.active) return;
                     electronsRef.current.forEach((electron) => {
@@ -312,7 +311,7 @@ const SemiconductorLab: React.FC<SemiconductorLabProps> = ({ topic, onExit }) =>
 
         render();
         return () => { if (animationRef.current) cancelAnimationFrame(animationRef.current); };
-    }, [isPlaying, joined, showForces, depletionWidth, playbackSpeed, phase, stepMode]);
+    }, [isPlaying, joined, showForces, depletionWidth, playbackSpeed, phase]);
 
     const handleJoin = () => {
         if (!joined) {
@@ -330,7 +329,7 @@ const SemiconductorLab: React.FC<SemiconductorLabProps> = ({ topic, onExit }) =>
     };
 
     const simulationCombo = (
-        <div className="w-full h-full relative bg-slate-900 rounded-2xl overflow-hidden shadow-inner flex flex-col">
+        <div className="w-full h-[500px] md:h-[600px] relative bg-slate-900 rounded-2xl overflow-hidden shadow-inner flex flex-col">
             <div className="bg-gradient-to-r from-blue-900 to-indigo-900 p-2 border-b border-indigo-800 text-center relative shrink-0">
                 <span className={`px-3 py-1 bg-black/30 rounded-full text-xs font-bold transition-all text-white inline-block shadow-inner border border-white/10 ${phase === 'initial' ? 'opacity-80' : 'animate-in fade-in zoom-in'}`}>
                     {phase === 'initial' ? '⏸ Ready' :
@@ -413,28 +412,6 @@ const SemiconductorLab: React.FC<SemiconductorLabProps> = ({ topic, onExit }) =>
                         <div className="flex justify-between text-xs text-slate-400 px-1">
                             <span>Slower (0.1x)</span><span>Normal (1.0x)</span><span>Fast (2.0x)</span>
                         </div>
-                    </div>
-
-                    <div className="bg-slate-50 p-4 rounded-xl border border-slate-200 mt-2 space-y-3">
-                        <div className="flex justify-between items-center border-b border-slate-200 pb-2">
-                            <h4 className="font-bold text-slate-700 flex items-center gap-2 text-sm"><Activity size={16} /> Teaching Modes</h4>
-                            <button onClick={() => setStepMode(!stepMode)} className={`text-xs px-2 py-1 rounded font-bold transition-colors ${stepMode ? 'bg-amber-100 text-amber-700 border border-amber-300' : 'bg-white text-slate-500 border border-slate-300'}`}>
-                                {stepMode ? 'Manual Steps: ON' : 'Auto Progression: ON'}
-                            </button>
-                        </div>
-                        
-                        {stepMode && joined && phase !== 'equilibrium' ? (
-                            <button onClick={handleNextPhase} className="w-full p-2 bg-indigo-100 text-indigo-700 hover:bg-indigo-200 rounded-lg font-bold text-sm flex items-center justify-center gap-2 transition-colors">
-                                Advance to Next Phase <SkipForward size={14}/>
-                            </button>
-                        ) : null}
-
-                        <ul className="text-xs text-slate-600 space-y-2 font-medium">
-                            <li className="flex items-start gap-2 p-1"><span className="text-blue-500 mt-0.5">•</span> <strong>Diffusion (🔀):</strong> Majority carriers cross the junction.</li>
-                            <li className="flex items-start gap-2 p-1"><span className="text-yellow-600 mt-0.5">•</span> <strong>Depletion (⚡):</strong> Recombination creates an ion zone lacking free carriers.</li>
-                            <li className="flex items-start gap-2 p-1"><span className="text-red-500 mt-0.5">•</span> <strong>E-Field (🔋):</strong> Uncovered ions form a barrier potential (V₀) that resists diffusion.</li>
-                            <li className="flex items-start gap-2 p-1"><span className="text-purple-600 mt-0.5">•</span> <strong>Equilibrium (⚖️):</strong> Net current becomes zero.</li>
-                        </ul>
                     </div>
                 </div>
             </div>

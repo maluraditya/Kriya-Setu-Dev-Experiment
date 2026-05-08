@@ -41,6 +41,23 @@ import QuantitativeAnalysisCanvas from './components/grade-11/chemistry/Quantita
 import EthaneConformationsCanvas from './components/grade-11/chemistry/EthaneConformationsCanvas';
 import GeometricalIsomerismCanvas from './components/grade-11/chemistry/GeometricalIsomerismCanvas';
 
+// Grade 11 - Biology
+import BinomialNomenclatureLab from './components/grade-11/biology/BinomialNomenclatureLab';
+import FiveKingdomClassificationLab from './components/grade-11/biology/FiveKingdomClassificationLab';
+import AlgaeLab from './components/grade-11/biology/AlgaeLab';
+import BryophytesPteridophytesLab from './components/grade-11/biology/BryophytesPteridophytesLab';
+import AnimalKingdomLab from './components/grade-11/biology/AnimalKingdomLab';
+import AnimalTissuesLab from './components/grade-11/biology/AnimalTissuesLab';
+import ChordataLab from './components/grade-11/biology/ChordataLab';
+import FrogsLab from './components/grade-11/biology/FrogsLab';
+import CellMembraneLab from './components/grade-11/biology/CellMembraneLab';
+import BiomoleculesLab from './components/grade-11/biology/BiomoleculesLab';
+import EnzymesLab from './components/grade-11/biology/EnzymesLab';
+import CellCycleLab from './components/grade-11/biology/CellCycleLab';
+import MorphologyFloweringPlantsLab from './components/grade-11/biology/MorphologyFloweringPlantsLab';
+import AnatomyFloweringPlantsLab from './components/grade-11/biology/AnatomyFloweringPlantsLab';
+import GymnospermsAngiospermsLab from './components/grade-11/biology/GymnospermsAngiospermsLab';
+
 
 // Grade 12 - Physics
 import ElectromagneticInductionLab from './components/grade-12/physics/ElectromagneticInductionLab';
@@ -443,6 +460,96 @@ const App: React.FC = () => {
         Concept: Restricted rotation around C=C double bond (π bond prevents rotation). Cis = identical groups on same side (polar, μ>0, higher BP). Trans = identical groups on opposite sides (non-polar, μ=0, higher MP due to crystal packing). Physical properties differ due to dipole moment vector addition/cancellation.
         Simulation: 4-phase simulation — Phase1: free rotation in alkanes (single σ bond). Phase2: restricted rotation in alkenes (π bond barrier). Phase3: cis-isomer with dipole vectors adding. Phase4: trans-isomer with dipole vectors cancelling. Property dashboard shows real dipole, BP, MP data.
       `;
+    } else if (activeTopicId === 'binomial-nomenclature') {
+      return `
+        Topic: Binomial Nomenclature & Taxonomic Hierarchy (NCERT Class 11 Biology, Unit 1)
+        Concept: Scientific names consist of Genus and specific epithet. Classification uses ranks: Kingdom, Phylum, Class, Order, Family, Genus, Species.
+        Simulation: Sort animals into the taxonomic hierarchy and type correctly formatted Latin names.
+      `;
+    } else if (activeTopicId === 'five-kingdom-classification') {
+      return `
+        Topic: Five Kingdom Classification (NCERT Class 11 Biology, Unit 1)
+        Concept: R.H. Whittaker's five kingdoms: Monera, Protista, Fungi, Plantae, Animalia. Classification based on cell structure, body organisation, mode of nutrition, reproduction, and phylogenetic relationships.
+        Simulation: Scan mystery organisms for their traits and place them into the correct kingdom portals.
+      `;
+    } else if (activeTopicId === 'algae') {
+      return `
+        Topic: Algae (Plant Kingdom) (NCERT Class 11 Biology, Unit 1)
+        Concept: Algae are classified into Chlorophyceae (Green), Phaeophyceae (Brown), and Rhodophyceae (Red) based on pigments and stored food. Motility of spores varies.
+        Simulation: Compare cellular structure, pigments, stored food, and reproductive motility across the three classes.
+      `;
+    } else if (activeTopicId === 'bryophytes-pteridophytes') {
+      return `
+        Topic: Bryophytes and Pteridophytes (NCERT Class 11 Biology, Unit 1)
+        Concept: Bryophytes have a dominant gametophyte and no vascular tissue, so they remain small and depend on water for reproduction. Pteridophytes are the first vascular land plants with a dominant sporophyte and true roots, stem, and leaves.
+        Simulation: Compare moss and fern growth, test height limits, observe water transport, and track the phase shift from gametophyte dominance to sporophyte dominance.
+      `;
+    } else if (activeTopicId === 'gymnosperms-angiosperms') {
+      return `
+        Topic: Gymnosperms and Angiosperms (NCERT Class 11 Biology, Unit 1)
+        Concept: Gymnosperms have naked seeds on cones. Angiosperms have seeds enclosed in fruits and undergo Double Fertilisation (Syngamy + Triple Fusion).
+        Simulation: Compare the unprotected ovule of a pine cone with the enclosed ovary of a flower. Trigger pollination and track two male gametes to see double fertilisation in action.
+      `;
+    } else if (activeTopicId === 'animal-kingdom-non-chordates') {
+      return `
+        Topic: Animal Kingdom (NCERT Class 11 Biology, Unit 1)
+        Concept: Porifera survive through a canal system driven by choanocytes, while Cnidaria show polymorphism with polyp and medusa forms. In Obelia, the life cycle shows metagenesis.
+        Simulation: Turn the sponge pump on and off, inject particles to trace water flow, and advance Obelia through polyp, medusa, and gamete stages.
+      `;
+    } else if (activeTopicId === 'animal-tissues') {
+      return `
+        Topic: Animal Tissues (NCERT Class 11 Biology, Unit 2, Chapter 7)
+        Concept: Epithelial tissues cover and line body surfaces. Simple epithelium (1 layer) is for diffusion; compound epithelium (2+ layers) is for protection. Connective tissues link and support. Cartilage has a pliable chondroitin matrix (shock absorber). Bone has a rigid calcium matrix (load bearer).
+        Simulation: Toggle Simple vs Compound epithelium, apply the friction scraper or chemical dropper to see which survives. Switch to Bone vs Cartilage, increase weight to 100 kg — cartilage compresses and springs back, bone stays rigid (or cracks). Zoom into the microscopic matrix view to see calcium lattice vs chondroitin chains.
+      `;
+    } else if (activeTopicId === 'frogs') {
+      return `
+        Topic: Frogs (NCERT Class 11 Biology, Unit 2, Chapter 7, Section 7.2.2)
+        Concept: Frogs are amphibians with well-developed digestive, respiratory, circulatory, nervous, and reproductive systems. Key ideas include cutaneous and pulmonary respiration, a three-chambered heart, cloaca, and external fertilisation.
+        Simulation: Switch organ overlays, move between Land and Water to observe respiration changes, feed an insect to trace digestion, inspect the three-chambered heart, and compare male and female reproductive anatomy.
+      `;
+    } else if (activeTopicId === 'cell-membrane-transport') {
+      return `
+        Topic: Cell Membrane - Fluid Mosaic Model and Transport (NCERT Class 11 Biology, Unit 3, Chapter 8, Section 8.5.1)
+        Concept: The plasma membrane is a quasi-fluid phospholipid bilayer with peripheral and integral proteins. It is selectively permeable and supports simple diffusion, osmosis, facilitated diffusion, and ATP-driven active transport.
+        Simulation: Tug membrane fluidity, change concentrations, choose neutral/polar/ion particles, toggle carrier proteins and active pumps, and observe when ATP is required.
+      `;
+    } else if (activeTopicId === 'biomolecules') {
+      return `
+        Topic: Biomolecules (NCERT Class 11 Biology, Unit 3, Chapter 9)
+        Concept: Living tissues contain micromolecules and macromolecules. Amino acids are substituted methanes, triglycerides form by esterification of fatty acids with glycerol, sugars build polysaccharides, and nucleotides build nucleic acids.
+        Simulation: Assemble amino acids around an alpha-carbon, switch R groups to identify glycine, alanine, and serine, adjust pH to form a zwitterion, and attach fatty acids to glycerol to make a triglyceride.
+      `;
+    } else if (activeTopicId === 'enzymes') {
+      return `
+        Topic: Enzymes - Nature of Enzyme Action and Factors Affecting Activity (NCERT Class 11 Biology, Unit 3, Chapter 9, Section 9.8)
+        Concept: Enzymes are mostly proteins with active sites that bind substrates, form ES and EP complexes, lower activation energy, and show Vmax saturation when active sites are fully occupied.
+        Simulation: Inject substrate, observe induced fit and product release, plot velocity vs substrate concentration, add enzyme to raise Vmax, and use inhibitors to block active sites.
+      `;
+    } else if (activeTopicId === 'cell-cycle-regulation') {
+      return `
+        Topic: Cell Cycle and Cell Division - Regulation and Phases (NCERT Class 11 Biology, Unit 3, Chapter 10)
+        Concept: The cell cycle is genetically controlled and coordinated. G1 decides whether to divide or enter G0, S doubles DNA content from 2C to 4C while chromosome number remains 2n, G2 checks genome integrity, and M phase restores nucleo-cytoplasmic ratio.
+        Simulation: Control environment request, nutrients, DNA repair, and proceed gates to discover G1/S and G2/M checkpoint logic.
+      `;
+    } else if (activeTopicId === 'chordata') {
+      return `
+        Topic: Phylum – Chordata (NCERT Class 11 Biology, Unit 1, Chapter 4)
+        Concept: Four defining features — notochord, dorsal hollow nerve cord, pharyngeal gill slits, post-anal tail. Vertebrata replaces notochord with vertebral column. Heart chambers: 2 (fish), 3 (amphibia/reptilia), 4 (birds/mammals).
+        Simulation: Toggle subphyla, slide embryo to adult to see notochord-to-vertebral-column transformation, highlight individual chordate features, compare heart chambers across classes.
+      `;
+    } else if (activeTopicId === 'morphology-flowering-plants') {
+      return `
+        Topic: Morphology of Flowering Plants (NCERT Class 11 Biology, Unit 2)
+        Concept: Compare tap root and fibrous root systems, observe alternate/opposite/whorled phyllotaxy, and see how tendrils and spines are modifications for support and protection.
+        Simulation: Select mustard or wheat for root growth, rotate a phyllotaxy dial on the stem, and test how trellis or goat stress changes the importance of tendrils and spines.
+      `;
+    } else if (activeTopicId === 'anatomy-flowering-plants') {
+      return `
+        Topic: Anatomy of Flowering Plants: Tissue Systems and Secondary Growth (NCERT Class 11 Biology, Unit 2)
+        Concept: Understand epidermal, ground, and vascular tissue systems, and see how vascular cambium converts a thin primary stem into a thicker woody stem by forming secondary xylem and secondary phloem.
+        Simulation: Compare a young primary stem and an aged secondary stem, move the age slider, adjust cambium activity, and observe differentiation from meristematic cells to permanent wood cells.
+      `;
     } else if (activeTopicId === 'responsive-prototype') {
       return `
       Topic: Responsive UI Sandbox
@@ -755,6 +862,126 @@ const App: React.FC = () => {
         {/* ================== GEOMETRICAL ISOMERISM ================== */}
         {currentScreen === 'TOPIC_VIEW' && activeTopicId === 'stereoisomerism-geometrical' && (
           <GeometricalIsomerismCanvas
+            topic={currentTopics.find(t => t.id === activeTopicId)!}
+            onExit={goHome}
+          />
+        )}
+
+        {/* ================== BINOMIAL NOMENCLATURE ================== */}
+        {currentScreen === 'TOPIC_VIEW' && activeTopicId === 'binomial-nomenclature' && (
+          <BinomialNomenclatureLab
+            topic={currentTopics.find(t => t.id === activeTopicId)!}
+            onExit={goHome}
+          />
+        )}
+
+        {/* ================== FIVE KINGDOM CLASSIFICATION ================== */}
+        {currentScreen === 'TOPIC_VIEW' && activeTopicId === 'five-kingdom-classification' && (
+          <FiveKingdomClassificationLab
+            topic={currentTopics.find(t => t.id === activeTopicId)!}
+            onExit={goHome}
+          />
+        )}
+
+        {/* ================== ALGAE ================== */}
+        {currentScreen === 'TOPIC_VIEW' && activeTopicId === 'algae' && (
+          <AlgaeLab
+            topic={currentTopics.find(t => t.id === activeTopicId)!}
+            onExit={goHome}
+          />
+        )}
+
+        {/* ================== BRYOPHYTES AND PTERIDOPHYTES ================== */}
+        {currentScreen === 'TOPIC_VIEW' && activeTopicId === 'bryophytes-pteridophytes' && (
+          <BryophytesPteridophytesLab
+            topic={currentTopics.find(t => t.id === activeTopicId)!}
+            onExit={goHome}
+          />
+        )}
+
+        {/* ================== GYMNOSPERMS AND ANGIOSPERMS ================== */}
+        {currentScreen === 'TOPIC_VIEW' && activeTopicId === 'gymnosperms-angiosperms' && (
+          <GymnospermsAngiospermsLab
+            topic={currentTopics.find(t => t.id === activeTopicId)!}
+            onExit={goHome}
+          />
+        )}
+
+        {/* ================== ANIMAL KINGDOM ================== */}
+        {currentScreen === 'TOPIC_VIEW' && activeTopicId === 'animal-kingdom-non-chordates' && (
+          <AnimalKingdomLab
+            topic={currentTopics.find(t => t.id === activeTopicId)!}
+            onExit={goHome}
+          />
+        )}
+
+        {/* ================== ANIMAL TISSUES ================== */}
+        {currentScreen === 'TOPIC_VIEW' && activeTopicId === 'animal-tissues' && (
+          <AnimalTissuesLab
+            topic={currentTopics.find(t => t.id === activeTopicId)!}
+            onExit={goHome}
+          />
+        )}
+
+        {/* ================== FROGS ================== */}
+        {currentScreen === 'TOPIC_VIEW' && activeTopicId === 'frogs' && (
+          <FrogsLab
+            topic={currentTopics.find(t => t.id === activeTopicId)!}
+            onExit={goHome}
+          />
+        )}
+
+        {/* ================== CELL MEMBRANE ================== */}
+        {currentScreen === 'TOPIC_VIEW' && activeTopicId === 'cell-membrane-transport' && (
+          <CellMembraneLab
+            topic={currentTopics.find(t => t.id === activeTopicId)!}
+            onExit={goHome}
+          />
+        )}
+
+        {/* ================== BIOMOLECULES ================== */}
+        {currentScreen === 'TOPIC_VIEW' && activeTopicId === 'biomolecules' && (
+          <BiomoleculesLab
+            topic={currentTopics.find(t => t.id === activeTopicId)!}
+            onExit={goHome}
+          />
+        )}
+
+        {/* ================== ENZYMES ================== */}
+        {currentScreen === 'TOPIC_VIEW' && activeTopicId === 'enzymes' && (
+          <EnzymesLab
+            topic={currentTopics.find(t => t.id === activeTopicId)!}
+            onExit={goHome}
+          />
+        )}
+
+        {/* ================== CELL CYCLE ================== */}
+        {currentScreen === 'TOPIC_VIEW' && activeTopicId === 'cell-cycle-regulation' && (
+          <CellCycleLab
+            topic={currentTopics.find(t => t.id === activeTopicId)!}
+            onExit={goHome}
+          />
+        )}
+
+        {/* ================== CHORDATA ================== */}
+        {currentScreen === 'TOPIC_VIEW' && activeTopicId === 'chordata' && (
+          <ChordataLab
+            topic={currentTopics.find(t => t.id === activeTopicId)!}
+            onExit={goHome}
+          />
+        )}
+
+        {/* ================== ANATOMY OF FLOWERING PLANTS ================== */}
+        {currentScreen === 'TOPIC_VIEW' && activeTopicId === 'anatomy-flowering-plants' && (
+          <AnatomyFloweringPlantsLab
+            topic={currentTopics.find(t => t.id === activeTopicId)!}
+            onExit={goHome}
+          />
+        )}
+
+        {/* ================== MORPHOLOGY OF FLOWERING PLANTS ================== */}
+        {currentScreen === 'TOPIC_VIEW' && activeTopicId === 'morphology-flowering-plants' && (
+          <MorphologyFloweringPlantsLab
             topic={currentTopics.find(t => t.id === activeTopicId)!}
             onExit={goHome}
           />

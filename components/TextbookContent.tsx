@@ -3378,6 +3378,1535 @@ const TextbookContent: React.FC<TextbookContentProps> = ({ topic, layout = 'lega
     );
   }
 
+  if (topic?.id === 'binomial-nomenclature') {
+    return (
+      <div className="prose prose-slate prose-lg max-w-none font-sans" id="tour-content">
+        <h1 className="font-display text-3xl font-bold text-brand-primary mb-6">Binomial Nomenclature & Taxonomic Hierarchy</h1>
+        <p className="lead text-xl text-slate-600 mb-8">
+          With millions of plant and animal species on Earth, common names create confusion. Biologists need a universally accepted system to name and organize organisms.
+        </p>
+
+        <h3 className="text-xl font-display font-bold text-brand-dark mt-8 mb-4">I. Binomial Nomenclature</h3>
+        <p>
+          Introduced by <strong>Carolus Linnaeus</strong>, this system provides every recognized species with a two-part scientific name.
+        </p>
+        <div className="bg-emerald-50 p-6 rounded-xl border border-emerald-200 my-6">
+          <p className="font-mono text-xl text-emerald-800 text-center font-bold">
+            <i>Mangifera indica</i>
+          </p>
+          <ul className="text-sm mt-4 space-y-2 text-emerald-900 list-disc ml-6">
+            <li><strong>Generic name (Genus):</strong> <span className="font-mono">Mangifera</span> (Always starts with a Capital letter)</li>
+            <li><strong>Specific epithet (Species):</strong> <span className="font-mono">indica</span> (Always starts with a small letter)</li>
+          </ul>
+        </div>
+        
+        <div className="my-6 p-4 bg-slate-100 rounded-xl border border-slate-300">
+          <h4 className="font-bold text-slate-800 mb-2">Universal Rules of Nomenclature:</h4>
+          <ol className="list-decimal pl-5 space-y-2 text-sm text-slate-700">
+            <li>Biological names are generally in Latin and written in <i>italics</i>. They are Latinised or derived from Latin irrespective of their origin.</li>
+            <li>The first word in a biological name represents the genus while the second component denotes the specific epithet.</li>
+            <li>Both the words in a biological name, when handwritten, are separately underlined, or printed in italics to indicate their Latin origin.</li>
+            <li>The first word denoting the genus starts with a capital letter while the specific epithet starts with a small letter.</li>
+          </ol>
+        </div>
+
+        <h3 className="text-xl font-display font-bold text-brand-dark mt-8 mb-4">II. Taxonomic Hierarchy</h3>
+        <p>
+          Taxonomy is not a single step process but involves a hierarchy of steps in which each step represents a rank or category. Since the category is a part of the overall taxonomic arrangement, it is called the taxonomic category and all categories together constitute the taxonomic hierarchy.
+        </p>
+        
+        <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-200 my-6">
+          <div className="flex flex-col-reverse items-center justify-center space-y-reverse space-y-2 font-mono text-sm">
+            <div className="bg-rose-100 border border-rose-300 w-64 text-center py-2 font-bold text-rose-900 rounded-lg">Kingdom (Broadest)</div>
+            <div className="text-slate-400">↑</div>
+            <div className="bg-orange-100 border border-orange-300 w-56 text-center py-2 font-bold text-orange-900 rounded-lg">Phylum / Division</div>
+            <div className="text-slate-400">↑</div>
+            <div className="bg-amber-100 border border-amber-300 w-48 text-center py-2 font-bold text-amber-900 rounded-lg">Class</div>
+            <div className="text-slate-400">↑</div>
+            <div className="bg-yellow-100 border border-yellow-300 w-40 text-center py-2 font-bold text-yellow-900 rounded-lg">Order</div>
+            <div className="text-slate-400">↑</div>
+            <div className="bg-lime-100 border border-lime-300 w-32 text-center py-2 font-bold text-lime-900 rounded-lg">Family</div>
+            <div className="text-slate-400">↑</div>
+            <div className="bg-green-100 border border-green-300 w-24 text-center py-2 font-bold text-green-900 rounded-lg">Genus</div>
+            <div className="text-slate-400">↑</div>
+            <div className="bg-emerald-100 border border-emerald-300 w-16 text-center py-2 font-bold text-emerald-900 rounded-lg">Species</div>
+          </div>
+          <p className="text-xs text-center text-slate-500 mt-6">As we go higher from species to kingdom, the number of common characteristics goes on decreasing.</p>
+        </div>
+
+        <h3 className="text-xl font-display font-bold text-brand-dark mt-8 mb-4">III. Simulation Guide</h3>
+        <div className="bg-blue-50 p-6 rounded-xl border border-blue-200 my-4">
+          <h4 className="font-bold text-blue-900 mb-2">What to explore in this lab:</h4>
+          <ul className="list-disc pl-5 space-y-2 text-sm text-blue-800">
+            <li><strong>Naming Challenge:</strong> Drag the correct genus and species names, ensuring capitalization rules are met. Try toggling italics to see if the name validates.</li>
+            <li><strong>Classification Pyramid:</strong> Drag cards into the correct ranks of the hierarchy to build a complete classification from Species up to Kingdom.</li>
+            <li>Observe how traits become more general and inclusive as you climb higher in the taxonomic ranks.</li>
+          </ul>
+        </div>
+        <VideoSection />
+      </div>
+    );
+  }
+
+  if (topic?.id === 'five-kingdom-classification') {
+    return (
+      <div className="prose prose-slate prose-lg max-w-none font-sans" id="tour-content">
+        <h1 className="font-display text-3xl font-bold text-brand-primary mb-6">Five Kingdom Classification</h1>
+        <p className="lead text-xl text-slate-600 mb-8">
+          The Five Kingdom Classification is a system proposed by R.H. Whittaker (1969) that divides all living organisms into five broad categories: Monera, Protista, Fungi, Plantae, and Animalia.
+        </p>
+
+        <h3 className="text-xl font-display font-bold text-brand-dark mt-8 mb-4">I. Concept Foundation & Criteria</h3>
+        <p>
+          Whittaker did not use just one character for classification. He used five specific scientific criteria:
+        </p>
+        <ul className="list-disc pl-5 space-y-2 text-sm text-slate-700">
+          <li><strong>Cell Structure:</strong> Whether the cells are Prokaryotic (primitive, no nuclear membrane) or Eukaryotic (advanced, with a nuclear membrane).</li>
+          <li><strong>Body Organisation:</strong> Whether the organism is a single cell (Unicellular) or has many cells (Multicellular/Tissue/Organ systems).</li>
+          <li><strong>Mode of Nutrition:</strong> How the organism gets its food—making it themselves (Autotrophic) or eating others (Heterotrophic).</li>
+          <li><strong>Reproduction:</strong> The method by which they produce offspring.</li>
+          <li><strong>Phylogenetic Relationships:</strong> Their evolutionary history and how they are related to ancestors.</li>
+        </ul>
+
+        <h3 className="text-xl font-display font-bold text-brand-dark mt-8 mb-4">II. How it Works (The Five Kingdoms)</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 my-6">
+          <div className="p-4 bg-white rounded-xl border border-slate-200 shadow-sm border-t-4 border-t-emerald-500">
+            <h4 className="font-bold text-emerald-600">Kingdom Monera</h4>
+            <p className="text-xs text-slate-500 mt-2">
+              The most primitive. Prokaryotic and Unicellular. Cell wall is non-cellulosic. Bacteria are the sole members.
+            </p>
+          </div>
+          <div className="p-4 bg-white rounded-xl border border-slate-200 shadow-sm border-t-4 border-t-sky-500">
+            <h4 className="font-bold text-sky-600">Kingdom Protista</h4>
+            <p className="text-xs text-slate-500 mt-2">
+              All single-celled Eukaryotes. Primarily aquatic and form a link between plants, animals, and fungi.
+            </p>
+          </div>
+          <div className="p-4 bg-white rounded-xl border border-slate-200 shadow-sm border-t-4 border-t-amber-500">
+            <h4 className="font-bold text-amber-600">Kingdom Fungi</h4>
+            <p className="text-xs text-slate-500 mt-2">
+              Multicellular (except yeast) heterotrophic organisms. Unique feature is a cell wall made of chitin.
+            </p>
+          </div>
+          <div className="p-4 bg-white rounded-xl border border-slate-200 shadow-sm border-t-4 border-t-green-600">
+            <h4 className="font-bold text-green-700">Kingdom Plantae</h4>
+            <p className="text-xs text-slate-500 mt-2">
+              Eukaryotic chlorophyll-containing organisms. Cellulosic cell wall and autotrophic mode of nutrition.
+            </p>
+          </div>
+          <div className="p-4 bg-white rounded-xl border border-slate-200 shadow-sm border-t-4 border-t-rose-500 md:col-span-2">
+            <h4 className="font-bold text-rose-600">Kingdom Animalia</h4>
+            <p className="text-xs text-slate-500 mt-2">
+              Multicellular, heterotrophic eukaryotes that lack cell walls. Depend directly or indirectly on plants for food.
+            </p>
+          </div>
+        </div>
+
+        <h3 className="text-xl font-display font-bold text-brand-dark mt-8 mb-4">III. Why This Concept Exists</h3>
+        <p>
+          Earlier systems like the Two Kingdom system (Plantae and Animalia) were inadequate because they put prokaryotes (bacteria) and eukaryotes (fungi/mosses) together simply because they had cell walls. Whittaker's system resolved this by looking at the internal structure and how they eat.
+        </p>
+
+        <div className="bg-indigo-50 p-6 rounded-xl border border-indigo-200 my-8">
+          <h4 className="font-bold text-indigo-900 mb-2">Real-World Analogy (The Indian Pond):</h4>
+          <p className="text-sm text-indigo-800">
+            In a typical Indian village pond, you find many kingdoms interacting. The green scum on the water surface (Algae - Plantae), the bacteria in the mud (Monera), the tiny swimming organisms you see under a lens (Protista), the mushrooms on the damp bank (Fungi), and the fish (Animalia) all represent these five distinct categories living together.
+          </p>
+        </div>
+
+        <VideoSection />
+      </div>
+    );
+  }
+
+  if (topic?.id === 'bryophytes-pteridophytes') {
+    return (
+      <div className="prose prose-slate prose-lg max-w-none font-sans" id="tour-content">
+        <h1 className="font-display text-3xl font-bold text-brand-primary mb-6">Bryophytes and Pteridophytes</h1>
+        <p className="lead text-xl text-slate-600 mb-8">
+          Bryophytes and pteridophytes show two important stages in plant evolution. Bryophytes are small, non-vascular plants, while pteridophytes are the first land plants with vascular tissues.
+        </p>
+
+        <h3 className="text-xl font-display font-bold text-brand-dark mt-8 mb-4">I. Bryophytes: Gametophyte Dominance</h3>
+        <p>
+          Bryophytes are often called the <strong>amphibians of the plant kingdom</strong> because they grow on land but depend on water for sexual reproduction. Their main plant body is the <strong>gametophyte (n)</strong>, which is green, photosynthetic, and independent.
+        </p>
+        <div className="bg-emerald-50 p-6 rounded-xl border border-emerald-200 my-6">
+          <h4 className="font-bold text-emerald-900 mb-2">Important Features of Bryophytes</h4>
+          <ul className="list-disc pl-5 space-y-2 text-sm text-emerald-900">
+            <li>No true roots, stems, or leaves are present.</li>
+            <li>Rhizoids help in attachment and absorption.</li>
+            <li>The sporophyte (2n) remains attached to the gametophyte for nourishment.</li>
+            <li>Water is essential for transfer of male gametes during fertilisation.</li>
+          </ul>
+        </div>
+
+        <h3 className="text-xl font-display font-bold text-brand-dark mt-8 mb-4">II. Pteridophytes: Sporophyte Dominance</h3>
+        <p>
+          Pteridophytes are the <strong>first vascular land plants</strong>. They have xylem and phloem, which help in transport of water and minerals. Their dominant plant body is the <strong>sporophyte (2n)</strong>, which has true roots, stems, and leaves.
+        </p>
+        <div className="bg-sky-50 p-6 rounded-xl border border-sky-200 my-6">
+          <h4 className="font-bold text-sky-900 mb-2">Important Features of Pteridophytes</h4>
+          <ul className="list-disc pl-5 space-y-2 text-sm text-sky-900">
+            <li>They contain vascular tissues: xylem and phloem.</li>
+            <li>The main plant body is large, independent, and differentiated into organs.</li>
+            <li>The gametophyte is small, usually heart-shaped, and called a <strong>prothallus</strong>.</li>
+            <li>Water is still required for fertilisation, but the sporophyte becomes the dominant phase.</li>
+          </ul>
+        </div>
+
+        <h3 className="text-xl font-display font-bold text-brand-dark mt-8 mb-4">III. Major Differences</h3>
+        <div className="overflow-x-auto my-6">
+          <table className="w-full border-collapse text-sm">
+            <thead>
+              <tr className="bg-slate-100">
+                <th className="border border-slate-300 p-3 text-left font-bold">Feature</th>
+                <th className="border border-slate-300 p-3 text-left font-bold">Bryophytes</th>
+                <th className="border border-slate-300 p-3 text-left font-bold">Pteridophytes</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td className="border border-slate-300 p-3 font-semibold">Dominant phase</td>
+                <td className="border border-slate-300 p-3">Gametophyte (n)</td>
+                <td className="border border-slate-300 p-3">Sporophyte (2n)</td>
+              </tr>
+              <tr>
+                <td className="border border-slate-300 p-3 font-semibold">Vascular tissue</td>
+                <td className="border border-slate-300 p-3">Absent</td>
+                <td className="border border-slate-300 p-3">Present</td>
+              </tr>
+              <tr>
+                <td className="border border-slate-300 p-3 font-semibold">Plant body</td>
+                <td className="border border-slate-300 p-3">No true roots, stems, leaves</td>
+                <td className="border border-slate-300 p-3">True roots, stems, leaves</td>
+              </tr>
+              <tr>
+                <td className="border border-slate-300 p-3 font-semibold">Sporophyte nutrition</td>
+                <td className="border border-slate-300 p-3">Dependent on gametophyte</td>
+                <td className="border border-slate-300 p-3">Independent and free-living</td>
+              </tr>
+              <tr>
+                <td className="border border-slate-300 p-3 font-semibold">Examples</td>
+                <td className="border border-slate-300 p-3">Funaria, Marchantia</td>
+                <td className="border border-slate-300 p-3">Dryopteris, Selaginella, Equisetum</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3 className="text-xl font-display font-bold text-brand-dark mt-8 mb-4">IV. Simple Analogy</h3>
+        <div className="bg-amber-50 p-6 rounded-xl border border-amber-200 my-6">
+          <h4 className="font-bold text-amber-900 mb-2">Water Bucket vs Pipe System</h4>
+          <p className="text-sm text-amber-900">
+            A bryophyte is like a small house that depends on carrying water by bucket, so it must remain small and near moisture. A pteridophyte is like a building with proper water pipes, so water can travel higher and the plant can grow taller.
+          </p>
+        </div>
+
+        <h3 className="text-xl font-display font-bold text-brand-dark mt-8 mb-4">V. What to Explore in the Simulation</h3>
+        <div className="bg-indigo-50 p-6 rounded-xl border border-indigo-200 my-6">
+          <ul className="list-disc pl-5 space-y-2 text-sm text-indigo-900">
+            <li>Increase the height challenge and compare how moss and fern respond.</li>
+            <li>Turn on vascular view to see that bryophytes lack xylem and phloem, while pteridophytes have them.</li>
+            <li>Move through the life cycle steps to observe the shift from gametophyte dominance to sporophyte dominance.</li>
+            <li>Change soil moisture and notice why water is important for fertilisation in both groups.</li>
+          </ul>
+        </div>
+
+        <VideoSection />
+      </div>
+    );
+  }
+
+  if (topic?.id === 'algae') {
+    return (
+      <div className="prose prose-slate prose-lg max-w-none font-sans" id="tour-content">
+        <h1 className="font-display text-3xl font-bold text-brand-primary mb-6">Algae (Plant Kingdom)</h1>
+        <p className="lead text-xl text-slate-600 mb-8">
+          Algae are chlorophyll-bearing, simple, thalloid, autotrophic, and largely aquatic (freshwater and marine) organisms. They exist in various forms, from unicellular (Chlamydomonas) to colonial (Volvox) and filamentous (Ulothrix, Spirogyra).
+        </p>
+
+        <h3 className="text-xl font-display font-bold text-brand-dark mt-8 mb-4">I. The Three Main Classes</h3>
+        <p>
+          The classification of Algae into three main classes is primarily based on their <strong>pigment composition</strong> and <strong>stored food</strong>.
+        </p>
+
+        <div className="grid gap-6 my-6">
+          <div className="bg-green-50 p-6 rounded-xl border border-green-200 shadow-sm border-l-4 border-l-green-500">
+            <h4 className="font-bold text-green-900 mb-2">1. Chlorophyceae (Green Algae)</h4>
+            <ul className="list-disc pl-5 text-sm space-y-1 text-green-800">
+              <li><strong>Pigments:</strong> Dominated by chlorophyll a and b, giving them a grass-green colour.</li>
+              <li><strong>Stored Food:</strong> Stored in pyrenoids (located in chloroplasts), which contain protein and starch. Some store food as oil droplets.</li>
+              <li><strong>Cell Wall:</strong> Rigid, with an inner layer of cellulose and an outer layer of pectose.</li>
+              <li><strong>Reproduction:</strong> Asexual by flagellated zoospores. Sexual can be isogamous, anisogamous, or oogamous.</li>
+            </ul>
+          </div>
+
+          <div className="bg-yellow-50 p-6 rounded-xl border border-yellow-200 shadow-sm border-l-4 border-l-yellow-600">
+            <h4 className="font-bold text-yellow-900 mb-2">2. Phaeophyceae (Brown Algae)</h4>
+            <ul className="list-disc pl-5 text-sm space-y-1 text-yellow-800">
+              <li><strong>Pigments:</strong> Chlorophyll a, c, carotenoids, and xanthophylls (specifically fucoxanthin, which determines the shade of brown).</li>
+              <li><strong>Stored Food:</strong> Complex carbohydrates like laminarin or mannitol.</li>
+              <li><strong>Cell Wall:</strong> Cellulosic wall covered by a gelatinous coating of algin.</li>
+              <li><strong>Reproduction:</strong> Asexual via biflagellate, pear-shaped (pyriform) zoospores with two unequal lateral flagella.</li>
+            </ul>
+          </div>
+
+          <div className="bg-rose-50 p-6 rounded-xl border border-rose-200 shadow-sm border-l-4 border-l-rose-500">
+            <h4 className="font-bold text-rose-900 mb-2">3. Rhodophyceae (Red Algae)</h4>
+            <ul className="list-disc pl-5 text-sm space-y-1 text-rose-800">
+              <li><strong>Pigments:</strong> Predominance of the red pigment r-phycoerythrin.</li>
+              <li><strong>Stored Food:</strong> Floridean starch (structurally similar to amylopectin and glycogen).</li>
+              <li><strong>Cell Wall:</strong> Cellulose, pectin, and polysulphate esters.</li>
+              <li><strong>Reproduction:</strong> Asexual by non-motile spores. Sexual is exclusively oogamous with non-motile gametes.</li>
+            </ul>
+          </div>
+        </div>
+
+        <h3 className="text-xl font-display font-bold text-brand-dark mt-8 mb-4">II. Real-World Applications</h3>
+        <div className="grid gap-4 my-6">
+          <div className="bg-emerald-50 p-4 rounded-xl border border-emerald-200">
+            <h4 className="font-bold text-emerald-900 mb-1">🌊 Nature (The Oxygen Factory)</h4>
+            <p className="text-sm">At least half of the total carbon dioxide fixation on earth is carried out by algae. Like a giant underwater lung, they increase dissolved oxygen levels, supporting all aquatic life.</p>
+          </div>
+          <div className="bg-amber-50 p-4 rounded-xl border border-amber-200">
+            <h4 className="font-bold text-amber-900 mb-1">🍮 Daily Life (The Kitchen Thickener)</h4>
+            <p className="text-sm">Agar (from Gelidium and Gracilaria) is used in making Indian desserts, ice creams, and jellies. Carrageen (from red algae) and Algin (from brown algae) are hydrocolloids used as thickening agents in various industries.</p>
+          </div>
+          <div className="bg-sky-50 p-4 rounded-xl border border-sky-200">
+            <h4 className="font-bold text-sky-900 mb-1">🚀 Space & Engineering (Space Food)</h4>
+            <p className="text-sm">Chlorella, a unicellular green alga, is so rich in proteins that it is used as a food supplement for space travellers where traditional farming is impossible.</p>
+          </div>
+        </div>
+
+        <VideoSection />
+      </div>
+    );
+  }
+
+  if (topic?.id === 'gymnosperms-angiosperms') {
+    return (
+      <div className="prose prose-slate prose-lg max-w-none font-sans" id="tour-content">
+        <h1 className="font-display text-3xl font-bold text-brand-primary mb-6">Gymnosperms and Angiosperms</h1>
+        <p className="lead text-xl text-slate-600 mb-8">
+          The seed-bearing plants are divided into two major groups: Gymnosperms and Angiosperms. The fundamental difference lies in whether the seeds are "naked" or enclosed within a fruit.
+        </p>
+
+        <h3 className="text-xl font-display font-bold text-brand-dark mt-8 mb-4">I. Gymnosperms: The Naked Seed Plants</h3>
+        <p>
+          In Gymnosperms (Greek: <em>gymnos</em> = naked, <em>sperma</em> = seeds), the ovules are not enclosed by any ovary wall. They remain exposed both before and after fertilisation.
+        </p>
+        <div className="bg-emerald-50 p-6 rounded-xl border border-emerald-200 my-6">
+          <h4 className="font-bold text-emerald-900 mb-2">Key Features of Gymnosperms</h4>
+          <ul className="list-disc pl-5 space-y-2 text-sm text-emerald-900">
+            <li><strong>Seeds:</strong> Naked seeds developed on the surface of scales or leaves (sporophylls).</li>
+            <li><strong>Reproductive Organs:</strong> Produced in compact structures called <strong>cones</strong> or strobili.</li>
+            <li><strong>Habit:</strong> Mostly medium to large-sized trees (e.g., <em>Sequoia</em>, the giant redwood).</li>
+            <li><strong>Examples:</strong> <em>Cycas</em>, <em>Pinus</em>, <em>Cedrus</em> (Deodar).</li>
+          </ul>
+        </div>
+
+        <h3 className="text-xl font-display font-bold text-brand-dark mt-8 mb-4">II. Angiosperms: The Flowering Plants</h3>
+        <p>
+          Angiosperms are the most dominant group of plants. Here, the pollen grains and ovules are developed in specialised structures called <strong>flowers</strong>.
+        </p>
+        <div className="bg-amber-50 p-6 rounded-xl border border-amber-200 my-6">
+          <h4 className="font-bold text-amber-900 mb-2">Key Features of Angiosperms</h4>
+          <ul className="list-disc pl-5 space-y-2 text-sm text-amber-900">
+            <li><strong>Seeds:</strong> Enclosed within fruits (matured ovaries).</li>
+            <li><strong>Diversity:</strong> Range from tiny <em>Wolffia</em> to tall <em>Eucalyptus</em> (over 100m).</li>
+            <li><strong>Classes:</strong> Divided into <strong>Dicotyledons</strong> (two cotyledons) and <strong>Monocotyledons</strong> (one cotyledon).</li>
+            <li><strong>Pollination:</strong> Occurs via wind, water, and often animals (insects, birds).</li>
+          </ul>
+        </div>
+
+        <h3 className="text-xl font-display font-bold text-brand-dark mt-8 mb-4">III. Double Fertilisation</h3>
+        <p>
+          A unique event occurs in Angiosperms that is not found anywhere else in the plant kingdom. Each pollen grain produces <strong>two male gametes</strong>.
+        </p>
+        <div className="bg-blue-50 p-6 rounded-xl border border-blue-200 my-6">
+          <h4 className="font-bold text-blue-900 mb-2">The "Two-Event" Process</h4>
+          <div className="space-y-3 text-sm text-blue-800">
+            <div className="p-3 bg-white/50 rounded-lg border border-blue-100">
+              <strong>1. Syngamy:</strong> One male gamete + Egg cell → <strong>Zygote (2n)</strong>
+            </div>
+            <div className="p-3 bg-white/50 rounded-lg border border-blue-100">
+              <strong>2. Triple Fusion:</strong> Second male gamete + Diploid Secondary Nucleus → <strong>Primary Endosperm Nucleus (3n)</strong>
+            </div>
+            <p className="mt-2 font-semibold italic text-center">Because two fusions occur, it is called Double Fertilisation.</p>
+          </div>
+        </div>
+
+        <h3 className="text-xl font-display font-bold text-brand-dark mt-8 mb-4">IV. Major Comparison</h3>
+        <div className="overflow-x-auto my-6">
+          <table className="min-w-full border-collapse border border-slate-300 text-sm">
+            <thead className="bg-slate-100">
+              <tr>
+                <th className="border border-slate-300 p-2">Feature</th>
+                <th className="border border-slate-300 p-2">Gymnosperms</th>
+                <th className="border border-slate-300 p-2">Angiosperms</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td className="border border-slate-300 p-2 font-bold">Ovule/Seed</td>
+                <td className="border border-slate-300 p-2">Naked (exposed)</td>
+                <td className="border border-slate-300 p-2">Enclosed in ovary/fruit</td>
+              </tr>
+              <tr>
+                <td className="border border-slate-300 p-2 font-bold">Flower</td>
+                <td className="border border-slate-300 p-2">Absent (Cones instead)</td>
+                <td className="border border-slate-300 p-2">Present</td>
+              </tr>
+              <tr>
+                <td className="border border-slate-300 p-2 font-bold">Fertilisation</td>
+                <td className="border border-slate-300 p-2">Single fertilisation</td>
+                <td className="border border-slate-300 p-2">Double fertilisation</td>
+              </tr>
+              <tr>
+                <td className="border border-slate-300 p-2 font-bold">Endosperm</td>
+                <td className="border border-slate-300 p-2">Haploid (n), formed before fertilisation</td>
+                <td className="border border-slate-300 p-2">Triploid (3n), formed after fertilisation</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3 className="text-xl font-display font-bold text-brand-dark mt-8 mb-4">V. Real-World Analogy</h3>
+        <div className="grid md:grid-cols-2 gap-4 my-6">
+          <div className="bg-indigo-50 p-4 rounded-xl border border-indigo-200">
+            <h4 className="font-bold text-indigo-900 mb-1">🎁 The Gift Box</h4>
+            <p className="text-sm">A Gymnosperm seed is like a toy on a shelf. An Angiosperm seed is like a toy inside a gift box (the fruit). You must open the box to find the seed!</p>
+          </div>
+          <div className="bg-sky-50 p-4 rounded-xl border border-sky-200">
+            <h4 className="font-bold text-sky-900 mb-1">🌲 Pine vs 🥭 Mango</h4>
+            <p className="text-sm">In Manali, Pine seeds are exposed on woody cones. In the plains, Mango seeds are hidden deep inside the fleshy fruit.</p>
+          </div>
+        </div>
+
+        <h3 className="text-xl font-display font-bold text-brand-dark mt-8 mb-4">VI. What to Explore in the Simulation</h3>
+        <div className="bg-slate-50 p-6 rounded-xl border border-slate-200 my-4">
+          <ul className="list-decimal pl-5 space-y-2 text-sm text-slate-700 font-medium">
+            <li>Select <strong>"Gymnosperm"</strong> and click Pollination. Notice the pollen lands directly on the exposed ovule.</li>
+            <li>Select <strong>"Angiosperm"</strong>. Use the <strong>X-Ray Slider</strong> to see the ovules hidden inside the thick ovary wall.</li>
+            <li>Trigger Pollination in Angiosperm and watch the pollen tube grow a long path down the style.</li>
+            <li>In <strong>Slow-Mo mode</strong>, witness Double Fertilisation: see one gamete create the Zygote and the other create the Endosperm.</li>
+          </ul>
+        </div>
+
+        <VideoSection />
+      </div>
+    );
+  }
+
+  if (topic?.id === 'animal-kingdom-non-chordates') {
+    return (
+      <div className="prose prose-slate prose-lg max-w-none font-sans" id="tour-content">
+        <h1 className="font-display text-3xl font-bold text-brand-primary mb-6">Animal Kingdom</h1>
+        <p className="lead text-xl text-slate-600 mb-8">
+          The earliest non-chordate animals show simple but highly effective body plans. In this topic, we focus on the canal system of sponges and the polyp-medusa life cycle in cnidarians.
+        </p>
+
+        <h3 className="text-xl font-display font-bold text-brand-dark mt-8 mb-4">I. Porifera: The Canal System</h3>
+        <p>
+          Sponges are the most primitive multicellular animals. Their body works like a living filter because water continuously moves through a canal system.
+        </p>
+        <div className="bg-emerald-50 p-6 rounded-xl border border-emerald-200 my-6">
+          <h4 className="font-bold text-emerald-900 mb-2">Water Pathway in a Sponge</h4>
+          <ul className="list-disc pl-5 space-y-2 text-sm text-emerald-900">
+            <li>Water enters through tiny pores called <strong>ostia</strong>.</li>
+            <li>It moves into the central cavity called the <strong>spongocoel</strong>.</li>
+            <li>Finally, it exits through the large opening called the <strong>osculum</strong>.</li>
+            <li><strong>Choanocytes</strong> or collar cells create the water current by beating their flagella.</li>
+          </ul>
+        </div>
+        <p>
+          This one current helps the sponge in three ways: <strong>food collection</strong>, <strong>gas exchange</strong>, and <strong>waste removal</strong>. Because the sponge is sessile, this flow-through design is essential for survival.
+        </p>
+
+        <h3 className="text-xl font-display font-bold text-brand-dark mt-8 mb-4">II. Cnidaria: Polyp, Medusa and Metagenesis</h3>
+        <p>
+          Cnidarians have tissue-level organisation and can show two body forms:
+        </p>
+        <div className="grid gap-4 my-6">
+          <div className="bg-sky-50 p-5 rounded-xl border border-sky-200">
+            <h4 className="font-bold text-sky-900 mb-2">Polyp</h4>
+            <p className="text-sm text-sky-900">A sessile, cylindrical form fixed to a surface. Hydra and sea anemone are familiar examples.</p>
+          </div>
+          <div className="bg-indigo-50 p-5 rounded-xl border border-indigo-200">
+            <h4 className="font-bold text-indigo-900 mb-2">Medusa</h4>
+            <p className="text-sm text-indigo-900">A free-swimming, umbrella-shaped form. Jellyfish is the common example.</p>
+          </div>
+        </div>
+        <p>
+          In <strong>Obelia</strong>, both forms appear in the life cycle. This alternation is called <strong>metagenesis</strong>.
+        </p>
+        <div className="bg-violet-50 p-6 rounded-xl border border-violet-200 my-6">
+          <h4 className="font-bold text-violet-900 mb-2">Metagenesis in Simple Language</h4>
+          <ul className="list-disc pl-5 space-y-2 text-sm text-violet-900">
+            <li>The <strong>polyp</strong> produces medusae asexually.</li>
+            <li>The <strong>medusa</strong> produces gametes sexually.</li>
+            <li>After fertilisation, a new polyp stage begins again.</li>
+          </ul>
+        </div>
+
+        <h3 className="text-xl font-display font-bold text-brand-dark mt-8 mb-4">III. Simple Analogies</h3>
+        <div className="grid gap-4 my-6">
+          <div className="bg-amber-50 p-5 rounded-xl border border-amber-200">
+            <h4 className="font-bold text-amber-900 mb-2">Sponge as a Water Filter</h4>
+            <p className="text-sm text-amber-900">A sponge behaves like a household filter. Water enters through many tiny openings, useful particles are trapped, and water leaves from the top.</p>
+          </div>
+          <div className="bg-rose-50 p-5 rounded-xl border border-rose-200">
+            <h4 className="font-bold text-rose-900 mb-2">Cnidaria as a Shape-Shifter</h4>
+            <p className="text-sm text-rose-900">The polyp form is like a fixed station, while the medusa form is like a mobile drone. One body form is good for staying and growing, the other for moving and reproduction.</p>
+          </div>
+        </div>
+
+        <h3 className="text-xl font-display font-bold text-brand-dark mt-8 mb-4">IV. What to Explore in the Simulation</h3>
+        <div className="bg-blue-50 p-6 rounded-xl border border-blue-200 my-6">
+          <ul className="list-disc pl-5 space-y-2 text-sm text-blue-900">
+            <li>Turn the sponge pump on and off and observe whether particles enter through ostia.</li>
+            <li>Use the cut-away view to identify spongocoel and choanocytes.</li>
+            <li>Advance the Obelia life cycle from polyp to medusa.</li>
+            <li>Observe how the asexual stage leads to the sexual stage and then back to a new polyp.</li>
+          </ul>
+        </div>
+
+        <VideoSection />
+      </div>
+    );
+  }
+
+  if (topic?.id === 'morphology-flowering-plants') {
+    return (
+      <div className="prose prose-slate prose-lg max-w-none font-sans" id="tour-content">
+        <h1 className="font-display text-3xl font-bold text-brand-primary mb-6">Morphology of Flowering Plants</h1>
+        <p className="lead text-xl text-slate-600 mb-8">
+          The external form of roots, stems, and leaves helps a flowering plant absorb water, capture sunlight, climb, and protect itself. This topic studies those visible structures and their modifications.
+        </p>
+
+        <h3 className="text-xl font-display font-bold text-brand-dark mt-8 mb-4">I. Root Systems</h3>
+        <p>
+          The root is usually the underground part of the plant and develops from the radicle. Different plants show different root systems.
+        </p>
+        <div className="grid gap-4 my-6">
+          <div className="bg-emerald-50 p-5 rounded-xl border border-emerald-200">
+            <h4 className="font-bold text-emerald-900 mb-2">Tap Root System</h4>
+            <p className="text-sm text-emerald-900">Common in dicot plants like mustard. The primary root persists and gives rise to secondary and tertiary roots.</p>
+          </div>
+          <div className="bg-sky-50 p-5 rounded-xl border border-sky-200">
+            <h4 className="font-bold text-sky-900 mb-2">Fibrous Root System</h4>
+            <p className="text-sm text-sky-900">Common in monocot plants like wheat. The primary root becomes short-lived, and many roots arise from the base of the stem.</p>
+          </div>
+          <div className="bg-amber-50 p-5 rounded-xl border border-amber-200">
+            <h4 className="font-bold text-amber-900 mb-2">Adventitious Roots</h4>
+            <p className="text-sm text-amber-900">These arise from plant parts other than the radicle, as seen in banyan and many grasses.</p>
+          </div>
+        </div>
+
+        <h3 className="text-xl font-display font-bold text-brand-dark mt-8 mb-4">II. Phyllotaxy</h3>
+        <p>
+          Phyllotaxy is the arrangement of leaves on the stem or branch. It helps leaves receive better sunlight by reducing shading.
+        </p>
+        <div className="bg-indigo-50 p-6 rounded-xl border border-indigo-200 my-6">
+          <ul className="list-disc pl-5 space-y-2 text-sm text-indigo-900">
+            <li><strong>Alternate:</strong> One leaf arises at each node, for example mustard and China rose.</li>
+            <li><strong>Opposite:</strong> Two leaves arise at each node and lie opposite each other, for example guava and Calotropis.</li>
+            <li><strong>Whorled:</strong> More than two leaves arise at a node and form a circle, for example Alstonia.</li>
+          </ul>
+        </div>
+
+        <h3 className="text-xl font-display font-bold text-brand-dark mt-8 mb-4">III. Modifications for Support and Defense</h3>
+        <div className="grid gap-4 my-6">
+          <div className="bg-lime-50 p-5 rounded-xl border border-lime-200">
+            <h4 className="font-bold text-lime-900 mb-2">Tendrils</h4>
+            <p className="text-sm text-lime-900">Tendrils are slender, coiled structures that help weak plants climb by holding nearby support. In peas, leaves are modified into tendrils.</p>
+          </div>
+          <div className="bg-rose-50 p-5 rounded-xl border border-rose-200">
+            <h4 className="font-bold text-rose-900 mb-2">Spines and Thorns</h4>
+            <p className="text-sm text-rose-900">Spines and thorns protect plants from grazing animals. In cacti, leaves become spines, which also help reduce water loss.</p>
+          </div>
+        </div>
+
+        <h3 className="text-xl font-display font-bold text-brand-dark mt-8 mb-4">IV. Everyday Analogies</h3>
+        <div className="grid gap-4 my-6">
+          <div className="bg-slate-50 p-5 rounded-xl border border-slate-200">
+            <h4 className="font-bold text-slate-900 mb-2">Anchor vs Mat</h4>
+            <p className="text-sm text-slate-700">A tap root acts like a deep anchor, while a fibrous root system spreads like a floor mat over the surface.</p>
+          </div>
+          <div className="bg-cyan-50 p-5 rounded-xl border border-cyan-200">
+            <h4 className="font-bold text-cyan-900 mb-2">Solar Panel Arrangement</h4>
+            <p className="text-sm text-cyan-900">Phyllotaxy is like careful placement of solar panels so one does not block light from another.</p>
+          </div>
+        </div>
+
+        <h3 className="text-xl font-display font-bold text-brand-dark mt-8 mb-4">V. What to Explore in the Simulation</h3>
+        <div className="bg-blue-50 p-6 rounded-xl border border-blue-200 my-6">
+          <ul className="list-disc pl-5 space-y-2 text-sm text-blue-900">
+            <li>Select mustard and wheat to compare tap root and fibrous root systems.</li>
+            <li>Increase growth level to see how the root system extends over time.</li>
+            <li>Change the phyllotaxy dial to alternate, opposite, and whorled.</li>
+            <li>Place a trellis or goat and observe how tendrils or spines improve survival.</li>
+          </ul>
+        </div>
+
+        <VideoSection />
+      </div>
+    );
+  }
+
+  if (topic?.id === 'animal-tissues') {
+    return (
+      <div className="prose prose-slate prose-lg max-w-none font-sans" id="tour-content">
+        <h1 className="font-display text-3xl font-bold text-brand-primary mb-6">Animal Tissues</h1>
+        <p className="lead text-xl text-slate-600 mb-8">
+          A tissue is a group of cells that share a similar structure and perform a common function. In animals, four fundamental tissue types — epithelial, connective, muscular, and neural — build every organ in the body. This topic focuses on the two most testable: epithelial and connective.
+        </p>
+
+        <h3 className="text-xl font-display font-bold text-brand-dark mt-8 mb-4">I. Epithelial Tissue</h3>
+        <p>
+          Epithelial tissues form a continuous sheet that covers all body surfaces, lines body cavities, and forms the lining of ducts and tubes. Their cells are tightly packed with very little intercellular matrix between them, and they always rest on a <strong>basement membrane</strong>.
+        </p>
+
+        <div className="grid gap-4 my-6">
+          <div className="bg-sky-50 p-5 rounded-xl border border-sky-200">
+            <h4 className="font-bold text-sky-900 mb-2">Simple Epithelium — One Cell Thick</h4>
+            <p className="text-sm text-sky-900">
+              Composed of a <strong>single layer</strong> of cells resting on the basement membrane. Because it is only one cell thick, it is highly suited for processes that require substances to pass through easily — such as <strong>diffusion, filtration, and secretion</strong>.
+            </p>
+            <ul className="list-disc pl-5 mt-3 space-y-1 text-sm text-sky-800">
+              <li><strong>Squamous:</strong> Flat, tile-like cells. Found in walls of blood vessels and air sacs (alveoli) of the lungs.</li>
+              <li><strong>Cuboidal:</strong> Cube-shaped cells. Found in kidney tubules and salivary gland ducts.</li>
+              <li><strong>Columnar:</strong> Tall, column-shaped cells. Found in the lining of the stomach and intestines.</li>
+              <li><strong>Ciliated:</strong> Columnar cells with hair-like cilia. Found in the respiratory tract to move mucus.</li>
+            </ul>
+          </div>
+          <div className="bg-indigo-50 p-5 rounded-xl border border-indigo-200">
+            <h4 className="font-bold text-indigo-900 mb-2">Compound (Stratified) Epithelium — Multiple Layers</h4>
+            <p className="text-sm text-indigo-900">
+              Consists of <strong>two or more layers</strong> of cells. The primary function is <strong>protection</strong> against mechanical abrasion, chemical stress, and desiccation. Secretion and absorption are limited due to the thickness.
+            </p>
+            <ul className="list-disc pl-5 mt-3 space-y-1 text-sm text-indigo-800">
+              <li>Found on the <strong>dry surface of the skin</strong> (stratified squamous, keratinised).</li>
+              <li>Found on the <strong>moist surface of the buccal cavity</strong>, oesophagus, and pharynx (non-keratinised).</li>
+              <li>As the top layers wear off, the lower layers regenerate and push upward.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div className="my-6 p-4 bg-slate-100 rounded-xl border border-slate-300">
+          <p className="text-sm font-bold text-slate-800 text-center mb-2">Simple vs Compound — The Core Rule</p>
+          <div className="grid grid-cols-2 gap-4 text-sm text-slate-700 text-center">
+            <div><strong>Simple</strong><br />1 layer → easy diffusion → filter</div>
+            <div><strong>Compound</strong><br />2+ layers → physical barrier → armour</div>
+          </div>
+        </div>
+
+        <h3 className="text-xl font-display font-bold text-brand-dark mt-8 mb-4">II. Connective Tissue</h3>
+        <p>
+          Connective tissues are the most <strong>abundant and widely distributed</strong> tissues in the body. They link, support, and anchor other tissues and organs. Unlike epithelial tissue, they have abundant <strong>intercellular matrix</strong> (ground substance + fibres) with cells scattered within it.
+        </p>
+        <p className="mt-3">
+          Cartilage and Bone are classified as <strong>Specialised Connective Tissues</strong>.
+        </p>
+
+        <div className="grid gap-4 my-6">
+          <div className="bg-teal-50 p-5 rounded-xl border border-teal-200">
+            <h4 className="font-bold text-teal-900 mb-2">Cartilage — Solid but Pliable Matrix</h4>
+            <p className="text-sm text-teal-900">
+              The intercellular matrix is <strong>solid and pliable</strong>, resisting compression without being brittle. This flexibility comes from <strong>chondroitin sulphate</strong> — a gel-like compound that traps water and acts as a natural shock absorber.
+            </p>
+            <ul className="list-disc pl-5 mt-3 space-y-1 text-sm text-teal-800">
+              <li>Cells: <strong>Chondrocytes</strong>, housed in fluid-filled spaces called <strong>lacunae</strong>.</li>
+              <li>Found at the <strong>tip of the nose</strong>, outer ear, between vertebrae, and at joint surfaces of long bones.</li>
+              <li>Provides a smooth gliding surface and cushions vertebral discs.</li>
+            </ul>
+          </div>
+          <div className="bg-slate-100 p-5 rounded-xl border border-slate-300">
+            <h4 className="font-bold text-slate-800 mb-2">Bone — Very Hard, Non-Pliable Matrix</h4>
+            <p className="text-sm text-slate-700">
+              The matrix is <strong>very hard and non-pliable</strong> due to <strong>calcium phosphate salts</strong> deposited around a framework of <strong>collagen fibres</strong>. This gives bone exceptional strength.
+            </p>
+            <ul className="list-disc pl-5 mt-3 space-y-1 text-sm text-slate-700">
+              <li>Cells: <strong>Osteocytes</strong>, also housed in lacunae.</li>
+              <li>Provides the <strong>skeletal frame</strong>, protects vital organs, supports body weight, and anchors muscles.</li>
+              <li>Matrix is organised in concentric rings around a central <strong>Haversian canal</strong> containing blood vessels.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div className="overflow-x-auto my-6">
+          <table className="w-full text-sm border-collapse">
+            <thead>
+              <tr className="bg-slate-100">
+                <th className="border border-slate-300 p-3 text-left font-bold">Feature</th>
+                <th className="border border-slate-300 p-3 text-left font-bold text-teal-700">Cartilage</th>
+                <th className="border border-slate-300 p-3 text-left font-bold text-slate-700">Bone</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td className="border border-slate-300 p-3">Matrix</td><td className="border border-slate-300 p-3 text-teal-700">Solid and pliable</td><td className="border border-slate-300 p-3">Very hard, non-pliable</td></tr>
+              <tr className="bg-slate-50"><td className="border border-slate-300 p-3">Key compound</td><td className="border border-slate-300 p-3 text-teal-700">Chondroitin salts</td><td className="border border-slate-300 p-3">Calcium salts + collagen</td></tr>
+              <tr><td className="border border-slate-300 p-3">Cells</td><td className="border border-slate-300 p-3 text-teal-700">Chondrocytes</td><td className="border border-slate-300 p-3">Osteocytes</td></tr>
+              <tr className="bg-slate-50"><td className="border border-slate-300 p-3">Blood supply</td><td className="border border-slate-300 p-3 text-teal-700">Avascular</td><td className="border border-slate-300 p-3">Highly vascular (Haversian canals)</td></tr>
+              <tr><td className="border border-slate-300 p-3">Function</td><td className="border border-slate-300 p-3 text-teal-700">Shock absorption, joint smoothness</td><td className="border border-slate-300 p-3">Support, protection, movement</td></tr>
+              <tr className="bg-slate-50"><td className="border border-slate-300 p-3">Location</td><td className="border border-slate-300 p-3 text-teal-700">Nose tip, ear, vertebral discs</td><td className="border border-slate-300 p-3">Skull, ribs, limb bones</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3 className="text-xl font-display font-bold text-brand-dark mt-8 mb-4">III. Real-World Analogies</h3>
+        <div className="grid gap-4 my-6">
+          <div className="bg-amber-50 p-5 rounded-xl border border-amber-200">
+            <h4 className="font-bold text-amber-900 mb-2">Glass Pane vs Brick Wall (Epithelium)</h4>
+            <p className="text-sm text-amber-900">
+              Simple epithelium is like a <strong>thin glass pane</strong> — allows gases and nutrients through easily but offers no protection. Compound epithelium is like a <strong>brick wall</strong> — multiple layers thick, blocks mechanical and chemical attack.
+            </p>
+          </div>
+          <div className="bg-rose-50 p-5 rounded-xl border border-rose-200">
+            <h4 className="font-bold text-rose-900 mb-2">Rubber Pad vs Steel Girder (Connective)</h4>
+            <p className="text-sm text-rose-900">
+              Cartilage behaves like <strong>industrial rubber pads under a bridge</strong> — absorbs shock, allows slight movement. Bone behaves like a <strong>steel I-beam</strong> — completely rigid, bears the full structural load.
+            </p>
+          </div>
+          <div className="bg-emerald-50 p-5 rounded-xl border border-emerald-200">
+            <h4 className="font-bold text-emerald-900 mb-2">Bubble Wrap vs Wooden Crate (Packaging)</h4>
+            <p className="text-sm text-emerald-900">
+              Cartilage is like <strong>bubble wrap</strong> — compresses and bounces back. Bone is like a <strong>wooden crate</strong> — does not deform, prevents crushing.
+            </p>
+          </div>
+        </div>
+
+        <h3 className="text-xl font-display font-bold text-brand-dark mt-8 mb-4">IV. What to Explore in the Simulation</h3>
+        <div className="bg-blue-50 p-6 rounded-xl border border-blue-200 my-6">
+          <ul className="list-disc pl-5 space-y-2 text-sm text-blue-900">
+            <li>Select <strong>Simple Epithelium</strong> and move the Friction Slider to 50% — watch the layer tear and expose the interior.</li>
+            <li>Switch to <strong>Compound Epithelium</strong> with the same friction — only the top layer wears; lower layers stay intact.</li>
+            <li>Apply the <strong>Chemical Dropper</strong> to Simple Epithelium — acid reaches the interior instantly. Apply to Compound — top layers neutralise it.</li>
+            <li>Select <strong>Cartilage</strong> and increase Weight Dial to 100 kg — the block compresses and springs back.</li>
+            <li>Switch to <strong>Bone</strong> at 100 kg — zero compression. Push to 90+ kg to see the bone crack.</li>
+            <li>Use the <strong>Zoom button</strong> to enter the microscopic view — compare calcium crystal lattice (Bone) vs chondroitin chain network (Cartilage).</li>
+          </ul>
+        </div>
+
+        <VideoSection />
+      </div>
+    );
+  }
+
+  if (topic?.id === 'frogs') {
+    return (
+      <div className="prose prose-slate prose-lg max-w-none font-sans" id="tour-content">
+        <h1 className="font-display text-3xl font-bold text-brand-primary mb-6">Frog Organ Systems & Anatomy</h1>
+        <p className="lead text-xl text-slate-600 mb-8">
+          Frogs are amphibians, so they are adapted for life both in water and on land. Their body cavity contains well-developed organ systems for digestion, respiration, circulation, coordination, and reproduction.
+        </p>
+
+        <div className="bg-emerald-50 p-5 rounded-xl border border-emerald-200 my-6">
+          <h4 className="font-bold text-emerald-900 mb-2">NCERT Reference</h4>
+          <p className="text-sm text-emerald-900">
+            Class 11 Biology, Unit 2: Structural Organisation in Plants and Animals, Chapter 7: Structural Organisation in Animals, Section 7.2.2 Anatomy.
+          </p>
+        </div>
+
+        <h3 className="text-xl font-display font-bold text-brand-dark mt-8 mb-4">I. Digestive System</h3>
+        <p>
+          Frogs are carnivorous. Because animal food is easier to digest than plant fibre, the alimentary canal is comparatively short. Food is captured by the <strong>bilobed tongue</strong> and passes through this path:
+        </p>
+        <div className="my-6 p-4 bg-amber-50 rounded-xl border border-amber-200 text-center text-sm font-bold text-amber-900">
+          Mouth &rarr; Buccal cavity &rarr; Pharynx &rarr; Oesophagus &rarr; Stomach &rarr; Duodenum &rarr; Intestine &rarr; Rectum &rarr; Cloaca
+        </div>
+        <p>
+          In the stomach, hydrochloric acid and gastric juice convert food into <strong>chyme</strong>. Chyme enters the duodenum, where bile from the gall bladder and pancreatic juice reach through a common bile duct. Digested food is absorbed by <strong>villi</strong> and <strong>microvilli</strong> in the intestine.
+        </p>
+
+        <h3 className="text-xl font-display font-bold text-brand-dark mt-8 mb-4">II. Respiratory System</h3>
+        <div className="grid gap-4 my-6">
+          <div className="bg-sky-50 p-5 rounded-xl border border-sky-200">
+            <h4 className="font-bold text-sky-900 mb-2">In Water: Cutaneous Respiration</h4>
+            <p className="text-sm text-sky-900">Dissolved oxygen diffuses through the moist, highly vascular skin. This is called cutaneous respiration.</p>
+          </div>
+          <div className="bg-lime-50 p-5 rounded-xl border border-lime-200">
+            <h4 className="font-bold text-lime-900 mb-2">On Land: Pulmonary Respiration</h4>
+            <p className="text-sm text-lime-900">The frog uses a pair of elongated, pink, sac-like lungs for breathing. Skin can still help in gas exchange.</p>
+          </div>
+        </div>
+
+        <h3 className="text-xl font-display font-bold text-brand-dark mt-8 mb-4">III. Circulatory System</h3>
+        <p>
+          Frogs have a <strong>closed vascular system</strong> and a lymphatic system. The heart is muscular and has <strong>three chambers</strong>: two atria and one ventricle. A triangular <strong>sinus venosus</strong> receives deoxygenated blood from the vena cava and sends it to the right atrium. The ventricle opens into the <strong>conus arteriosus</strong>.
+        </p>
+        <div className="grid gap-4 my-6">
+          <div className="bg-rose-50 p-5 rounded-xl border border-rose-200">
+            <h4 className="font-bold text-rose-900 mb-2">Portal Systems</h4>
+            <p className="text-sm text-rose-900">The hepatic portal system connects intestine and liver. The renal portal system connects the lower body and kidneys.</p>
+          </div>
+          <div className="bg-slate-50 p-5 rounded-xl border border-slate-200">
+            <h4 className="font-bold text-slate-900 mb-2">Blood Cells</h4>
+            <p className="text-sm text-slate-700">Blood contains nucleated RBCs with haemoglobin, WBCs, and platelets.</p>
+          </div>
+        </div>
+
+        <h3 className="text-xl font-display font-bold text-brand-dark mt-8 mb-4">IV. Nervous System and Sense Organs</h3>
+        <p>
+          The nervous system has three parts: <strong>CNS</strong> (brain and spinal cord), <strong>PNS</strong> (10 pairs of cranial nerves and spinal nerves), and <strong>ANS</strong>. The brain is protected by the bony <strong>cranium</strong>.
+        </p>
+        <div className="overflow-x-auto my-6">
+          <table className="w-full text-sm border-collapse">
+            <thead>
+              <tr className="bg-slate-100">
+                <th className="border border-slate-300 p-3 text-left font-bold">Brain Part</th>
+                <th className="border border-slate-300 p-3 text-left font-bold">Main Structures</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td className="border border-slate-300 p-3 font-bold">Forebrain</td><td className="border border-slate-300 p-3">Olfactory lobes and cerebral hemispheres</td></tr>
+              <tr className="bg-slate-50"><td className="border border-slate-300 p-3 font-bold">Midbrain</td><td className="border border-slate-300 p-3">Optic lobes</td></tr>
+              <tr><td className="border border-slate-300 p-3 font-bold">Hindbrain</td><td className="border border-slate-300 p-3">Cerebellum and medulla oblongata</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>
+          Sense organs include sensory papillae for touch, taste buds, nasal epithelium for smell, simple eyes for vision, and tympanum with internal ears for hearing and balance.
+        </p>
+
+        <h3 className="text-xl font-display font-bold text-brand-dark mt-8 mb-4">V. Reproductive System</h3>
+        <div className="grid gap-4 my-6">
+          <div className="bg-emerald-50 p-5 rounded-xl border border-emerald-200">
+            <h4 className="font-bold text-emerald-900 mb-2">Male Frog</h4>
+            <p className="text-sm text-emerald-900">A pair of yellowish ovoid testes is attached to the kidneys by mesorchium. Around 10-12 vasa efferentia enter the kidney and open into Bidder's canal, which communicates with the urinogenital duct and then the cloaca.</p>
+          </div>
+          <div className="bg-teal-50 p-5 rounded-xl border border-teal-200">
+            <h4 className="font-bold text-teal-900 mb-2">Female Frog</h4>
+            <p className="text-sm text-teal-900">A pair of ovaries lies near the kidneys, but there is no functional connection with the kidneys. Oviducts open separately into the cloaca. A female can lay about 2500-3000 ova at one time.</p>
+          </div>
+        </div>
+        <p>
+          Fertilisation is <strong>external</strong> and occurs in water. The larva is called a <strong>tadpole</strong>, which later undergoes metamorphosis to become an adult frog.
+        </p>
+
+        <h3 className="text-xl font-display font-bold text-brand-dark mt-8 mb-4">VI. Real-World Analogies</h3>
+        <div className="grid gap-4 my-6">
+          <div className="bg-sky-50 p-5 rounded-xl border border-sky-200">
+            <h4 className="font-bold text-sky-900 mb-2">Hybrid Vehicle</h4>
+            <p className="text-sm text-sky-900">A frog changes its breathing method like a hybrid vehicle changes power source: skin in water, lungs on land.</p>
+          </div>
+          <div className="bg-slate-50 p-5 rounded-xl border border-slate-200">
+            <h4 className="font-bold text-slate-900 mb-2">Common Terminal</h4>
+            <p className="text-sm text-slate-700">The cloaca is like one shared exit terminal where digestive waste, urine, and reproductive cells pass out through a common opening.</p>
+          </div>
+          <div className="bg-lime-50 p-5 rounded-xl border border-lime-200">
+            <h4 className="font-bold text-lime-900 mb-2">Natural Pest Control</h4>
+            <p className="text-sm text-lime-900">By eating insects in fields, frogs help farmers reduce pests and maintain ecological balance.</p>
+          </div>
+        </div>
+
+        <h3 className="text-xl font-display font-bold text-brand-dark mt-8 mb-4">VII. What to Explore in the Simulation</h3>
+        <div className="bg-blue-50 p-6 rounded-xl border border-blue-200 my-6">
+          <ul className="list-disc pl-5 space-y-2 text-sm text-blue-900">
+            <li>Use <strong>Land</strong> mode and observe the lungs as the main respiratory organ.</li>
+            <li>Switch to <strong>Water</strong> mode and notice the skin glow for cutaneous respiration.</li>
+            <li>Move the food trigger to follow insect capture, stomach digestion, duodenum action, and intestinal absorption.</li>
+            <li>Select the circulatory overlay and identify the sinus venosus, conus arteriosus, and three-chambered heart.</li>
+            <li>Use the gender selector to compare male vasa efferentia and Bidder's canal with female ovaries and oviducts.</li>
+          </ul>
+        </div>
+
+        <VideoSection />
+      </div>
+    );
+  }
+
+  if (topic?.id === 'cell-membrane-transport') {
+    return (
+      <div className="prose prose-slate prose-lg max-w-none font-sans" id="tour-content">
+        <h1 className="font-display text-3xl font-bold text-brand-primary mb-6">Cell Membrane: Fluid Mosaic Model and Transport</h1>
+        <p className="lead text-xl text-slate-600 mb-8">
+          The cell membrane is not a rigid wall. It is a flexible, selectively permeable boundary that controls what enters and leaves the cell.
+        </p>
+
+        <div className="bg-indigo-50 p-5 rounded-xl border border-indigo-200 my-6">
+          <h4 className="font-bold text-indigo-900 mb-2">NCERT Reference</h4>
+          <p className="text-sm text-indigo-900">
+            Class 11 Biology, Unit 3: Cell: Structure and Functions, Chapter 8: Cell: The Unit of Life, Section 8.5.1 Cell Membrane.
+          </p>
+        </div>
+
+        <h3 className="text-xl font-display font-bold text-brand-dark mt-8 mb-4">I. Fluid Mosaic Model</h3>
+        <p>
+          Singer and Nicolson proposed the <strong>Fluid Mosaic Model</strong> in 1972. According to this model, the membrane is a <strong>quasi-fluid</strong> structure made mainly of lipids and proteins.
+        </p>
+        <div className="grid gap-4 my-6">
+          <div className="bg-sky-50 p-5 rounded-xl border border-sky-200">
+            <h4 className="font-bold text-sky-900 mb-2">Phospholipid Bilayer</h4>
+            <p className="text-sm text-sky-900">
+              Each phospholipid has a polar hydrophilic head and non-polar hydrophobic tails. Heads face the watery outside and inside of the cell. Tails remain tucked inside, away from water.
+            </p>
+          </div>
+          <div className="bg-violet-50 p-5 rounded-xl border border-violet-200">
+            <h4 className="font-bold text-violet-900 mb-2">Membrane Proteins</h4>
+            <p className="text-sm text-violet-900">
+              <strong>Peripheral proteins</strong> lie on the membrane surface. <strong>Integral proteins</strong> are partly or completely buried in the membrane and often work as channels, carriers, or pumps.
+            </p>
+          </div>
+        </div>
+        <p>
+          Membrane fluidity allows proteins to move laterally. This is important for cell growth, secretion, endocytosis, cell division, and membrane repair.
+        </p>
+
+        <h3 className="text-xl font-display font-bold text-brand-dark mt-8 mb-4">II. Selective Permeability</h3>
+        <p>
+          The membrane is <strong>selectively permeable</strong>. It allows some substances to pass easily, slows some down, and blocks others unless a protein helps.
+        </p>
+        <div className="overflow-x-auto my-6">
+          <table className="w-full text-sm border-collapse">
+            <thead>
+              <tr className="bg-slate-100">
+                <th className="border border-slate-300 p-3 text-left font-bold">Substance</th>
+                <th className="border border-slate-300 p-3 text-left font-bold">Can it cross directly?</th>
+                <th className="border border-slate-300 p-3 text-left font-bold">Reason</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td className="border border-slate-300 p-3">Small neutral solutes like O2 and CO2</td><td className="border border-slate-300 p-3 text-emerald-700 font-bold">Yes</td><td className="border border-slate-300 p-3">They dissolve through the lipid bilayer.</td></tr>
+              <tr className="bg-slate-50"><td className="border border-slate-300 p-3">Polar molecules like glucose</td><td className="border border-slate-300 p-3 text-amber-700 font-bold">Need help</td><td className="border border-slate-300 p-3">Hydrophobic tails block them, so carrier proteins are required.</td></tr>
+              <tr><td className="border border-slate-300 p-3">Ions like Na+ and K+</td><td className="border border-slate-300 p-3 text-red-700 font-bold">No direct crossing</td><td className="border border-slate-300 p-3">Charge cannot pass through the non-polar core easily.</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3 className="text-xl font-display font-bold text-brand-dark mt-8 mb-4">III. Transport Across Membrane</h3>
+        <div className="grid gap-4 my-6">
+          <div className="bg-emerald-50 p-5 rounded-xl border border-emerald-200">
+            <h4 className="font-bold text-emerald-900 mb-2">Passive Transport</h4>
+            <p className="text-sm text-emerald-900">Movement from high concentration to low concentration without ATP. Simple diffusion and osmosis are examples.</p>
+          </div>
+          <div className="bg-pink-50 p-5 rounded-xl border border-pink-200">
+            <h4 className="font-bold text-pink-900 mb-2">Facilitated Diffusion</h4>
+            <p className="text-sm text-pink-900">Polar molecules move down their concentration gradient using carrier proteins. ATP is not used.</p>
+          </div>
+          <div className="bg-amber-50 p-5 rounded-xl border border-amber-200">
+            <h4 className="font-bold text-amber-900 mb-2">Active Transport</h4>
+            <p className="text-sm text-amber-900">Molecules or ions move against the concentration gradient, from low to high concentration. This requires ATP and membrane pumps such as the Na+/K+ pump.</p>
+          </div>
+        </div>
+
+        <h3 className="text-xl font-display font-bold text-brand-dark mt-8 mb-4">IV. Real-World Analogies</h3>
+        <div className="grid gap-4 my-6">
+          <div className="bg-slate-50 p-5 rounded-xl border border-slate-200">
+            <h4 className="font-bold text-slate-900 mb-2">Delhi Metro Gate</h4>
+            <p className="text-sm text-slate-700">Simple diffusion is like an open passage. Facilitated diffusion is like an entry gate that allows selected passengers. Active transport is like a powered gate pushing people against the crowd flow.</p>
+          </div>
+          <div className="bg-cyan-50 p-5 rounded-xl border border-cyan-200">
+            <h4 className="font-bold text-cyan-900 mb-2">RO Water Filter</h4>
+            <p className="text-sm text-cyan-900">A semi-permeable RO membrane allows water to pass while blocking many contaminants, similar to selective permeability.</p>
+          </div>
+          <div className="bg-lime-50 p-5 rounded-xl border border-lime-200">
+            <h4 className="font-bold text-lime-900 mb-2">Oil in Water</h4>
+            <p className="text-sm text-lime-900">Oil avoids mixing with water. Similarly, hydrophobic phospholipid tails hide inside the bilayer, away from the watery surroundings.</p>
+          </div>
+        </div>
+
+        <h3 className="text-xl font-display font-bold text-brand-dark mt-8 mb-4">V. What to Explore in the Simulation</h3>
+        <div className="bg-blue-50 p-6 rounded-xl border border-blue-200 my-6">
+          <ul className="list-disc pl-5 space-y-2 text-sm text-blue-900">
+            <li>Use the <strong>Fluidity Tug</strong> to see proteins and lipids shift laterally.</li>
+            <li>Select <strong>Neutral</strong> molecules and run transport through the simple bilayer.</li>
+            <li>Select <strong>Polar</strong> molecules and observe that the bilayer blocks them until a carrier protein is added.</li>
+            <li>Select <strong>Ion</strong>, choose Active Pump, and use ATP to move ions against the concentration gradient.</li>
+            <li>Change inside and outside concentration sliders to compare passive movement with active transport.</li>
+          </ul>
+        </div>
+
+        <VideoSection />
+      </div>
+    );
+  }
+
+  if (topic?.id === 'biomolecules') {
+    return (
+      <div className="prose prose-slate prose-lg max-w-none font-sans" id="tour-content">
+        <h1 className="font-display text-3xl font-bold text-brand-primary mb-6">Biomolecules</h1>
+        <p className="lead text-xl text-slate-600 mb-8">
+          Biomolecules are carbon compounds obtained from living tissues. They may be small micromolecules in the acid-soluble pool or large macromolecules in the acid-insoluble fraction.
+        </p>
+
+        <div className="bg-emerald-50 p-5 rounded-xl border border-emerald-200 my-6">
+          <h4 className="font-bold text-emerald-900 mb-2">NCERT Reference</h4>
+          <p className="text-sm text-emerald-900">
+            Class 11 Biology, Unit 3: Cell: Structure and Functions, Chapter 9: Biomolecules. Relevant sections: 9.1, 9.4, 9.5, and 9.6.
+          </p>
+        </div>
+
+        <h3 className="text-xl font-display font-bold text-brand-dark mt-8 mb-4">I. Amino Acids</h3>
+        <p>
+          Amino acids are organic compounds with an amino group and an acidic carboxyl group attached to the same <strong>alpha-carbon</strong>. They are the building blocks of proteins.
+        </p>
+        <div className="bg-indigo-50 p-6 rounded-xl border border-indigo-200 my-6">
+          <h4 className="font-bold text-indigo-900 mb-2">Substituted Methane Logic</h4>
+          <p className="text-sm text-indigo-900">
+            Think of methane, CH4. Around the central carbon, four positions are occupied by H, COOH, NH2, and a variable R group. The R group decides the amino acid identity.
+          </p>
+          <ul className="list-disc pl-5 mt-3 space-y-1 text-sm text-indigo-900">
+            <li>R = H gives <strong>Glycine</strong>.</li>
+            <li>R = CH3 gives <strong>Alanine</strong>.</li>
+            <li>R = CH2OH gives <strong>Serine</strong>.</li>
+          </ul>
+        </div>
+        <p>
+          Because amino and carboxyl groups are ionisable, amino acids can exist as <strong>zwitterions</strong>, carrying both positive and negative charges in the same molecule.
+        </p>
+
+        <h3 className="text-xl font-display font-bold text-brand-dark mt-8 mb-4">II. Lipids and Triglycerides</h3>
+        <p>
+          Lipids are water-insoluble organic compounds. A triglyceride forms when <strong>three fatty acids are esterified with glycerol</strong>.
+        </p>
+        <div className="grid gap-4 my-6">
+          <div className="bg-amber-50 p-5 rounded-xl border border-amber-200">
+            <h4 className="font-bold text-amber-900 mb-2">Glycerol</h4>
+            <p className="text-sm text-amber-900">Glycerol is trihydroxy propane. It has three hydroxyl groups, so three fatty acid chains can attach.</p>
+          </div>
+          <div className="bg-orange-50 p-5 rounded-xl border border-orange-200">
+            <h4 className="font-bold text-orange-900 mb-2">Fatty Acids</h4>
+            <p className="text-sm text-orange-900">A fatty acid has a carboxyl group attached to a hydrocarbon chain. Palmitic acid, for example, has 16 carbon atoms.</p>
+          </div>
+        </div>
+        <p>
+          Based on melting point, lipids may behave as fats or oils. Oils have lower melting points and remain liquid more easily.
+        </p>
+
+        <h3 className="text-xl font-display font-bold text-brand-dark mt-8 mb-4">III. Sugars and Polysaccharides</h3>
+        <p>
+          Monosaccharides are small sugars that act as building blocks for larger carbohydrates. <strong>Glucose</strong> and <strong>ribose</strong> are important examples. When many sugar units join, they form polysaccharides such as starch, glycogen, or cellulose.
+        </p>
+
+        <h3 className="text-xl font-display font-bold text-brand-dark mt-8 mb-4">IV. Nucleotides and Nucleic Acids</h3>
+        <p>
+          Nucleotides are the building blocks of DNA and RNA. Each nucleotide has three parts:
+        </p>
+        <div className="grid gap-4 my-6">
+          <div className="bg-sky-50 p-5 rounded-xl border border-sky-200">
+            <h4 className="font-bold text-sky-900 mb-2">Nitrogen Base</h4>
+            <p className="text-sm text-sky-900">Adenine, guanine, cytosine, thymine, or uracil.</p>
+          </div>
+          <div className="bg-cyan-50 p-5 rounded-xl border border-cyan-200">
+            <h4 className="font-bold text-cyan-900 mb-2">Sugar</h4>
+            <p className="text-sm text-cyan-900">Ribose in RNA and 2-deoxyribose in DNA.</p>
+          </div>
+          <div className="bg-violet-50 p-5 rounded-xl border border-violet-200">
+            <h4 className="font-bold text-violet-900 mb-2">Phosphate</h4>
+            <p className="text-sm text-violet-900">When phosphate is added to a nucleoside, it becomes a nucleotide.</p>
+          </div>
+        </div>
+
+        <h3 className="text-xl font-display font-bold text-brand-dark mt-8 mb-4">V. Biomolecule Summary</h3>
+        <div className="overflow-x-auto my-6">
+          <table className="w-full text-sm border-collapse">
+            <thead>
+              <tr className="bg-slate-100">
+                <th className="border border-slate-300 p-3 text-left font-bold">Group</th>
+                <th className="border border-slate-300 p-3 text-left font-bold">Building Unit</th>
+                <th className="border border-slate-300 p-3 text-left font-bold">Larger Molecule</th>
+                <th className="border border-slate-300 p-3 text-left font-bold">Main Role</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td className="border border-slate-300 p-3">Proteins</td><td className="border border-slate-300 p-3">Amino acids</td><td className="border border-slate-300 p-3">Polypeptides</td><td className="border border-slate-300 p-3">Structure, enzymes, transport</td></tr>
+              <tr className="bg-slate-50"><td className="border border-slate-300 p-3">Carbohydrates</td><td className="border border-slate-300 p-3">Monosaccharides</td><td className="border border-slate-300 p-3">Polysaccharides</td><td className="border border-slate-300 p-3">Energy and structure</td></tr>
+              <tr><td className="border border-slate-300 p-3">Lipids</td><td className="border border-slate-300 p-3">Fatty acids + glycerol</td><td className="border border-slate-300 p-3">Triglycerides</td><td className="border border-slate-300 p-3">Energy storage and membranes</td></tr>
+              <tr className="bg-slate-50"><td className="border border-slate-300 p-3">Nucleic acids</td><td className="border border-slate-300 p-3">Nucleotides</td><td className="border border-slate-300 p-3">DNA and RNA</td><td className="border border-slate-300 p-3">Hereditary information</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3 className="text-xl font-display font-bold text-brand-dark mt-8 mb-4">VI. Real-World Analogies</h3>
+        <div className="grid gap-4 my-6">
+          <div className="bg-slate-50 p-5 rounded-xl border border-slate-200">
+            <h4 className="font-bold text-slate-900 mb-2">Lego Bricks</h4>
+            <p className="text-sm text-slate-700">Amino acids and monosaccharides are like small bricks. When joined in different ways, they form large structures with special functions.</p>
+          </div>
+          <div className="bg-blue-50 p-5 rounded-xl border border-blue-200">
+            <h4 className="font-bold text-blue-900 mb-2">Computer Code</h4>
+            <p className="text-sm text-blue-900">Nucleotide sequences work like biological code. Their order stores hereditary instructions.</p>
+          </div>
+          <div className="bg-lime-50 p-5 rounded-xl border border-lime-200">
+            <h4 className="font-bold text-lime-900 mb-2">Energy Storehouse</h4>
+            <p className="text-sm text-lime-900">Starch stores energy in plants, like a battery stores power for later use.</p>
+          </div>
+        </div>
+
+        <h3 className="text-xl font-display font-bold text-brand-dark mt-8 mb-4">VII. What to Explore in the Simulation</h3>
+        <div className="bg-blue-50 p-6 rounded-xl border border-blue-200 my-6">
+          <ul className="list-disc pl-5 space-y-2 text-sm text-blue-900">
+            <li>Use <strong>Amino Acid Mode</strong> and switch the R group to identify glycine, alanine, and serine.</li>
+            <li>Move the <strong>pH slider</strong> and observe how NH2 and COOH change charge to form a zwitterion.</li>
+            <li>Switch to <strong>Lipid Mode</strong> and attach fatty acids to glycerol.</li>
+            <li>Watch water molecules appear as ester bonds form during triglyceride assembly.</li>
+          </ul>
+        </div>
+
+        <VideoSection />
+      </div>
+    );
+  }
+
+  if (topic?.id === 'enzymes') {
+    return (
+      <div className="prose prose-slate prose-lg max-w-none font-sans" id="tour-content">
+        <h1 className="font-display text-3xl font-bold text-brand-primary mb-6">Enzymes: Nature of Enzyme Action and Factors Affecting Activity</h1>
+        <p className="lead text-xl text-slate-600 mb-8">
+          Enzymes are biological catalysts. They make reactions faster without being consumed in the reaction.
+        </p>
+
+        <div className="bg-violet-50 p-5 rounded-xl border border-violet-200 my-6">
+          <h4 className="font-bold text-violet-900 mb-2">NCERT Reference</h4>
+          <p className="text-sm text-violet-900">
+            Class 11 Biology, Unit 3: Cell: Structure and Functions, Chapter 9: Biomolecules. Relevant sections: 9.8, 9.8.2, 9.8.3, and 9.8.4.
+          </p>
+        </div>
+
+        <h3 className="text-xl font-display font-bold text-brand-dark mt-8 mb-4">I. Active Site and ES Complex</h3>
+        <p>
+          Most enzymes are proteins with a specific three-dimensional shape. A small crevice or pocket in this shape is called the <strong>active site</strong>. The molecule on which an enzyme acts is called the <strong>substrate</strong>.
+        </p>
+        <div className="bg-indigo-50 p-6 rounded-xl border border-indigo-200 my-6">
+          <p className="text-sm text-indigo-900">
+            When the substrate enters the active site, a temporary <strong>enzyme-substrate complex</strong> or <strong>ES complex</strong> forms. This is the first major step in enzyme action.
+          </p>
+        </div>
+
+        <h3 className="text-xl font-display font-bold text-brand-dark mt-8 mb-4">II. Catalytic Cycle</h3>
+        <div className="grid gap-4 my-6">
+          <div className="bg-sky-50 p-5 rounded-xl border border-sky-200">
+            <h4 className="font-bold text-sky-900 mb-2">1. Binding</h4>
+            <p className="text-sm text-sky-900">The substrate diffuses toward the enzyme and binds to the active site.</p>
+          </div>
+          <div className="bg-emerald-50 p-5 rounded-xl border border-emerald-200">
+            <h4 className="font-bold text-emerald-900 mb-2">2. Induced Fit</h4>
+            <p className="text-sm text-emerald-900">The enzyme slightly changes shape and holds the substrate more tightly.</p>
+          </div>
+          <div className="bg-amber-50 p-5 rounded-xl border border-amber-200">
+            <h4 className="font-bold text-amber-900 mb-2">3. Catalysis</h4>
+            <p className="text-sm text-amber-900">The active site helps break or form bonds, converting substrate into product.</p>
+          </div>
+          <div className="bg-rose-50 p-5 rounded-xl border border-rose-200">
+            <h4 className="font-bold text-rose-900 mb-2">4. Release</h4>
+            <p className="text-sm text-rose-900">Products leave the active site. The enzyme is free to catalyse another reaction.</p>
+          </div>
+        </div>
+
+        <h3 className="text-xl font-display font-bold text-brand-dark mt-8 mb-4">III. Activation Energy</h3>
+        <p>
+          Every reaction must pass through a high-energy <strong>transition state</strong>. The energy required to reach this state is called <strong>activation energy</strong>. Enzymes lower this energy barrier, so the reaction happens much faster.
+        </p>
+
+        <h3 className="text-xl font-display font-bold text-brand-dark mt-8 mb-4">IV. Substrate Concentration, Vmax and Km</h3>
+        <p>
+          At low substrate concentration, increasing substrate increases reaction velocity because more ES complexes form. But after a point, all active sites become occupied. The reaction reaches a maximum velocity called <strong>Vmax</strong>.
+        </p>
+        <div className="overflow-x-auto my-6">
+          <table className="w-full text-sm border-collapse">
+            <thead>
+              <tr className="bg-slate-100">
+                <th className="border border-slate-300 p-3 text-left font-bold">Term</th>
+                <th className="border border-slate-300 p-3 text-left font-bold">Meaning</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td className="border border-slate-300 p-3 font-bold">Vmax</td><td className="border border-slate-300 p-3">Maximum velocity when all enzyme active sites are saturated.</td></tr>
+              <tr className="bg-slate-50"><td className="border border-slate-300 p-3 font-bold">Km</td><td className="border border-slate-300 p-3">Substrate concentration at which velocity is half of Vmax.</td></tr>
+              <tr><td className="border border-slate-300 p-3 font-bold">Saturation</td><td className="border border-slate-300 p-3">Condition where adding more substrate does not significantly increase rate.</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3 className="text-xl font-display font-bold text-brand-dark mt-8 mb-4">V. Real-World Analogies</h3>
+        <div className="grid gap-4 my-6">
+          <div className="bg-slate-50 p-5 rounded-xl border border-slate-200">
+            <h4 className="font-bold text-slate-900 mb-2">Lock and Key</h4>
+            <p className="text-sm text-slate-700">Only the correctly shaped substrate fits into the active site, just as only the right key opens a lock.</p>
+          </div>
+          <div className="bg-blue-50 p-5 rounded-xl border border-blue-200">
+            <h4 className="font-bold text-blue-900 mb-2">Assembly Line</h4>
+            <p className="text-sm text-blue-900">An enzyme is like a factory worker. When all workers are busy, adding more raw material does not increase production. This is Vmax.</p>
+          </div>
+          <div className="bg-red-50 p-5 rounded-xl border border-red-200">
+            <h4 className="font-bold text-red-900 mb-2">Competitive Inhibitor</h4>
+            <p className="text-sm text-red-900">Some drugs imitate substrate shape and block bacterial enzyme active sites, slowing bacterial growth.</p>
+          </div>
+        </div>
+
+        <h3 className="text-xl font-display font-bold text-brand-dark mt-8 mb-4">VI. What to Explore in the Simulation</h3>
+        <div className="bg-blue-50 p-6 rounded-xl border border-blue-200 my-6">
+          <ul className="list-disc pl-5 space-y-2 text-sm text-blue-900">
+            <li>Use low substrate concentration and observe the reaction velocity increasing sharply.</li>
+            <li>Increase substrate concentration until the velocity graph flattens into a Vmax plateau.</li>
+            <li>Turn on slow motion to see the enzyme clamp around the substrate during induced fit.</li>
+            <li>Click <strong>Add Enzyme</strong> and observe the Vmax line move higher.</li>
+            <li>Trigger the inhibitor and observe how fake substrates reduce the reaction rate.</li>
+          </ul>
+        </div>
+
+        <VideoSection />
+      </div>
+    );
+  }
+
+  if (topic?.id === 'cell-cycle-regulation') {
+    return (
+      <div className="prose prose-slate prose-lg max-w-none font-sans" id="tour-content">
+        <h1 className="font-display text-3xl font-bold text-brand-primary mb-6">Cell Cycle and Cell Division: Regulation and Phases</h1>
+        <p className="lead text-xl text-slate-600 mb-8">
+          The cell cycle is a coordinated sequence of events in which a cell grows, duplicates its DNA, and divides. Its control ensures that daughter cells receive correct genetic material.
+        </p>
+
+        <div className="bg-indigo-50 p-5 rounded-xl border border-indigo-200 my-6">
+          <h4 className="font-bold text-indigo-900 mb-2">NCERT Reference</h4>
+          <p className="text-sm text-indigo-900">
+            Class 11 Biology, Unit 3: Cell: Structure and Functions, Chapter 10: Cell Cycle and Cell Division. Relevant sections: 10.1, 10.1.1, and 10.3.
+          </p>
+        </div>
+
+        <h3 className="text-xl font-display font-bold text-brand-dark mt-8 mb-4">I. Coordination and Control</h3>
+        <p>
+          NCERT describes cell-cycle events as being under <strong>genetic control</strong>. This means the cell does not divide casually. It checks whether growth, DNA duplication, and preparation are complete before moving forward.
+        </p>
+        <div className="bg-slate-50 p-5 rounded-xl border border-slate-200 my-6">
+          <p className="text-sm text-slate-700">
+            If control fails, chromosomes may be incorrectly distributed, causing genomic instability in daughter cells.
+          </p>
+        </div>
+
+        <h3 className="text-xl font-display font-bold text-brand-dark mt-8 mb-4">II. Phases of Cell Cycle</h3>
+        <div className="overflow-x-auto my-6">
+          <table className="w-full text-sm border-collapse">
+            <thead>
+              <tr className="bg-slate-100">
+                <th className="border border-slate-300 p-3 text-left font-bold">Phase</th>
+                <th className="border border-slate-300 p-3 text-left font-bold">Main Event</th>
+                <th className="border border-slate-300 p-3 text-left font-bold">Key Logic</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td className="border border-slate-300 p-3 font-bold">G1</td><td className="border border-slate-300 p-3">Cell grows and remains metabolically active.</td><td className="border border-slate-300 p-3">Decision: divide or enter G0.</td></tr>
+              <tr className="bg-slate-50"><td className="border border-slate-300 p-3 font-bold">S</td><td className="border border-slate-300 p-3">DNA replication occurs.</td><td className="border border-slate-300 p-3">DNA content doubles from 2C to 4C; chromosome number remains 2n.</td></tr>
+              <tr><td className="border border-slate-300 p-3 font-bold">G2</td><td className="border border-slate-300 p-3">Cell grows and prepares proteins for mitosis.</td><td className="border border-slate-300 p-3">Genome integrity must be checked before M phase.</td></tr>
+              <tr className="bg-slate-50"><td className="border border-slate-300 p-3 font-bold">M</td><td className="border border-slate-300 p-3">Mitosis and cytokinesis occur.</td><td className="border border-slate-300 p-3">Genetic material is distributed to daughter cells.</td></tr>
+              <tr><td className="border border-slate-300 p-3 font-bold">G0</td><td className="border border-slate-300 p-3">Quiescent stage.</td><td className="border border-slate-300 p-3">Cell remains metabolically active but does not proliferate.</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3 className="text-xl font-display font-bold text-brand-dark mt-8 mb-4">III. Important Control Points</h3>
+        <div className="grid gap-4 my-6">
+          <div className="bg-emerald-50 p-5 rounded-xl border border-emerald-200">
+            <h4 className="font-bold text-emerald-900 mb-2">G1 Decision</h4>
+            <p className="text-sm text-emerald-900">A cell checks whether division is needed and whether metabolic conditions are suitable. If not, it can enter G0.</p>
+          </div>
+          <div className="bg-sky-50 p-5 rounded-xl border border-sky-200">
+            <h4 className="font-bold text-sky-900 mb-2">S Phase Accuracy</h4>
+            <p className="text-sm text-sky-900">DNA content doubles, but chromosome number remains the same because each chromosome now has sister chromatids.</p>
+          </div>
+          <div className="bg-rose-50 p-5 rounded-xl border border-rose-200">
+            <h4 className="font-bold text-rose-900 mb-2">G2 Genome Check</h4>
+            <p className="text-sm text-rose-900">The cell should not enter M phase if DNA replication errors or breaks remain unrepaired.</p>
+          </div>
+        </div>
+
+        <h3 className="text-xl font-display font-bold text-brand-dark mt-8 mb-4">IV. Nucleo-Cytoplasmic Ratio</h3>
+        <p>
+          As a cell grows, the ratio between nucleus and cytoplasm becomes disturbed. Mitosis helps restore this <strong>nucleo-cytoplasmic ratio</strong> by forming daughter cells.
+        </p>
+
+        <h3 className="text-xl font-display font-bold text-brand-dark mt-8 mb-4">V. Real-World Analogies</h3>
+        <div className="grid gap-4 my-6">
+          <div className="bg-amber-50 p-5 rounded-xl border border-amber-200">
+            <h4 className="font-bold text-amber-900 mb-2">Board Exam Entry</h4>
+            <p className="text-sm text-amber-900">Before entering the exam hall, hall ticket, stationery, and seat number are checked. Similarly, the cell checks requirements before entering S and M phases.</p>
+          </div>
+          <div className="bg-blue-50 p-5 rounded-xl border border-blue-200">
+            <h4 className="font-bold text-blue-900 mb-2">Assembly Line Sensor</h4>
+            <p className="text-sm text-blue-900">A factory line stops when a part is damaged. A cell also delays division if DNA is damaged.</p>
+          </div>
+          <div className="bg-violet-50 p-5 rounded-xl border border-violet-200">
+            <h4 className="font-bold text-violet-900 mb-2">Software Update</h4>
+            <p className="text-sm text-violet-900">A computer checks battery and system requirements before updating. A cell checks growth, DNA status, and division signals before moving ahead.</p>
+          </div>
+        </div>
+
+        <h3 className="text-xl font-display font-bold text-brand-dark mt-8 mb-4">VI. What to Explore in the Simulation</h3>
+        <div className="bg-blue-50 p-6 rounded-xl border border-blue-200 my-6">
+          <ul className="list-disc pl-5 space-y-2 text-sm text-blue-900">
+            <li>Start in <strong>G1</strong> and watch the nucleo-cytoplasmic ratio increase with growth.</li>
+            <li>Turn off environment request and pull Proceed to see the cell enter <strong>G0</strong>.</li>
+            <li>Turn on environment request and raise nutrients to pass the <strong>G1/S gate</strong>.</li>
+            <li>Observe DNA content changing from <strong>2C to 4C</strong> in S phase while chromosome number stays <strong>2n</strong>.</li>
+            <li>Repair DNA in G2 before entering M phase and completing division.</li>
+          </ul>
+        </div>
+
+        <VideoSection />
+      </div>
+    );
+  }
+
+  if (topic?.id === 'chordata') {
+    return (
+      <div className="prose prose-slate prose-lg max-w-none font-sans" id="tour-content">
+        <h1 className="font-display text-3xl font-bold text-brand-primary mb-6">Phylum – Chordata</h1>
+        <p className="lead text-xl text-slate-600 mb-8">
+          Chordata is the phylum that includes fish, frogs, reptiles, birds, and mammals — including humans. Every chordate shares four key structural features at some point in its life. Understanding these features is the foundation of vertebrate biology.
+        </p>
+
+        <h3 className="text-xl font-display font-bold text-brand-dark mt-8 mb-4">I. The Four Defining Features</h3>
+        <p>
+          All chordates possess the following four features at least during their embryonic or larval stage:
+        </p>
+        <div className="grid gap-4 my-6">
+          <div className="bg-amber-50 p-5 rounded-xl border border-amber-200">
+            <h4 className="font-bold text-amber-900 mb-2">1. Notochord</h4>
+            <p className="text-sm text-amber-900">
+              A solid, rod-like structure made of mesodermal tissue. It runs along the length of the body and provides the first internal support system. In vertebrates, this is later replaced by a bony or cartilaginous <strong>vertebral column</strong>.
+            </p>
+          </div>
+          <div className="bg-sky-50 p-5 rounded-xl border border-sky-200">
+            <h4 className="font-bold text-sky-900 mb-2">2. Dorsal Hollow Nerve Cord</h4>
+            <p className="text-sm text-sky-900">
+              A single, hollow tube running along the <strong>dorsal (back) side</strong>, just above the notochord. This is fundamentally different from non-chordates, which have a ventral, solid, double nerve cord. In vertebrates, this develops into the brain and spinal cord.
+            </p>
+          </div>
+          <div className="bg-emerald-50 p-5 rounded-xl border border-emerald-200">
+            <h4 className="font-bold text-emerald-900 mb-2">3. Pharyngeal Gill Slits</h4>
+            <p className="text-sm text-emerald-900">
+              Paired openings in the throat region (pharynx). In aquatic chordates, they function for <strong>filter-feeding and gas exchange</strong>. In higher terrestrial vertebrates, they appear only in the embryo and disappear before birth.
+            </p>
+          </div>
+          <div className="bg-violet-50 p-5 rounded-xl border border-violet-200">
+            <h4 className="font-bold text-violet-900 mb-2">4. Post-Anal Tail</h4>
+            <p className="text-sm text-violet-900">
+              A muscular extension of the body that extends <strong>beyond the anus</strong>. It is primarily used for locomotion and balance. In humans, it appears as the coccyx (tailbone) during embryonic development.
+            </p>
+          </div>
+        </div>
+
+        <div className="my-6 p-4 bg-slate-100 rounded-xl border border-slate-300">
+          <p className="text-sm text-slate-700 text-center font-bold">Key Rule to Remember</p>
+          <p className="text-sm text-slate-600 text-center mt-2">
+            These four features need <strong>not all be present at the same time</strong>. They just need to appear at <em>some stage</em> of the life cycle.
+          </p>
+        </div>
+
+        <h3 className="text-xl font-display font-bold text-brand-dark mt-8 mb-4">II. Chordata vs Non-Chordata — Key Differences</h3>
+        <div className="overflow-x-auto my-6">
+          <table className="w-full text-sm border-collapse">
+            <thead>
+              <tr className="bg-slate-100">
+                <th className="border border-slate-300 p-3 text-left font-bold">Feature</th>
+                <th className="border border-slate-300 p-3 text-left font-bold text-teal-700">Chordata</th>
+                <th className="border border-slate-300 p-3 text-left font-bold text-slate-700">Non-Chordata</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td className="border border-slate-300 p-3">Notochord</td>
+                <td className="border border-slate-300 p-3 text-teal-700">Present (at some stage)</td>
+                <td className="border border-slate-300 p-3">Absent</td>
+              </tr>
+              <tr className="bg-slate-50">
+                <td className="border border-slate-300 p-3">Nerve Cord</td>
+                <td className="border border-slate-300 p-3 text-teal-700">Dorsal, hollow, single</td>
+                <td className="border border-slate-300 p-3">Ventral, solid, double</td>
+              </tr>
+              <tr>
+                <td className="border border-slate-300 p-3">Pharyngeal Gill Slits</td>
+                <td className="border border-slate-300 p-3 text-teal-700">Present (at some stage)</td>
+                <td className="border border-slate-300 p-3">Absent</td>
+              </tr>
+              <tr className="bg-slate-50">
+                <td className="border border-slate-300 p-3">Heart</td>
+                <td className="border border-slate-300 p-3 text-teal-700">Ventral (if present)</td>
+                <td className="border border-slate-300 p-3">Dorsal (if present)</td>
+              </tr>
+              <tr>
+                <td className="border border-slate-300 p-3">Post-Anal Tail</td>
+                <td className="border border-slate-300 p-3 text-teal-700">Present (at some stage)</td>
+                <td className="border border-slate-300 p-3">Absent</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3 className="text-xl font-display font-bold text-brand-dark mt-8 mb-4">III. Subphyla of Chordata</h3>
+        <p>
+          Phylum Chordata is divided into three subphyla. The first two lack a true vertebral column and are therefore called <strong>Protochordata</strong> (invertebrate chordates).
+        </p>
+        <div className="grid gap-4 my-6">
+          <div className="bg-teal-50 p-5 rounded-xl border border-teal-200">
+            <h4 className="font-bold text-teal-900 mb-2">Urochordata (Tunicata)</h4>
+            <p className="text-sm text-teal-900">
+              Example: <em>Herdmania</em>. Notochord is present <strong>only in the larval (tadpole) stage</strong> and disappears in the adult. The adult becomes sessile and retains only gill slits. This is called <strong>retrogressive metamorphosis</strong>.
+            </p>
+          </div>
+          <div className="bg-cyan-50 p-5 rounded-xl border border-cyan-200">
+            <h4 className="font-bold text-cyan-900 mb-2">Cephalochordata</h4>
+            <p className="text-sm text-cyan-900">
+              Example: <em>Amphioxus</em> (Branchiostoma). The notochord extends from head to tail and <strong>persists throughout life</strong>, making this the closest known invertebrate relative of vertebrates.
+            </p>
+          </div>
+          <div className="bg-indigo-50 p-5 rounded-xl border border-indigo-200">
+            <h4 className="font-bold text-indigo-900 mb-2">Vertebrata</h4>
+            <p className="text-sm text-indigo-900">
+              The notochord is <strong>replaced by a vertebral column</strong> made of cartilage or bone in the adult. This subphylum includes all the familiar animals — fish, frogs, snakes, birds, and mammals.
+            </p>
+          </div>
+        </div>
+
+        <h3 className="text-xl font-display font-bold text-brand-dark mt-8 mb-4">IV. Vertebrata — Classes and Heart Chambers</h3>
+        <p>
+          Vertebrates are classified into seven classes. One of the most important evolutionary trends within vertebrates is the increasing complexity of the heart:
+        </p>
+        <div className="overflow-x-auto my-6">
+          <table className="w-full text-sm border-collapse">
+            <thead>
+              <tr className="bg-slate-100">
+                <th className="border border-slate-300 p-3 text-left font-bold">Class</th>
+                <th className="border border-slate-300 p-3 text-left font-bold">Examples</th>
+                <th className="border border-slate-300 p-3 text-center font-bold">Heart</th>
+                <th className="border border-slate-300 p-3 text-left font-bold">Habitat</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td className="border border-slate-300 p-3 font-bold text-slate-700">Cyclostomata</td><td className="border border-slate-300 p-3"><em>Petromyzon</em> (Lamprey)</td><td className="border border-slate-300 p-3 text-center">2-chambered</td><td className="border border-slate-300 p-3">Aquatic, parasitic</td></tr>
+              <tr className="bg-slate-50"><td className="border border-slate-300 p-3 font-bold text-sky-700">Chondrichthyes</td><td className="border border-slate-300 p-3"><em>Scoliodon</em> (Shark)</td><td className="border border-slate-300 p-3 text-center">2-chambered</td><td className="border border-slate-300 p-3">Marine</td></tr>
+              <tr><td className="border border-slate-300 p-3 font-bold text-blue-700">Osteichthyes</td><td className="border border-slate-300 p-3"><em>Labeo</em> (Rohu)</td><td className="border border-slate-300 p-3 text-center">2-chambered</td><td className="border border-slate-300 p-3">Fresh/saltwater</td></tr>
+              <tr className="bg-slate-50"><td className="border border-slate-300 p-3 font-bold text-emerald-700">Amphibia</td><td className="border border-slate-300 p-3"><em>Rana</em> (Frog)</td><td className="border border-slate-300 p-3 text-center">3-chambered</td><td className="border border-slate-300 p-3">Aquatic + Terrestrial</td></tr>
+              <tr><td className="border border-slate-300 p-3 font-bold text-orange-700">Reptilia</td><td className="border border-slate-300 p-3"><em>Calotes</em> (Garden lizard)</td><td className="border border-slate-300 p-3 text-center">3-chambered*</td><td className="border border-slate-300 p-3">Mainly terrestrial</td></tr>
+              <tr className="bg-slate-50"><td className="border border-slate-300 p-3 font-bold text-amber-700">Aves</td><td className="border border-slate-300 p-3"><em>Columba</em> (Pigeon)</td><td className="border border-slate-300 p-3 text-center">4-chambered</td><td className="border border-slate-300 p-3">Aerial + Terrestrial</td></tr>
+              <tr><td className="border border-slate-300 p-3 font-bold text-rose-700">Mammalia</td><td className="border border-slate-300 p-3"><em>Homo sapiens</em></td><td className="border border-slate-300 p-3 text-center">4-chambered</td><td className="border border-slate-300 p-3">All habitats</td></tr>
+            </tbody>
+          </table>
+          <p className="text-xs text-slate-500 mt-2">* Crocodiles are exceptional among reptiles — they have a 4-chambered heart.</p>
+        </div>
+
+        <h3 className="text-xl font-display font-bold text-brand-dark mt-8 mb-4">V. Real-World Analogies</h3>
+        <div className="grid gap-4 my-6">
+          <div className="bg-amber-50 p-5 rounded-xl border border-amber-200">
+            <h4 className="font-bold text-amber-900 mb-2">Notochord — Temporary Scaffolding</h4>
+            <p className="text-sm text-amber-900">
+              Think of a building under construction. The bamboo scaffolding (notochord) provides support while the permanent structure is built. Once the RCC pillars and beams (vertebral column) are ready, the scaffolding is removed. In vertebrates, the notochord serves as a developmental scaffold before being replaced.
+            </p>
+          </div>
+          <div className="bg-sky-50 p-5 rounded-xl border border-sky-200">
+            <h4 className="font-bold text-sky-900 mb-2">Nerve Cord — Fibre-Optic Cable</h4>
+            <p className="text-sm text-sky-900">
+              The dorsal hollow nerve cord is like the main fibre-optic cable of a city, running through a protected underground duct. The hollow inside carries the signals; the surrounding vertebrae (in vertebrates) act as the protective conduit.
+            </p>
+          </div>
+          <div className="bg-emerald-50 p-5 rounded-xl border border-emerald-200">
+            <h4 className="font-bold text-emerald-900 mb-2">Pharyngeal Gill Slits — Tea Strainer</h4>
+            <p className="text-sm text-emerald-900">
+              In aquatic chordates, gill slits work like the mesh of a chai strainer. Water (the tea) passes through while food particles are trapped and absorbed.
+            </p>
+          </div>
+          <div className="bg-violet-50 p-5 rounded-xl border border-violet-200">
+            <h4 className="font-bold text-violet-900 mb-2">Post-Anal Tail — The Last Coach</h4>
+            <p className="text-sm text-violet-900">
+              A metro train has coaches extending beyond the last set of wheels. Similarly, the post-anal tail extends beyond the digestive system's endpoint (anus), serving balance and locomotion in many animals.
+            </p>
+          </div>
+        </div>
+
+        <h3 className="text-xl font-display font-bold text-brand-dark mt-8 mb-4">VI. What to Explore in the Simulation</h3>
+        <div className="bg-blue-50 p-6 rounded-xl border border-blue-200 my-6">
+          <ul className="list-disc pl-5 space-y-2 text-sm text-blue-900">
+            <li>Select <strong>Urochordata</strong> and toggle to "Adult" — observe the notochord and tail disappearing. This is retrogressive metamorphosis.</li>
+            <li>Select <strong>Cephalochordata</strong> — notice the notochord persists in both embryo and adult.</li>
+            <li>Select <strong>Vertebrata</strong> and switch to "Adult" — watch the yellow notochord rod break into grey vertebral segments.</li>
+            <li>Use the <strong>Feature Highlighter</strong> buttons to individually glow each of the four chordate features on the diagram.</li>
+            <li>Change the <strong>Heart Class</strong> selector from Pisces to Amphibia to Mammalia and observe the heart growing from 2 to 3 to 4 chambers.</li>
+          </ul>
+        </div>
+
+        <VideoSection />
+      </div>
+    );
+  }
+
+  if (topic?.id === 'anatomy-flowering-plants') {
+    return (
+      <div className="prose prose-slate prose-lg max-w-none font-sans" id="tour-content">
+        <h1 className="font-display text-3xl font-bold text-brand-primary mb-6">Anatomy of Flowering Plants</h1>
+        <p className="lead text-xl text-slate-600 mb-8">
+          Plant anatomy explains how cells are organised into tissues and how those tissues work together to build a stem, root, or leaf. In dicot stems, anatomy also explains how the plant becomes thicker through secondary growth.
+        </p>
+
+        <h3 className="text-xl font-display font-bold text-brand-dark mt-8 mb-4">I. From Meristematic to Permanent Tissue</h3>
+        <p>
+          Meristematic tissues contain cells that actively divide. When these cells stop dividing and become specialised, they form <strong>permanent tissues</strong>. This process is called <strong>differentiation</strong>.
+        </p>
+        <div className="bg-violet-50 p-6 rounded-xl border border-violet-200 my-6">
+          <p className="text-sm text-violet-900">
+            A meristematic cell is small, thin-walled, and actively dividing. A permanent cell may become thick-walled, elongated, and specialised for support, storage, or transport.
+          </p>
+        </div>
+
+        <h3 className="text-xl font-display font-bold text-brand-dark mt-8 mb-4">II. The Three Tissue Systems</h3>
+        <div className="grid gap-4 my-6">
+          <div className="bg-emerald-50 p-5 rounded-xl border border-emerald-200">
+            <h4 className="font-bold text-emerald-900 mb-2">Epidermal Tissue System</h4>
+            <p className="text-sm text-emerald-900">The outer protective covering of the plant body. It includes epidermal cells, stomata, and hairs or trichomes. A cuticle is usually present to reduce water loss.</p>
+          </div>
+          <div className="bg-amber-50 p-5 rounded-xl border border-amber-200">
+            <h4 className="font-bold text-amber-900 mb-2">Ground Tissue System</h4>
+            <p className="text-sm text-amber-900">This forms the bulk of the plant and includes parenchyma, collenchyma, and sclerenchyma. In leaves, this tissue is called mesophyll.</p>
+          </div>
+          <div className="bg-sky-50 p-5 rounded-xl border border-sky-200">
+            <h4 className="font-bold text-sky-900 mb-2">Vascular Tissue System</h4>
+            <p className="text-sm text-sky-900">This system includes xylem and phloem. In dicot stems, the presence of cambium makes the vascular bundles open and capable of secondary growth.</p>
+          </div>
+        </div>
+
+        <h3 className="text-xl font-display font-bold text-brand-dark mt-8 mb-4">III. Secondary Growth</h3>
+        <p>
+          Secondary growth increases the <strong>girth</strong> of the plant body. It is common in dicotyledons and gymnosperms.
+        </p>
+        <div className="bg-blue-50 p-6 rounded-xl border border-blue-200 my-6">
+          <h4 className="font-bold text-blue-900 mb-2">Role of Vascular Cambium</h4>
+          <ul className="list-disc pl-5 space-y-2 text-sm text-blue-900">
+            <li>The vascular cambium is a lateral meristem present between xylem and phloem.</li>
+            <li>It cuts off new cells towards the inside to form <strong>secondary xylem</strong>.</li>
+            <li>It cuts off new cells towards the outside to form <strong>secondary phloem</strong>.</li>
+            <li>Secondary xylem is produced in much greater amount and gradually forms wood.</li>
+          </ul>
+        </div>
+
+        <h3 className="text-xl font-display font-bold text-brand-dark mt-8 mb-4">IV. Everyday Understanding</h3>
+        <div className="grid gap-4 my-6">
+          <div className="bg-slate-50 p-5 rounded-xl border border-slate-200">
+            <h4 className="font-bold text-slate-900 mb-2">Building Thickness</h4>
+            <p className="text-sm text-slate-700">Making a pillar taller is like primary growth, but adding material around the sides to make it thicker is like secondary growth.</p>
+          </div>
+          <div className="bg-rose-50 p-5 rounded-xl border border-rose-200">
+            <h4 className="font-bold text-rose-900 mb-2">Timber and Wood</h4>
+            <p className="text-sm text-rose-900">The wood used in furniture is mainly the secondary xylem produced by vascular cambium over years.</p>
+          </div>
+        </div>
+
+        <h3 className="text-xl font-display font-bold text-brand-dark mt-8 mb-4">V. What to Explore in the Simulation</h3>
+        <div className="bg-indigo-50 p-6 rounded-xl border border-indigo-200 my-6">
+          <ul className="list-disc pl-5 space-y-2 text-sm text-indigo-900">
+            <li>Identify epidermal, ground, and vascular tissue systems in a young stem.</li>
+            <li>Move the age slider to see the stem become thicker with secondary growth.</li>
+            <li>Increase cambium activity and compare secondary xylem and secondary phloem production.</li>
+            <li>Use the differentiation strip to understand how meristematic cells become permanent tissues.</li>
+          </ul>
+        </div>
+
+        <VideoSection />
+      </div>
+    );
+  }
+
   return <div>Topic Content Not Found</div>;
 };
 

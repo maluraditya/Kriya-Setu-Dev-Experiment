@@ -1,0 +1,60 @@
+<svg width="1024" height="1024" viewBox="0 0 1024 1024" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1024" height="1024" fill="#FCFCF8"/>
+  <text x="512" y="106" text-anchor="middle" fill="#0F172A" font-family="Arial, Helvetica, sans-serif" font-size="62" font-weight="700">ANIMAL KINGDOM</text>
+  <text x="512" y="154" text-anchor="middle" fill="#64748B" font-family="Arial, Helvetica, sans-serif" font-size="28">Porifera and Cnidaria • Non-chordates</text>
+
+  <rect x="70" y="204" width="884" height="744" rx="28" fill="#FFFFFF" stroke="#D9E2EC" stroke-width="4"/>
+  <rect x="108" y="246" width="378" height="666" rx="24" fill="#F0FDF4" stroke="#BBF7D0" stroke-width="3"/>
+  <rect x="538" y="246" width="378" height="666" rx="24" fill="#EFF6FF" stroke="#BFDBFE" stroke-width="3"/>
+
+  <text x="297" y="306" text-anchor="middle" fill="#166534" font-family="Arial, Helvetica, sans-serif" font-size="34" font-weight="700">PORIFERA</text>
+  <text x="297" y="344" text-anchor="middle" fill="#4B5563" font-family="Arial, Helvetica, sans-serif" font-size="22">Canal system in sponge</text>
+
+  <ellipse cx="290" cy="520" rx="72" ry="116" fill="#F59E0B" stroke="#7C2D12" stroke-width="6"/>
+  <ellipse cx="290" cy="416" rx="24" ry="12" fill="#FFFFFF" stroke="#7C2D12" stroke-width="4"/>
+  <circle cx="226" cy="486" r="6" fill="#FFFFFF"/>
+  <circle cx="220" cy="530" r="6" fill="#FFFFFF"/>
+  <circle cx="228" cy="574" r="6" fill="#FFFFFF"/>
+  <circle cx="350" cy="494" r="6" fill="#FFFFFF"/>
+  <circle cx="358" cy="536" r="6" fill="#FFFFFF"/>
+  <circle cx="352" cy="580" r="6" fill="#FFFFFF"/>
+  <path d="M150 482C188 484 210 486 226 488" stroke="#22C55E" stroke-width="4" stroke-dasharray="7 6"/>
+  <path d="M226 488C254 504 272 516 290 520" stroke="#22C55E" stroke-width="4" stroke-dasharray="7 6"/>
+  <path d="M290 520C290 488 290 452 290 416" stroke="#22C55E" stroke-width="4" stroke-dasharray="7 6"/>
+  <path d="M290 416C290 394 290 378 290 360" stroke="#22C55E" stroke-width="4" stroke-dasharray="7 6"/>
+  <circle cx="150" cy="482" r="10" fill="#22C55E"/>
+  <circle cx="290" cy="360" r="10" fill="#22C55E"/>
+  <text x="138" y="612" fill="#111827" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="700">Ostia</text>
+  <text x="278" y="390" fill="#111827" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="700">Osculum</text>
+  <text x="297" y="694" text-anchor="middle" fill="#475569" font-family="Arial, Helvetica, sans-serif" font-size="24">Water enters, food is trapped,</text>
+  <text x="297" y="726" text-anchor="middle" fill="#475569" font-family="Arial, Helvetica, sans-serif" font-size="24">and water exits from the top.</text>
+
+  <text x="727" y="306" text-anchor="middle" fill="#1D4ED8" font-family="Arial, Helvetica, sans-serif" font-size="34" font-weight="700">CNIDARIA</text>
+  <text x="727" y="344" text-anchor="middle" fill="#4B5563" font-family="Arial, Helvetica, sans-serif" font-size="22">Polyp and medusa forms</text>
+
+  <path d="M642 678C642 628 630 586 614 546" stroke="#0F766E" stroke-width="8" fill="none"/>
+  <path d="M690 678C690 632 704 592 720 548" stroke="#0F766E" stroke-width="8" fill="none"/>
+  <path d="M666 678C666 632 666 596 666 536" stroke="#0F766E" stroke-width="9" fill="none"/>
+  <circle cx="614" cy="546" r="18" fill="#86EFAC" stroke="#166534" stroke-width="4"/>
+  <circle cx="666" cy="536" r="20" fill="#86EFAC" stroke="#166534" stroke-width="4"/>
+  <circle cx="720" cy="548" r="18" fill="#86EFAC" stroke="#166534" stroke-width="4"/>
+  <text x="666" y="492" text-anchor="middle" fill="#166534" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="700">Polyp</text>
+
+  <path d="M804 466C786 424 746 424 728 466C744 488 788 488 804 466Z" fill="#7DD3FC" stroke="#0369A1" stroke-width="5"/>
+  <line x1="748" y1="466" x2="740" y2="504" stroke="#0369A1" stroke-width="4"/>
+  <line x1="766" y1="468" x2="766" y2="510" stroke="#0369A1" stroke-width="4"/>
+  <line x1="784" y1="466" x2="794" y2="504" stroke="#0369A1" stroke-width="4"/>
+  <text x="766" y="402" text-anchor="middle" fill="#0369A1" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="700">Medusa</text>
+
+  <path d="M704 520C722 510 734 500 744 488" stroke="#6366F1" stroke-width="4" stroke-dasharray="7 6"/>
+  <path d="M722 574C742 544 760 520 770 500" stroke="#6366F1" stroke-width="4" stroke-dasharray="7 6"/>
+  <text x="736" y="596" text-anchor="middle" fill="#475569" font-family="Arial, Helvetica, sans-serif" font-size="24">Polyp produces medusa</text>
+  <text x="736" y="628" text-anchor="middle" fill="#475569" font-family="Arial, Helvetica, sans-serif" font-size="24">asexually</text>
+  <text x="736" y="710" text-anchor="middle" fill="#475569" font-family="Arial, Helvetica, sans-serif" font-size="24">Medusa forms new polyp</text>
+  <text x="736" y="742" text-anchor="middle" fill="#475569" font-family="Arial, Helvetica, sans-serif" font-size="24">through sexual reproduction</text>
+
+  <rect x="178" y="816" width="238" height="58" rx="20" fill="#FFFFFF" stroke="#A7F3D0" stroke-width="2"/>
+  <text x="297" y="853" text-anchor="middle" fill="#166534" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="700">Sessile filter-feeding animal</text>
+  <rect x="606" y="816" width="242" height="58" rx="20" fill="#FFFFFF" stroke="#BFDBFE" stroke-width="2"/>
+  <text x="727" y="853" text-anchor="middle" fill="#1D4ED8" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="700">Polymorphism + metagenesis</text>
+</svg>

@@ -1,0 +1,57 @@
+<svg width="1024" height="1024" viewBox="0 0 1024 1024" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1024" height="1024" fill="#FCFCF8"/>
+  <text x="512" y="104" text-anchor="middle" fill="#0F172A" font-family="Arial, Helvetica, sans-serif" font-size="56" font-weight="700">MORPHOLOGY OF</text>
+  <text x="512" y="160" text-anchor="middle" fill="#0F172A" font-family="Arial, Helvetica, sans-serif" font-size="56" font-weight="700">FLOWERING PLANTS</text>
+  <text x="512" y="208" text-anchor="middle" fill="#64748B" font-family="Arial, Helvetica, sans-serif" font-size="28">Roots • Phyllotaxy • Tendrils and Spines</text>
+
+  <rect x="70" y="254" width="884" height="700" rx="28" fill="#FFFFFF" stroke="#D9E2EC" stroke-width="4"/>
+
+  <rect x="100" y="292" width="262" height="620" rx="24" fill="#F0FDF4" stroke="#BBF7D0" stroke-width="3"/>
+  <rect x="382" y="292" width="262" height="620" rx="24" fill="#EFF6FF" stroke="#BFDBFE" stroke-width="3"/>
+  <rect x="664" y="292" width="260" height="620" rx="24" fill="#FFF7ED" stroke="#FED7AA" stroke-width="3"/>
+
+  <text x="231" y="338" text-anchor="middle" fill="#166534" font-family="Arial, Helvetica, sans-serif" font-size="30" font-weight="700">ROOT SYSTEMS</text>
+  <text x="513" y="338" text-anchor="middle" fill="#1D4ED8" font-family="Arial, Helvetica, sans-serif" font-size="30" font-weight="700">PHYLLOTAXY</text>
+  <text x="794" y="338" text-anchor="middle" fill="#9A3412" font-family="Arial, Helvetica, sans-serif" font-size="30" font-weight="700">MODIFICATIONS</text>
+
+  <line x1="170" y1="432" x2="170" y2="474" stroke="#16A34A" stroke-width="8" stroke-linecap="round"/>
+  <ellipse cx="170" cy="420" rx="30" ry="12" fill="#22C55E"/>
+  <path d="M170 474C170 514 170 552 170 618" stroke="#8B5A2B" stroke-width="8" stroke-linecap="round"/>
+  <path d="M170 520C152 536 144 550 138 570" stroke="#8B5A2B" stroke-width="5" stroke-linecap="round"/>
+  <path d="M170 544C188 558 196 574 202 596" stroke="#8B5A2B" stroke-width="5" stroke-linecap="round"/>
+  <path d="M170 574C150 590 140 608 132 632" stroke="#8B5A2B" stroke-width="4" stroke-linecap="round"/>
+  <path d="M170 592C190 606 200 622 208 646" stroke="#8B5A2B" stroke-width="4" stroke-linecap="round"/>
+  <text x="170" y="690" text-anchor="middle" fill="#166534" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="700">Tap root</text>
+
+  <line x1="294" y1="432" x2="294" y2="472" stroke="#16A34A" stroke-width="8" stroke-linecap="round"/>
+  <ellipse cx="294" cy="420" rx="30" ry="12" fill="#22C55E"/>
+  <path d="M262 474C252 522 244 566 236 630" stroke="#8B5A2B" stroke-width="5" stroke-linecap="round"/>
+  <path d="M278 474C272 520 268 566 262 634" stroke="#8B5A2B" stroke-width="5" stroke-linecap="round"/>
+  <path d="M294 474C294 520 294 566 294 634" stroke="#8B5A2B" stroke-width="5" stroke-linecap="round"/>
+  <path d="M310 474C316 520 320 566 326 634" stroke="#8B5A2B" stroke-width="5" stroke-linecap="round"/>
+  <path d="M326 474C336 522 344 566 352 630" stroke="#8B5A2B" stroke-width="5" stroke-linecap="round"/>
+  <text x="294" y="690" text-anchor="middle" fill="#166534" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="700">Fibrous root</text>
+
+  <line x1="513" y1="430" x2="513" y2="714" stroke="#15803D" stroke-width="8" stroke-linecap="round"/>
+  <ellipse cx="468" cy="638" rx="32" ry="12" fill="#4ADE80" transform="rotate(-26 468 638)"/>
+  <ellipse cx="558" cy="570" rx="32" ry="12" fill="#4ADE80" transform="rotate(26 558 570)"/>
+  <ellipse cx="468" cy="502" rx="32" ry="12" fill="#4ADE80" transform="rotate(-26 468 502)"/>
+  <ellipse cx="558" cy="438" rx="32" ry="12" fill="#4ADE80" transform="rotate(26 558 438)"/>
+  <text x="513" y="774" text-anchor="middle" fill="#1D4ED8" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="700">Alternate leaf arrangement</text>
+
+  <line x1="790" y1="432" x2="790" y2="714" stroke="#15803D" stroke-width="8" stroke-linecap="round"/>
+  <ellipse cx="744" cy="610" rx="32" ry="12" fill="#4ADE80" transform="rotate(-26 744 610)"/>
+  <ellipse cx="838" cy="546" rx="32" ry="12" fill="#4ADE80" transform="rotate(26 838 546)"/>
+  <path d="M822 486C844 474 856 458 872 446C882 438 894 440 902 452" stroke="#16A34A" stroke-width="5" fill="none"/>
+  <path d="M728 664L748 650L742 684Z" fill="#7C2D12"/>
+  <path d="M846 656L866 642L860 676Z" fill="#7C2D12"/>
+  <path d="M764 706L784 692L778 726Z" fill="#7C2D12"/>
+  <text x="790" y="774" text-anchor="middle" fill="#9A3412" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="700">Tendrils and spines</text>
+
+  <rect x="124" y="816" width="216" height="60" rx="20" fill="#FFFFFF" stroke="#A7F3D0" stroke-width="2"/>
+  <text x="232" y="854" text-anchor="middle" fill="#166534" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="700">Deep vs surface spread</text>
+  <rect x="406" y="816" width="214" height="60" rx="20" fill="#FFFFFF" stroke="#BFDBFE" stroke-width="2"/>
+  <text x="513" y="854" text-anchor="middle" fill="#1D4ED8" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="700">Light capture pattern</text>
+  <rect x="686" y="816" width="214" height="60" rx="20" fill="#FFFFFF" stroke="#FED7AA" stroke-width="2"/>
+  <text x="793" y="854" text-anchor="middle" fill="#9A3412" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="700">Support and defense</text>
+</svg>
