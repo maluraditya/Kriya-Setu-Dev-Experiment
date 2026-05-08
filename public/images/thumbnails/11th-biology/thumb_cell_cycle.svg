@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" role="img" aria-label="Cell cycle regulation thumbnail">
+  <rect width="640" height="360" rx="32" fill="#eef2ff"/>
+  <text x="52" y="58" font-family="Arial, sans-serif" font-size="29" font-weight="800" fill="#312e81">Cell Cycle</text>
+  <text x="52" y="88" font-family="Arial, sans-serif" font-size="17" font-weight="700" fill="#475569">G1, S, G2, M and checkpoints</text>
+  <g transform="translate(72 112)">
+    <circle cx="112" cy="112" r="96" fill="#fff" stroke="#c7d2fe" stroke-width="6"/>
+    <circle cx="112" cy="42" r="32" fill="#4f46e5"/>
+    <circle cx="182" cy="112" r="32" fill="#e0e7ff" stroke="#6366f1" stroke-width="4"/>
+    <circle cx="112" cy="182" r="32" fill="#e0e7ff" stroke="#6366f1" stroke-width="4"/>
+    <circle cx="42" cy="112" r="32" fill="#e0e7ff" stroke="#6366f1" stroke-width="4"/>
+    <g font-family="Arial, sans-serif" font-size="18" font-weight="900" text-anchor="middle">
+      <text x="112" y="49" fill="#fff">G1</text>
+      <text x="182" y="119" fill="#3730a3">S</text>
+      <text x="112" y="189" fill="#3730a3">G2</text>
+      <text x="42" y="119" fill="#3730a3">M</text>
+    </g>
+    <path d="M190 55c48 14 63 70 27 111" fill="none" stroke="#6366f1" stroke-width="6" stroke-linecap="round"/>
+    <polygon points="218,170 236,163 228,182" fill="#6366f1"/>
+    <path d="M184 52c50-32 97 10 98 57" fill="none" stroke="#94a3b8" stroke-width="5" stroke-dasharray="8 7"/>
+    <text x="299" y="116" font-family="Arial, sans-serif" font-size="20" font-weight="900" fill="#7c3aed">G0</text>
+  </g>
+  <g transform="translate(376 114)">
+    <ellipse cx="112" cy="108" rx="102" ry="78" fill="#dcfce7" stroke="#16a34a" stroke-width="7"/>
+    <circle cx="112" cy="108" r="46" fill="#dbeafe" stroke="#2563eb" stroke-width="5"/>
+    <path d="M84 92c24-22 55-22 79 0-24 22-55 22-79 0z" fill="none" stroke="#4f46e5" stroke-width="5"/>
+    <path d="M84 126c24-22 55-22 79 0-24 22-55 22-79 0z" fill="none" stroke="#4f46e5" stroke-width="5"/>
+    <line x1="112" y1="30" x2="112" y2="186" stroke="#16a34a" stroke-width="5" stroke-dasharray="9 7"/>
+    <rect x="18" y="203" width="188" height="34" rx="17" fill="#fff" stroke="#cbd5e1" stroke-width="3"/>
+    <text x="112" y="226" text-anchor="middle" font-family="Arial, sans-serif" font-size="15" font-weight="900" fill="#334155">2C → 4C, 2n constant</text>
+  </g>
+  <g transform="translate(74 304)">
+    <rect x="0" y="0" width="180" height="20" rx="10" fill="#e2e8f0"/>
+    <rect x="0" y="0" width="132" height="20" rx="10" fill="#22c55e"/>
+    <text x="0" y="-8" font-family="Arial, sans-serif" font-size="13" font-weight="900" fill="#475569">Metabolic fuel</text>
+  </g>
+  <g transform="translate(324 304)">
+    <rect x="0" y="0" width="180" height="20" rx="10" fill="#e2e8f0"/>
+    <rect x="0" y="0" width="156" height="20" rx="10" fill="#f97316"/>
+    <text x="0" y="-8" font-family="Arial, sans-serif" font-size="13" font-weight="900" fill="#475569">Ratio meter</text>
+  </g>
+</svg>

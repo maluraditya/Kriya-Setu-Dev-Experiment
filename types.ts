@@ -48,7 +48,7 @@ export interface Topic {
   youtubeVideoIds: string[]; // For embedded videos
 
   // Tags
-  branch: 'Physical Chemistry' | 'Inorganic Chemistry' | 'Organic Chemistry' | 'Mechanics' | 'Electromagnetism' | 'Thermodynamics' | 'Statistical Mechanics' | 'Oscillations' | 'Genetics' | 'Botany' | 'Zoology' | 'Optics' | 'Modern Physics' | 'Electronics';
+  branch: 'Physical Chemistry' | 'Inorganic Chemistry' | 'Organic Chemistry' | 'Mechanics' | 'Electromagnetism' | 'Thermodynamics' | 'Statistical Mechanics' | 'Oscillations' | 'Genetics' | 'Botany' | 'Zoology' | 'Cell Biology' | 'Optics' | 'Modern Physics' | 'Electronics' | 'Taxonomy and Systematics' | 'Biological Classification';
   unit: string;
   grade: '11th' | '12th';
 }

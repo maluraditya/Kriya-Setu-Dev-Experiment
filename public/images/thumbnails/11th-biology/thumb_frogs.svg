@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" role="img" aria-label="Frog anatomy thumbnail">
+  <rect width="640" height="360" rx="32" fill="#ecfdf5"/>
+  <circle cx="118" cy="76" r="46" fill="#d9f99d" opacity=".75"/>
+  <circle cx="526" cy="280" r="58" fill="#bae6fd" opacity=".75"/>
+  <path d="M222 232c-42 15-72 50-108 82-11 9-29 7-34-4-6-13 10-23 25-32 29-17 47-45 87-63z" fill="#4ade80" stroke="#15803d" stroke-width="7"/>
+  <path d="M418 232c42 15 72 50 108 82 11 9 29 7 34-4 6-13-10-23-25-32-29-17-47-45-87-63z" fill="#4ade80" stroke="#15803d" stroke-width="7"/>
+  <path d="M203 176c-45-2-85 14-110 48-8 11-24 9-28-4-4-14 11-28 27-38 32-19 70-32 114-31z" fill="#4ade80" stroke="#15803d" stroke-width="7"/>
+  <path d="M437 176c45-2 85 14 110 48 8 11 24 9 28-4 4-14-11-28-27-38-32-19-70-32-114-31z" fill="#4ade80" stroke="#15803d" stroke-width="7"/>
+  <path d="M320 88c-52-15-92-1-114 32-23 34-20 76-1 111 25 47 66 70 115 74 49-4 90-27 115-74 19-35 22-77-1-111-22-33-62-47-114-32z" fill="#86efac" stroke="#15803d" stroke-width="10"/>
+  <path d="M222 145c36-27 69-34 98-21 29-13 62-6 98 21" fill="none" stroke="#22c55e" stroke-width="6" opacity=".55"/>
+  <ellipse cx="320" cy="180" rx="46" ry="65" fill="#22c55e" opacity=".15"/>
+  <ellipse cx="260" cy="110" rx="24" ry="18" fill="#bbf7d0" stroke="#15803d" stroke-width="5"/>
+  <ellipse cx="380" cy="110" rx="24" ry="18" fill="#bbf7d0" stroke="#15803d" stroke-width="5"/>
+  <circle cx="260" cy="106" r="12" fill="#0f172a"/>
+  <circle cx="380" cy="106" r="12" fill="#0f172a"/>
+  <circle cx="236" cy="146" r="15" fill="#dbeafe" opacity=".8" stroke="#475569" stroke-width="5"/>
+  <circle cx="404" cy="146" r="15" fill="#dbeafe" opacity=".8" stroke="#475569" stroke-width="5"/>
+  <ellipse cx="284" cy="178" rx="28" ry="46" fill="#bae6fd" stroke="#0284c7" stroke-width="5"/>
+  <ellipse cx="356" cy="178" rx="28" ry="46" fill="#bae6fd" stroke="#0284c7" stroke-width="5"/>
+  <path d="M300 184c-18-22-50 2-22 30 12 12 42 30 42 30s30-18 42-30c28-28-4-52-22-30-10-14-30-14-40 0z" fill="#fb7185" stroke="#be123c" stroke-width="5"/>
+  <path d="M254 224c48 14 82 16 132 0" fill="none" stroke="#f59e0b" stroke-width="12" stroke-linecap="round"/>
+  <path d="M320 224c52 12 60 50 4 58" fill="none" stroke="#f59e0b" stroke-width="12" stroke-linecap="round"/>
+  <rect x="63" y="38" width="190" height="42" rx="21" fill="#ffffff" opacity=".94"/>
+  <text x="158" y="66" text-anchor="middle" font-family="Arial, sans-serif" font-size="22" font-weight="800" fill="#166534">Frogs</text>
+  <rect x="386" y="38" width="190" height="42" rx="21" fill="#ffffff" opacity=".94"/>
+  <text x="481" y="66" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" font-weight="800" fill="#0369a1">Land + Water</text>
+</svg>

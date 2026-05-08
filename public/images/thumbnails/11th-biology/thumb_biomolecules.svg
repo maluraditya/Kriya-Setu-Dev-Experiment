@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" role="img" aria-label="Biomolecules thumbnail">
+  <rect width="640" height="360" rx="32" fill="#f8fafc"/>
+  <circle cx="92" cy="72" r="44" fill="#dcfce7"/>
+  <circle cx="548" cy="284" r="58" fill="#dbeafe"/>
+  <text x="54" y="58" font-family="Arial, sans-serif" font-size="30" font-weight="800" fill="#064e3b">Biomolecules</text>
+  <text x="54" y="88" font-family="Arial, sans-serif" font-size="17" font-weight="700" fill="#475569">Proteins, lipids, sugars, nucleotides</text>
+  <g transform="translate(70 128)">
+    <circle cx="142" cy="78" r="30" fill="#111827"/>
+    <text x="142" y="87" text-anchor="middle" font-family="Arial, sans-serif" font-size="23" font-weight="900" fill="#fff">C</text>
+    <g stroke="#475569" stroke-width="6" stroke-linecap="round">
+      <line x1="142" y1="48" x2="142" y2="4"/>
+      <line x1="142" y1="108" x2="142" y2="152"/>
+      <line x1="112" y1="78" x2="48" y2="78"/>
+      <line x1="172" y1="78" x2="236" y2="78"/>
+    </g>
+    <g font-family="Arial, sans-serif" font-size="16" font-weight="900">
+      <rect x="102" y="-16" width="80" height="38" rx="14" fill="#fff" stroke="#64748b" stroke-width="3"/>
+      <text x="142" y="9" text-anchor="middle" fill="#64748b">-H</text>
+      <rect x="94" y="146" width="96" height="38" rx="14" fill="#fff" stroke="#f59e0b" stroke-width="3"/>
+      <text x="142" y="171" text-anchor="middle" fill="#f59e0b">-CH3</text>
+      <rect x="0" y="59" width="92" height="38" rx="14" fill="#fff" stroke="#0ea5e9" stroke-width="3"/>
+      <text x="46" y="84" text-anchor="middle" fill="#0ea5e9">-NH2</text>
+      <rect x="204" y="59" width="100" height="38" rx="14" fill="#fff" stroke="#ef4444" stroke-width="3"/>
+      <text x="254" y="84" text-anchor="middle" fill="#ef4444">-COOH</text>
+    </g>
+  </g>
+  <g transform="translate(375 142)">
+    <rect x="0" y="0" width="92" height="30" rx="11" fill="#fef3c7" stroke="#d97706" stroke-width="3"/>
+    <rect x="0" y="54" width="92" height="30" rx="11" fill="#fef3c7" stroke="#d97706" stroke-width="3"/>
+    <rect x="0" y="108" width="92" height="30" rx="11" fill="#fef3c7" stroke="#d97706" stroke-width="3"/>
+    <text x="46" y="20" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" font-weight="800" fill="#92400e">C1-OH</text>
+    <text x="46" y="74" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" font-weight="800" fill="#92400e">C2-OH</text>
+    <text x="46" y="128" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" font-weight="800" fill="#92400e">C3-OH</text>
+    <g fill="none" stroke="#f59e0b" stroke-width="9" stroke-linecap="round">
+      <path d="M94 15c42-22 75 22 118 0s70 12 95 0"/>
+      <path d="M94 69c42-22 75 22 118 0s70 12 95 0"/>
+      <path d="M94 123c42-22 75 22 118 0s70 12 95 0"/>
+    </g>
+    <text x="150" y="168" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="900" fill="#92400e">Triglyceride</text>
+  </g>
+</svg>

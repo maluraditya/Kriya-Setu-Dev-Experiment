@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" role="img" aria-label="Cell membrane transport thumbnail">
+  <rect width="640" height="360" rx="32" fill="#eff6ff"/>
+  <rect y="0" width="640" height="118" fill="#dbeafe" opacity=".8"/>
+  <rect y="242" width="640" height="118" fill="#dcfce7" opacity=".85"/>
+  <text x="54" y="60" font-family="Arial, sans-serif" font-size="28" font-weight="800" fill="#1e3a8a">Cell Membrane</text>
+  <text x="54" y="92" font-family="Arial, sans-serif" font-size="17" font-weight="700" fill="#475569">Fluid Mosaic + Transport</text>
+  <g>
+    <rect x="52" y="166" width="536" height="28" rx="14" fill="#334155" opacity=".18"/>
+    <text x="320" y="185" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="800" fill="#334155">hydrophobic core</text>
+    <g stroke="#64748b" stroke-width="5" stroke-linecap="round">
+      <path d="M72 141l-10 34M72 141l10 34M112 137l-10 36M112 137l10 36M152 141l-10 34M152 141l10 34M192 137l-10 36M192 137l10 36M232 141l-10 34M232 141l10 34M272 137l-10 36M272 137l10 36M368 137l-10 36M368 137l10 36M408 141l-10 34M408 141l10 34M448 137l-10 36M448 137l10 36M488 141l-10 34M488 141l10 34M528 137l-10 36M528 137l10 36M568 141l-10 34M568 141l10 34"/>
+      <path d="M72 219l-10-34M72 219l10-34M112 223l-10-36M112 223l10-36M152 219l-10-34M152 219l10-34M192 223l-10-36M192 223l10-36M232 219l-10-34M232 219l10-34M272 223l-10-36M272 223l10-36M368 223l-10-36M368 223l10-36M408 219l-10-34M408 219l10-34M448 223l-10-36M448 223l10-36M488 219l-10-34M488 219l10-34M528 223l-10-36M528 223l10-36M568 219l-10-34M568 219l10-34"/>
+    </g>
+    <g fill="#38bdf8" stroke="#0369a1" stroke-width="3">
+      <circle cx="72" cy="132" r="15"/><circle cx="112" cy="128" r="15"/><circle cx="152" cy="132" r="15"/><circle cx="192" cy="128" r="15"/><circle cx="232" cy="132" r="15"/><circle cx="272" cy="128" r="15"/>
+      <circle cx="368" cy="128" r="15"/><circle cx="408" cy="132" r="15"/><circle cx="448" cy="128" r="15"/><circle cx="488" cy="132" r="15"/><circle cx="528" cy="128" r="15"/><circle cx="568" cy="132" r="15"/>
+      <circle cx="72" cy="228" r="15"/><circle cx="112" cy="232" r="15"/><circle cx="152" cy="228" r="15"/><circle cx="192" cy="232" r="15"/><circle cx="232" cy="228" r="15"/><circle cx="272" cy="232" r="15"/>
+      <circle cx="368" cy="232" r="15"/><circle cx="408" cy="228" r="15"/><circle cx="448" cy="232" r="15"/><circle cx="488" cy="228" r="15"/><circle cx="528" cy="232" r="15"/><circle cx="568" cy="228" r="15"/>
+    </g>
+    <path d="M300 120c-38 24-38 96 0 120h42c38-24 38-96 0-120z" fill="#7c3aed" stroke="#312e81" stroke-width="6"/>
+    <ellipse cx="321" cy="180" rx="20" ry="62" fill="#eef2ff" opacity=".85"/>
+  </g>
+  <g fill="#22c55e" stroke="#14532d" stroke-width="2">
+    <circle cx="98" cy="276" r="10"/><circle cx="145" cy="291" r="10"/><circle cx="192" cy="270" r="10"/>
+  </g>
+  <g fill="#ec4899" stroke="#831843" stroke-width="2">
+    <circle cx="456" cy="82" r="13"/><circle cx="502" cy="100" r="13"/>
+  </g>
+  <g fill="#f59e0b" stroke="#92400e" stroke-width="2">
+    <circle cx="478" cy="288" r="12"/><circle cx="524" cy="270" r="12"/>
+  </g>
+</svg>

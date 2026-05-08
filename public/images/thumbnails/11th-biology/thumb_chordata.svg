@@ -1,0 +1,170 @@
+<svg width="1024" height="1024" viewBox="0 0 1024 1024" fill="none" xmlns="http://www.w3.org/2000/svg">
+
+  <!-- Background -->
+  <rect width="1024" height="1024" fill="#FCFCF8"/>
+
+  <!-- Title -->
+  <text x="512" y="106" text-anchor="middle" fill="#0F172A" font-family="Arial, Helvetica, sans-serif" font-size="62" font-weight="700">PHYLUM CHORDATA</text>
+  <text x="512" y="154" text-anchor="middle" fill="#64748B" font-family="Arial, Helvetica, sans-serif" font-size="28">Four defining features · Subphyla · Vertebrate heart</text>
+
+  <!-- Outer card -->
+  <rect x="40" y="192" width="944" height="786" rx="28" fill="#FFFFFF" stroke="#D9E2EC" stroke-width="4"/>
+
+  <!-- ══════════ LEFT PANEL — Body Cross-Section ══════════ -->
+  <rect x="68" y="218" width="476" height="732" rx="22" fill="#F0FDFA" stroke="#99F6E4" stroke-width="3"/>
+
+  <!-- Panel heading -->
+  <text x="306" y="268" text-anchor="middle" fill="#0F766E" font-family="Arial, Helvetica, sans-serif" font-size="30" font-weight="700">BODY CROSS-SECTION</text>
+  <text x="306" y="300" text-anchor="middle" fill="#4B5563" font-family="Arial, Helvetica, sans-serif" font-size="22">Longitudinal view — adult vertebrate</text>
+
+  <!-- Body shape (fish/lancelet silhouette) -->
+  <ellipse cx="306" cy="458" rx="188" ry="72" fill="#E0F2FE" stroke="#7DD3FC" stroke-width="3"/>
+
+  <!-- 1. NOTOCHORD / Vertebral column — grey segmented blocks -->
+  <rect x="122" y="448" width="26" height="20" rx="4" fill="#94A3B8" stroke="#475569" stroke-width="2"/>
+  <rect x="154" y="448" width="26" height="20" rx="4" fill="#94A3B8" stroke="#475569" stroke-width="2"/>
+  <rect x="186" y="448" width="26" height="20" rx="4" fill="#94A3B8" stroke="#475569" stroke-width="2"/>
+  <rect x="218" y="448" width="26" height="20" rx="4" fill="#94A3B8" stroke="#475569" stroke-width="2"/>
+  <rect x="250" y="448" width="26" height="20" rx="4" fill="#94A3B8" stroke="#475569" stroke-width="2"/>
+  <rect x="282" y="448" width="26" height="20" rx="4" fill="#94A3B8" stroke="#475569" stroke-width="2"/>
+  <rect x="314" y="448" width="26" height="20" rx="4" fill="#94A3B8" stroke="#475569" stroke-width="2"/>
+  <rect x="346" y="448" width="26" height="20" rx="4" fill="#94A3B8" stroke="#475569" stroke-width="2"/>
+  <rect x="378" y="448" width="26" height="20" rx="4" fill="#94A3B8" stroke="#475569" stroke-width="2"/>
+  <!-- label -->
+  <text x="254" y="440" text-anchor="middle" fill="#475569" font-family="Arial, Helvetica, sans-serif" font-size="17" font-weight="700">Vertebral Column</text>
+  <text x="254" y="456" text-anchor="middle" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif" font-size="14">(replaces notochord)</text>
+
+  <!-- 2. DORSAL HOLLOW NERVE CORD — blue hollow tube above vertebrae -->
+  <rect x="122" y="424" width="282" height="16" rx="8" fill="#38BDF8" stroke="#0369A1" stroke-width="2.5"/>
+  <rect x="128" y="429" width="270" height="6" rx="3" fill="#E0F2FE"/>
+  <!-- label right -->
+  <text x="430" y="427" fill="#0369A1" font-family="Arial, Helvetica, sans-serif" font-size="17" font-weight="700">Dorsal Hollow</text>
+  <text x="430" y="448" fill="#0369A1" font-family="Arial, Helvetica, sans-serif" font-size="17" font-weight="700">Nerve Cord</text>
+
+  <!-- 3. PHARYNGEAL GILL SLITS — vertical lines in pharynx zone -->
+  <line x1="150" y1="470" x2="150" y2="494" stroke="#34D399" stroke-width="4" stroke-linecap="round"/>
+  <line x1="168" y1="470" x2="168" y2="494" stroke="#34D399" stroke-width="4" stroke-linecap="round"/>
+  <line x1="186" y1="470" x2="186" y2="494" stroke="#34D399" stroke-width="4" stroke-linecap="round"/>
+  <line x1="204" y1="470" x2="204" y2="494" stroke="#34D399" stroke-width="4" stroke-linecap="round"/>
+  <text x="178" y="514" text-anchor="middle" fill="#059669" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="700">Gill Slits</text>
+
+  <!-- 4. POST-ANAL TAIL — dashed anus line + tail wedge -->
+  <line x1="418" y1="428" x2="418" y2="490" stroke="#7C3AED" stroke-width="2.5" stroke-dasharray="5 4"/>
+  <path d="M422 458 C440 448 464 444 480 458 C464 472 440 468 422 458Z" fill="#C4B5FD" stroke="#7C3AED" stroke-width="2.5"/>
+  <text x="452" y="504" text-anchor="middle" fill="#5B21B6" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="700">Post-Anal Tail</text>
+  <text x="404" y="520" text-anchor="middle" fill="#7C3AED" font-family="Arial, Helvetica, sans-serif" font-size="13">Anus</text>
+
+  <!-- Head label -->
+  <text x="104" y="462" text-anchor="middle" fill="#94A3B8" font-family="Arial, Helvetica, sans-serif" font-size="14">Head</text>
+
+  <!-- Divider -->
+  <line x1="100" y1="548" x2="512" y2="548" stroke="#CCFBF1" stroke-width="2"/>
+
+  <!-- Four feature pills -->
+  <!-- Notochord pill -->
+  <rect x="88" y="568" width="202" height="48" rx="24" fill="#FEF3C7" stroke="#FCD34D" stroke-width="2"/>
+  <text x="189" y="599" text-anchor="middle" fill="#92400E" font-family="Arial, Helvetica, sans-serif" font-size="19" font-weight="700">Notochord</text>
+
+  <!-- Nerve Cord pill -->
+  <rect x="306" y="568" width="220" height="48" rx="24" fill="#E0F2FE" stroke="#7DD3FC" stroke-width="2"/>
+  <text x="416" y="599" text-anchor="middle" fill="#0369A1" font-family="Arial, Helvetica, sans-serif" font-size="19" font-weight="700">Nerve Cord</text>
+
+  <!-- Gill Slits pill -->
+  <rect x="88" y="634" width="202" height="48" rx="24" fill="#D1FAE5" stroke="#6EE7B7" stroke-width="2"/>
+  <text x="189" y="665" text-anchor="middle" fill="#065F46" font-family="Arial, Helvetica, sans-serif" font-size="19" font-weight="700">Gill Slits</text>
+
+  <!-- Post-anal tail pill -->
+  <rect x="306" y="634" width="220" height="48" rx="24" fill="#EDE9FE" stroke="#C4B5FD" stroke-width="2"/>
+  <text x="416" y="665" text-anchor="middle" fill="#5B21B6" font-family="Arial, Helvetica, sans-serif" font-size="19" font-weight="700">Post-Anal Tail</text>
+
+  <!-- Subphyla comparison strip -->
+  <rect x="88" y="704" width="440" height="216" rx="16" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="2"/>
+  <text x="308" y="734" text-anchor="middle" fill="#0F172A" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="700">SUBPHYLA COMPARISON</text>
+
+  <!-- Urochordata -->
+  <rect x="100" y="750" width="128" height="140" rx="12" fill="#ECFDF5" stroke="#A7F3D0" stroke-width="2"/>
+  <text x="164" y="774" text-anchor="middle" fill="#065F46" font-family="Arial, Helvetica, sans-serif" font-size="15" font-weight="700">Urochordata</text>
+  <!-- larva has notochord, adult doesn't — simple dot/cross -->
+  <text x="164" y="800" text-anchor="middle" fill="#059669" font-family="Arial, Helvetica, sans-serif" font-size="13">Notochord:</text>
+  <text x="164" y="818" text-anchor="middle" fill="#DC2626" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="700">Larva only</text>
+  <text x="164" y="844" text-anchor="middle" fill="#4B5563" font-family="Arial, Helvetica, sans-serif" font-size="12">e.g. Herdmania</text>
+  <text x="164" y="868" text-anchor="middle" fill="#6B7280" font-family="Arial, Helvetica, sans-serif" font-size="11">Sessile adult</text>
+
+  <!-- Cephalochordata -->
+  <rect x="244" y="750" width="128" height="140" rx="12" fill="#EFF6FF" stroke="#BFDBFE" stroke-width="2"/>
+  <text x="308" y="774" text-anchor="middle" fill="#1D4ED8" font-family="Arial, Helvetica, sans-serif" font-size="15" font-weight="700">Cephalochordata</text>
+  <text x="308" y="800" text-anchor="middle" fill="#1D4ED8" font-family="Arial, Helvetica, sans-serif" font-size="13">Notochord:</text>
+  <text x="308" y="818" text-anchor="middle" fill="#15803D" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="700">Head to tail</text>
+  <text x="308" y="844" text-anchor="middle" fill="#4B5563" font-family="Arial, Helvetica, sans-serif" font-size="12">e.g. Amphioxus</text>
+  <text x="308" y="868" text-anchor="middle" fill="#6B7280" font-family="Arial, Helvetica, sans-serif" font-size="11">Persists in adult</text>
+
+  <!-- Vertebrata -->
+  <rect x="388" y="750" width="128" height="140" rx="12" fill="#FFF7ED" stroke="#FED7AA" stroke-width="2"/>
+  <text x="452" y="774" text-anchor="middle" fill="#C2410C" font-family="Arial, Helvetica, sans-serif" font-size="15" font-weight="700">Vertebrata</text>
+  <text x="452" y="800" text-anchor="middle" fill="#C2410C" font-family="Arial, Helvetica, sans-serif" font-size="13">Notochord:</text>
+  <text x="452" y="818" text-anchor="middle" fill="#B45309" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="700">Replaced</text>
+  <text x="452" y="836" text-anchor="middle" fill="#B45309" font-family="Arial, Helvetica, sans-serif" font-size="11" font-weight="700">by vertebral col.</text>
+  <text x="452" y="868" text-anchor="middle" fill="#6B7280" font-family="Arial, Helvetica, sans-serif" font-size="11">Fish to Mammals</text>
+
+  <!-- ══════════ RIGHT PANEL — Heart Chambers ══════════ -->
+  <rect x="564" y="218" width="444" height="732" rx="22" fill="#FFF1F2" stroke="#FECDD3" stroke-width="3"/>
+
+  <!-- Panel heading -->
+  <text x="786" y="268" text-anchor="middle" fill="#881337" font-family="Arial, Helvetica, sans-serif" font-size="30" font-weight="700">VERTEBRATE HEART</text>
+  <text x="786" y="300" text-anchor="middle" fill="#4B5563" font-family="Arial, Helvetica, sans-serif" font-size="22">Evolutionary increase in chambers</text>
+
+  <!-- ── 2-Chambered (Fish) ── -->
+  <text x="660" y="344" text-anchor="middle" fill="#0C4A6E" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="700">2-Chambered</text>
+  <text x="660" y="368" text-anchor="middle" fill="#4B5563" font-family="Arial, Helvetica, sans-serif" font-size="17">Fish (Pisces)</text>
+  <!-- Auricle -->
+  <rect x="590" y="380" width="140" height="52" rx="12" fill="#38BDF8" stroke="#0C4A6E" stroke-width="2.5"/>
+  <text x="660" y="412" text-anchor="middle" fill="white" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="700">Auricle ×1</text>
+  <!-- Arrow -->
+  <line x1="660" y1="432" x2="660" y2="446" stroke="#0C4A6E" stroke-width="2.5"/>
+  <polygon points="654,446 666,446 660,456" fill="#0C4A6E"/>
+  <!-- Ventricle -->
+  <path d="M590 458 L730 458 L706 506 L660 518 L614 506 Z" fill="#38BDF8" stroke="#0C4A6E" stroke-width="2.5"/>
+  <text x="660" y="492" text-anchor="middle" fill="white" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="700">Ventricle ×1</text>
+
+  <!-- ── 3-Chambered (Frog) ── -->
+  <text x="786" y="572" text-anchor="middle" fill="#7C2D12" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="700">3-Chambered</text>
+  <text x="786" y="596" text-anchor="middle" fill="#4B5563" font-family="Arial, Helvetica, sans-serif" font-size="17">Frog (Amphibia)</text>
+  <!-- L Auricle -->
+  <rect x="576" y="606" width="100" height="48" rx="12" fill="#FB923C" stroke="#7C2D12" stroke-width="2.5"/>
+  <text x="626" y="636" text-anchor="middle" fill="white" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="700">L. Auricle</text>
+  <!-- R Auricle -->
+  <rect x="696" y="606" width="100" height="48" rx="12" fill="#FB923C" stroke="#7C2D12" stroke-width="2.5"/>
+  <text x="746" y="636" text-anchor="middle" fill="white" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="700">R. Auricle</text>
+  <!-- arrows down -->
+  <line x1="626" y1="654" x2="654" y2="668" stroke="#7C2D12" stroke-width="2"/>
+  <line x1="746" y1="654" x2="718" y2="668" stroke="#7C2D12" stroke-width="2"/>
+  <!-- Ventricle -->
+  <path d="M574 670 L830 670 L802 718 L762 730 L726 718 Z" fill="#FB923C" stroke="#7C2D12" stroke-width="2.5"/>
+  <text x="702" y="704" text-anchor="middle" fill="white" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="700">Ventricle ×1</text>
+  <text x="786" y="756" text-anchor="middle" fill="#92400E" font-family="Arial, Helvetica, sans-serif" font-size="14">Some blood mixing</text>
+
+  <!-- ── 4-Chambered (Mammal) ── -->
+  <text x="786" y="796" text-anchor="middle" fill="#881337" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="700">4-Chambered</text>
+  <text x="786" y="818" text-anchor="middle" fill="#4B5563" font-family="Arial, Helvetica, sans-serif" font-size="17">Mammals / Birds</text>
+  <!-- L Auricle -->
+  <rect x="584" y="828" width="94" height="42" rx="10" fill="#F87171" stroke="#881337" stroke-width="2.5"/>
+  <text x="631" y="854" text-anchor="middle" fill="white" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="700">L. Auricle</text>
+  <!-- R Auricle -->
+  <rect x="694" y="828" width="94" height="42" rx="10" fill="#F87171" stroke="#881337" stroke-width="2.5"/>
+  <text x="741" y="854" text-anchor="middle" fill="white" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="700">R. Auricle</text>
+  <!-- L Ventricle -->
+  <path d="M584 874 L684 874 L672 924 L634 934 Z" fill="#F87171" stroke="#881337" stroke-width="2.5"/>
+  <text x="634" y="910" text-anchor="middle" fill="white" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="700">L. Vent.</text>
+  <!-- R Ventricle -->
+  <path d="M688 874 L788 874 L752 934 L714 924 Z" fill="#F87171" stroke="#881337" stroke-width="2.5"/>
+  <text x="738" y="910" text-anchor="middle" fill="white" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="700">R. Vent.</text>
+  <!-- Septum dashed line -->
+  <line x1="686" y1="874" x2="686" y2="930" stroke="#881337" stroke-width="2" stroke-dasharray="5 3"/>
+  <!-- Complete separation label -->
+  <text x="786" y="952" text-anchor="middle" fill="#059669" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="700">No blood mixing — most efficient</text>
+
+  <!-- Bottom key rule -->
+  <rect x="40" y="984" width="944" height="30" rx="0" fill="none"/>
+  <text x="512" y="1010" text-anchor="middle" fill="#0F172A" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="700">All vertebrates are chordates — but not all chordates are vertebrates</text>
+
+</svg>

@@ -1,0 +1,68 @@
+<svg width="1024" height="1024" viewBox="0 0 1024 1024" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1024" height="1024" fill="#FCFCF8"/>
+  <text x="512" y="110" text-anchor="middle" fill="#0F172A" font-family="Arial, Helvetica, sans-serif" font-size="62" font-weight="700">ALGAE (PLANT KINGDOM)</text>
+  <text x="512" y="158" text-anchor="middle" fill="#64748B" font-family="Arial, Helvetica, sans-serif" font-size="28">Classification by colour, stored food and motility</text>
+
+  <rect x="68" y="216" width="888" height="732" rx="28" fill="#FFFFFF" stroke="#D9E2EC" stroke-width="4"/>
+
+  <rect x="102" y="258" width="252" height="616" rx="26" fill="#F0FDF4" stroke="#BBF7D0" stroke-width="3"/>
+  <rect x="386" y="258" width="252" height="616" rx="26" fill="#FFFBEB" stroke="#FDE68A" stroke-width="3"/>
+  <rect x="670" y="258" width="252" height="616" rx="26" fill="#FFF1F2" stroke="#FECDD3" stroke-width="3"/>
+
+  <text x="228" y="316" text-anchor="middle" fill="#166534" font-family="Arial, Helvetica, sans-serif" font-size="30" font-weight="700">CHLOROPHYCEAE</text>
+  <text x="512" y="316" text-anchor="middle" fill="#92400E" font-family="Arial, Helvetica, sans-serif" font-size="30" font-weight="700">PHAEOPHYCEAE</text>
+  <text x="796" y="316" text-anchor="middle" fill="#9F1239" font-family="Arial, Helvetica, sans-serif" font-size="30" font-weight="700">RHODOPHYCEAE</text>
+
+  <text x="228" y="350" text-anchor="middle" fill="#4B5563" font-family="Arial, Helvetica, sans-serif" font-size="22">Green algae</text>
+  <text x="512" y="350" text-anchor="middle" fill="#4B5563" font-family="Arial, Helvetica, sans-serif" font-size="22">Brown algae</text>
+  <text x="796" y="350" text-anchor="middle" fill="#4B5563" font-family="Arial, Helvetica, sans-serif" font-size="22">Red algae</text>
+
+  <circle cx="228" cy="468" r="76" fill="#22C55E" stroke="#15803D" stroke-width="6"/>
+  <circle cx="228" cy="468" r="46" fill="none" stroke="#DCFCE7" stroke-width="4" stroke-dasharray="8 8"/>
+  <circle cx="208" cy="454" r="10" fill="#ECFCCB"/>
+  <circle cx="248" cy="468" r="10" fill="#ECFCCB"/>
+  <circle cx="220" cy="494" r="8" fill="#ECFCCB"/>
+  <circle cx="256" cy="446" r="8" fill="#ECFCCB"/>
+  <text x="228" y="452" text-anchor="middle" fill="#064E3B" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="700">Pyrenoid</text>
+  <text x="228" y="522" text-anchor="middle" fill="#166534" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="700">Grass-green</text>
+
+  <rect x="174" y="596" width="108" height="42" rx="21" fill="#FFFFFF" stroke="#D1FAE5" stroke-width="2"/>
+  <text x="228" y="623" text-anchor="middle" fill="#166534" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="700">2–8 equal apical flagella</text>
+
+  <path d="M512 394C474 394 454 430 466 474C478 518 512 540 512 540C512 540 546 518 558 474C570 430 550 394 512 394Z" fill="#A16207" stroke="#78350F" stroke-width="6"/>
+  <line x1="560" y1="452" x2="594" y2="442" stroke="#64748B" stroke-width="4" stroke-linecap="round"/>
+  <line x1="558" y1="470" x2="582" y2="486" stroke="#94A3B8" stroke-width="3" stroke-linecap="round"/>
+  <ellipse cx="470" cy="520" rx="20" ry="14" fill="#FCD34D" stroke="#B45309" stroke-width="3"/>
+  <ellipse cx="512" cy="540" rx="26" ry="16" fill="#FDE68A" stroke="#B45309" stroke-width="3"/>
+  <rect x="562" y="508" width="30" height="42" rx="12" fill="#FEF3C7" stroke="#A16207" stroke-width="3"/>
+  <text x="512" y="578" text-anchor="middle" fill="#92400E" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="700">Pear-shaped</text>
+
+  <rect x="434" y="596" width="156" height="42" rx="21" fill="#FFFFFF" stroke="#FDE68A" stroke-width="2"/>
+  <text x="512" y="623" text-anchor="middle" fill="#92400E" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="700">Two unequal lateral flagella</text>
+
+  <path d="M796 404C784 432 768 446 748 462C768 476 780 494 788 520C798 494 812 476 836 458C816 446 804 430 796 404Z" fill="#E11D48" stroke="#9F1239" stroke-width="6"/>
+  <path d="M742 492C732 520 716 534 700 548C716 560 730 578 738 604C748 580 762 562 784 546C764 536 750 520 742 492Z" fill="#FB7185" stroke="#9F1239" stroke-width="5"/>
+  <path d="M850 492C840 520 824 534 808 548C824 560 838 578 846 604C856 580 870 562 892 546C872 536 858 520 850 492Z" fill="#FB7185" stroke="#9F1239" stroke-width="5"/>
+  <circle cx="796" cy="642" r="18" fill="#E11D48" stroke="#9F1239" stroke-width="4"/>
+  <text x="796" y="582" text-anchor="middle" fill="#9F1239" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="700">Deep red</text>
+
+  <rect x="734" y="596" width="124" height="42" rx="21" fill="#FFFFFF" stroke="#FECDD3" stroke-width="2"/>
+  <text x="796" y="623" text-anchor="middle" fill="#9F1239" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="700">No flagella</text>
+
+  <text x="228" y="684" text-anchor="middle" fill="#111827" font-family="Arial, Helvetica, sans-serif" font-size="26" font-weight="700">Stored food</text>
+  <text x="228" y="718" text-anchor="middle" fill="#475569" font-family="Arial, Helvetica, sans-serif" font-size="22">Starch in pyrenoids</text>
+  <text x="228" y="766" text-anchor="middle" fill="#111827" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="700">Examples</text>
+  <text x="228" y="798" text-anchor="middle" fill="#475569" font-family="Arial, Helvetica, sans-serif" font-size="20">Volvox, Chlamydomonas</text>
+
+  <text x="512" y="684" text-anchor="middle" fill="#111827" font-family="Arial, Helvetica, sans-serif" font-size="26" font-weight="700">Stored food</text>
+  <text x="512" y="718" text-anchor="middle" fill="#475569" font-family="Arial, Helvetica, sans-serif" font-size="22">Mannitol and laminarin</text>
+  <text x="512" y="766" text-anchor="middle" fill="#111827" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="700">Examples</text>
+  <text x="512" y="798" text-anchor="middle" fill="#475569" font-family="Arial, Helvetica, sans-serif" font-size="20">Fucus, Dictyota</text>
+
+  <text x="796" y="684" text-anchor="middle" fill="#111827" font-family="Arial, Helvetica, sans-serif" font-size="26" font-weight="700">Stored food</text>
+  <text x="796" y="718" text-anchor="middle" fill="#475569" font-family="Arial, Helvetica, sans-serif" font-size="22">Floridean starch</text>
+  <text x="796" y="766" text-anchor="middle" fill="#111827" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="700">Examples</text>
+  <text x="796" y="798" text-anchor="middle" fill="#475569" font-family="Arial, Helvetica, sans-serif" font-size="20">Polysiphonia, Gelidium</text>
+
+  <text x="512" y="906" text-anchor="middle" fill="#0F172A" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="700">NCERT-style comparison: colour + stored food + motility</text>
+</svg>
