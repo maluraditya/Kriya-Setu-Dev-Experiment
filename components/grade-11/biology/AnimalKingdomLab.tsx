@@ -2,14 +2,14 @@ import React, { useMemo, useState } from 'react';
 import { Activity, ArrowRight, Droplets, Eye, Fish, Gauge, RefreshCcw, ScissorsLineDashed, Waves } from 'lucide-react';
 import TopicLayoutContainer from '../../TopicLayoutContainer';
 
-type ObeliaStage = 'Polyp Colony' | 'Asexual Budding' | 'Free Medusa' | 'Sexual Fusion';
+type ObeliaStage = 'Polyp Colony' | 'Asexual Budding' | 'Free Medusa' | 'Sexual Fusion' | 'Planula Larva';
 
 interface AnimalKingdomLabProps {
     topic: any;
     onExit: () => void;
 }
 
-const STAGES: ObeliaStage[] = ['Polyp Colony', 'Asexual Budding', 'Free Medusa', 'Sexual Fusion'];
+const STAGES: ObeliaStage[] = ['Polyp Colony', 'Asexual Budding', 'Free Medusa', 'Sexual Fusion', 'Planula Larva'];
 
 const AnimalKingdomLab: React.FC<AnimalKingdomLabProps> = ({ topic, onExit }) => {
     const [pumpOn, setPumpOn] = useState(false);
@@ -33,9 +33,10 @@ const AnimalKingdomLab: React.FC<AnimalKingdomLabProps> = ({ topic, onExit }) =>
 
     const obeliaSummary = useMemo(() => {
         if (currentStage === 'Polyp Colony') return 'The cylindrical polyp is sessile and forms the attached colonial stage.';
-        if (currentStage === 'Asexual Budding') return 'The polyp buds off tiny medusae asexually.';
-        if (currentStage === 'Free Medusa') return 'Umbrella-shaped medusae swim freely and represent the sexual form.';
-        return 'Medusae release gametes, fertilisation occurs, and a new polyp starts the colony again.';
+        if (currentStage === 'Asexual Budding') return 'The polyp buds off tiny medusae asexually — this is the asexual generation.';
+        if (currentStage === 'Free Medusa') return 'Umbrella-shaped medusae swim freely and represent the sexual generation.';
+        if (currentStage === 'Sexual Fusion') return 'Medusae release eggs and sperms; fertilisation occurs in water, producing a zygote.';
+        return 'The zygote develops into a free-swimming, ciliated planula larva. It settles on a substrate and develops into a new polyp colony, completing the cycle (metagenesis).';
     }, [currentStage]);
 
     const resetLab = () => {
@@ -317,10 +318,27 @@ const ObeliaScene = ({ stage }: { stage: ObeliaStage }) => (
                 <circle cx="276" cy="148" r="5" fill="#60a5fa" />
                 <path d="M256 138 C262 142 266 144 270 145" stroke="#a855f7" strokeWidth="2" fill="none" />
                 <circle cx="292" cy="160" r="7" fill="#c084fc" />
-                <path d="M294 166 C270 180 244 190 226 202" stroke="#6366f1" strokeWidth="3" strokeDasharray="5 5" fill="none" />
-                <circle cx="214" cy="208" r="9" fill="#86efac" stroke="#166534" strokeWidth="3" />
-                <text x="278" y="122" fontSize="13" fontWeight="700" fill="#9333ea">Gametes</text>
-                <text x="232" y="226" fontSize="13" fontWeight="700" fill="#166534">New Polyp</text>
+                <text x="278" y="122" fontSize="13" fontWeight="700" fill="#9333ea">Eggs + Sperms</text>
+                <text x="250" y="176" fontSize="12" fontWeight="700" fill="#7c3aed">Zygote forms</text>
+            </>
+        )}
+        {stage === 'Planula Larva' && (
+            <>
+                {/* planula — oval ciliated larva swimming */}
+                <ellipse cx="230" cy="130" rx="28" ry="16" fill="#fde68a" stroke="#d97706" strokeWidth="3" />
+                {/* cilia — short lines around the planula */}
+                {[-20,-10,0,10,20].map((dx, i) => (
+                    <line key={i} x1={230+dx} y1={114} x2={230+dx} y2={104} stroke="#d97706" strokeWidth="2" strokeLinecap="round" />
+                ))}
+                {[-20,-10,0,10,20].map((dx, i) => (
+                    <line key={i} x1={230+dx} y1={146} x2={230+dx} y2={156} stroke="#d97706" strokeWidth="2" strokeLinecap="round" />
+                ))}
+                <text x="230" y="98" textAnchor="middle" fontSize="13" fontWeight="700" fill="#92400e">Planula Larva</text>
+                <text x="230" y="168" textAnchor="middle" fontSize="11" fill="#78350f">(ciliated, free-swimming)</text>
+                {/* arrow to new polyp settling */}
+                <path d="M250 130 C280 130 300 150 300 185" stroke="#16a34a" strokeWidth="3" fill="none" strokeDasharray="5 4" />
+                <circle cx="300" cy="190" r="10" fill="#86efac" stroke="#166534" strokeWidth="3" />
+                <text x="300" y="208" textAnchor="middle" fontSize="11" fontWeight="700" fill="#166534">Settles → New Polyp</text>
             </>
         )}
     </svg>

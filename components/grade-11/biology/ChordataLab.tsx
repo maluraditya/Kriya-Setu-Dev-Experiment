@@ -57,9 +57,9 @@ const ChordataLab: React.FC<ChordataLabProps> = ({ topic, onExit }) => {
     }, [subphylum, devStage]);
 
     const heartObservation = useMemo(() => {
-        if (heartClass === 'Pisces')   return 'Fish have a 2-chambered heart (1 Auricle + 1 Ventricle). Blood follows a single circuit — heart → gills → body → heart.';
-        if (heartClass === 'Amphibia') return 'Amphibians have a 3-chambered heart (2 Auricles + 1 Ventricle). Some mixing of oxygenated and deoxygenated blood occurs in the single ventricle.';
-        return 'Mammals (and birds) have a 4-chambered heart (2 Auricles + 2 Ventricles). Complete separation ensures no mixing — the most efficient circulation system.';
+        if (heartClass === 'Pisces')   return 'Fish have a 2-chambered heart (1 atrium + 1 ventricle). Blood follows a single circuit — heart → gills → body → heart.';
+        if (heartClass === 'Amphibia') return 'Amphibians have a 3-chambered heart (2 atria + 1 ventricle). Some mixing of oxygenated and deoxygenated blood occurs in the single ventricle.';
+        return 'Mammals and Birds (Aves) both have a 4-chambered heart (2 atria + 2 ventricles). Complete separation ensures no blood mixing — the most efficient double circulation.';
     }, [heartClass]);
 
     const keyLogic = useMemo(() => {
@@ -101,8 +101,8 @@ const ChordataLab: React.FC<ChordataLabProps> = ({ topic, onExit }) => {
                     </div>
                     <div className="grid sm:grid-cols-3 gap-2 mt-2">
                         <MetricCard label="Fish (Pisces)"       value="2 chambers" tone="text-sky-700" />
-                        <MetricCard label="Amphibia / Reptilia" value="3 chambers" tone="text-orange-700" />
-                        <MetricCard label="Mammalia / Aves"     value="4 chambers" tone="text-red-700" />
+                        <MetricCard label="Amphibia / Reptilia" value="3 chambers (Crocodilia: 4)" tone="text-orange-700" />
+                        <MetricCard label="Mammalia + Aves"     value="4 chambers" tone="text-red-700" />
                     </div>
                 </ChordatePanel>
             </div>

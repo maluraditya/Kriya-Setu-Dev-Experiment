@@ -4,7 +4,7 @@ import react from '@vitejs/plugin-react';
 import { VitePWA } from 'vite-plugin-pwa';
 
 export default defineConfig(({ mode }) => {
-    const env = loadEnv(mode, '.', '');
+    const env = loadEnv(mode, '.', 'VITE_');
     return {
       base: '/',
       server: {
@@ -16,13 +16,13 @@ export default defineConfig(({ mode }) => {
         {
           name: 'html-transform',
           transformIndexHtml(html) {
-            const siteUrl = process.env.VITE_SITE_URL || 'https://excellent-academy.demo';
-            return html.replace(/%VITE_SITE_URL%/g, siteUrl);
+            const siteUrl = env.VITE_SITE_URL || 'https://excellent-academy.demo';
+            return html.replace(/%SITE_URL%/g, siteUrl);
           }
         },
         VitePWA({
           registerType: 'prompt',
-          includeAssets: ['logo.png', 'images/**/*', 'favicon.ico'],
+          includeAssets: ['logo.png', 'favicon.ico', 'images/social-preview.jpg'],
           manifest: {
             id: '/',
             start_url: '/',
@@ -48,10 +48,10 @@ export default defineConfig(({ mode }) => {
           },
           workbox: {
             globPatterns: [
-              '**/*.{js,css,html,ico,png,svg,json,manifest,webmanifest}',
-              'images/**/*.{png,jpg,jpeg,svg,webp}'
+              '**/*.{js,css,html,ico,json,manifest,webmanifest}',
+              'images/social-preview.jpg'
             ],
-            maximumFileSizeToCacheInBytes: 10 * 1024 * 1024, // 10MB
+            maximumFileSizeToCacheInBytes: 2 * 1024 * 1024,
             cleanupOutdatedCaches: true,
             clientsClaim: true,
             skipWaiting: false, // Changed to false for 'prompt' strategy
@@ -107,10 +107,41 @@ export default defineConfig(({ mode }) => {
         outDir: 'dist',
         assetsDir: 'assets',
         emptyOutDir: true,
-      },
-      define: {
-        'process.env.API_KEY': JSON.stringify(env.GEMINI_API_KEY),
-        'process.env.GEMINI_API_KEY': JSON.stringify(env.GEMINI_API_KEY)
+        rollupOptions: {
+          output: {
+            manualChunks(id) {
+              const normalizedId = id.replace(/\\/g, '/');
+              if (id.includes('node_modules/react') || id.includes('node_modules/react-dom')) {
+                return 'vendor-react';
+              }
+              if (id.includes('node_modules/lucide-react')) {
+                return 'vendor-icons';
+              }
+              if (id.includes('node_modules/recharts')) {
+                return 'vendor-charts';
+              }
+              if (normalizedId.includes('/components/grade-11/biology/')) {
+                return 'grade-11-biology';
+              }
+              if (normalizedId.includes('/components/grade-11/physics/')) {
+                const chunkName = path.basename(normalizedId, path.extname(normalizedId)).toLowerCase();
+                return `grade-11-physics-${chunkName}`;
+              }
+              if (normalizedId.includes('/components/grade-11/chemistry/')) {
+                return 'grade-11-chemistry';
+              }
+              if (normalizedId.includes('/components/grade-12/biology/')) {
+                return 'grade-12-biology';
+              }
+              if (normalizedId.includes('/components/grade-12/physics/')) {
+                return 'grade-12-physics';
+              }
+              if (normalizedId.includes('/components/grade-12/chemistry/')) {
+                return 'grade-12-chemistry';
+              }
+            }
+          }
+        },
       },
       resolve: {
         alias: {

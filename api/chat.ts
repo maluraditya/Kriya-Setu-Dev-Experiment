@@ -2,19 +2,71 @@
 // Types are provided by Vercel at build time
 import type { IncomingMessage, ServerResponse } from 'http';
 
-type VercelRequest = IncomingMessage & { body: any; query: any };
+type ChatBody = {
+    message?: unknown;
+    context?: unknown;
+};
+
+type VercelRequest = IncomingMessage & { body?: ChatBody | string };
 type VercelResponse = ServerResponse & {
     status: (code: number) => VercelResponse;
-    json: (data: any) => void
+    json: (data: unknown) => void
 };
 
 // Server-side only - API key never exposed to browser
 const API_KEY = process.env.GEMINI_API_KEY || '';
+const MAX_MESSAGE_LENGTH = 2000;
+const MAX_CONTEXT_LENGTH = 1500;
+const RATE_LIMIT_WINDOW_MS = 60_000;
+const RATE_LIMIT_MAX_REQUESTS = 20;
+const rateLimitStore = new Map<string, { count: number; resetAt: number }>();
+
+const getClientIp = (req: IncomingMessage) => {
+    const forwardedFor = req.headers['x-forwarded-for'];
+    if (typeof forwardedFor === 'string' && forwardedFor.trim()) {
+        return forwardedFor.split(',')[0].trim();
+    }
+    return req.socket.remoteAddress || 'unknown';
+};
+
+const isRateLimited = (key: string) => {
+    const now = Date.now();
+    const current = rateLimitStore.get(key);
+
+    if (!current || current.resetAt <= now) {
+        rateLimitStore.set(key, { count: 1, resetAt: now + RATE_LIMIT_WINDOW_MS });
+        return false;
+    }
+
+    current.count += 1;
+    return current.count > RATE_LIMIT_MAX_REQUESTS;
+};
+
+const parseBody = (body: VercelRequest['body']): ChatBody => {
+    if (!body) return {};
+    if (typeof body === 'string') {
+        try {
+            return JSON.parse(body) as ChatBody;
+        } catch {
+            return {};
+        }
+    }
+    return body;
+};
+
+const getSafeText = (value: unknown, maxLength: number) => {
+    if (typeof value !== 'string') return '';
+    return value.trim().slice(0, maxLength);
+};
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
     // Only allow POST requests
     if (req.method !== 'POST') {
         return res.status(405).json({ error: 'Method not allowed' });
+    }
+
+    if (isRateLimited(getClientIp(req))) {
+        return res.status(429).json({ error: 'Too many requests. Please try again shortly.' });
     }
 
     // Check API key is configured
@@ -25,7 +77,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     }
 
     try {
-        const { message, context } = req.body;
+        const body = parseBody(req.body);
+        const message = getSafeText(body.message, MAX_MESSAGE_LENGTH);
+        const context = getSafeText(body.context, MAX_CONTEXT_LENGTH);
 
         if (!message) {
             return res.status(400).json({ error: 'Message is required' });

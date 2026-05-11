@@ -12,20 +12,29 @@ const EnzymesLab: React.FC<EnzymesLabProps> = ({ topic, onExit }) => {
     const [enzymeCount, setEnzymeCount] = useState(1);
     const [slowMotion, setSlowMotion] = useState(false);
     const [inhibitorOn, setInhibitorOn] = useState(false);
+    const [inhibitorType, setInhibitorType] = useState<'Competitive' | 'Non-competitive'>('Competitive');
 
     const vmax = enzymeCount * 24;
     const km = 55;
-    const inhibitorFactor = inhibitorOn ? 0.55 : 1;
-    const velocity = Math.round((vmax * substrate / (km + substrate)) * inhibitorFactor);
-    const halfVmax = Math.round(vmax / 2);
-    const saturation = velocity >= vmax * 0.82;
+    // NCERT: Competitive inhibitor raises apparent Km (competes for active site, overcome by excess substrate)
+    //        Non-competitive inhibitor lowers Vmax (binds allosteric site, not overcome by more substrate)
+    const apparentKm = (inhibitorOn && inhibitorType === 'Competitive') ? km * 1.8 : km;
+    const effectiveVmax = (inhibitorOn && inhibitorType === 'Non-competitive') ? vmax * 0.5 : vmax;
+    const velocity = Math.round((effectiveVmax * substrate / (apparentKm + substrate)));
+    const halfVmax = Math.round(effectiveVmax / 2);
+    const saturation = velocity >= effectiveVmax * 0.82;
 
     const observation = useMemo(() => {
-        if (inhibitorOn) return 'Fake substrates are blocking some active sites, so fewer true substrates form ES complexes and velocity drops.';
-        if (saturation) return 'The curve is flattening. Most active sites are occupied, so adding more substrate cannot increase velocity much.';
-        if (substrate < km) return 'Substrate is still limited. More substrate means more ES complexes, so velocity rises quickly.';
+        if (inhibitorOn) {
+            if (inhibitorType === 'Competitive') {
+                return 'Competitive inhibitor: it resembles the substrate and competes for the same active site. Km increases (more substrate needed to reach half Vmax). Adding excess substrate CAN overcome this inhibition — Vmax stays the same.';
+            }
+            return 'Non-competitive inhibitor: it binds to an allosteric site (different from the active site). Vmax decreases but Km stays unchanged. Adding more substrate CANNOT overcome this inhibition.';
+        }
+        if (saturation) return 'The curve is flattening. Most active sites are occupied — adding more substrate cannot increase velocity much (Vmax plateau).';
+        if (substrate < apparentKm) return 'Substrate is still limited. More substrate means more ES complexes, so velocity rises quickly.';
         return 'The reaction is approaching Vmax. Enzymes are busy for most of the time.';
-    }, [inhibitorOn, saturation, substrate]);
+    }, [inhibitorOn, inhibitorType, saturation, substrate, apparentKm]);
 
     const resetLab = () => {
         setSubstrate(80);
@@ -59,12 +68,12 @@ const EnzymesLab: React.FC<EnzymesLabProps> = ({ topic, onExit }) => {
                         <span className="rounded-full bg-rose-600 px-3 py-1 text-xs font-bold text-white">{velocity}/sec</span>
                     </div>
                     <div className="rounded-2xl border border-rose-200 bg-rose-50 p-2 min-h-[240px]">
-                        <VelocityGraphSVG substrate={substrate} velocity={velocity} vmax={vmax} km={km} inhibitorOn={inhibitorOn} />
+                        <VelocityGraphSVG substrate={substrate} velocity={velocity} vmax={effectiveVmax} km={apparentKm} inhibitorOn={inhibitorOn} inhibitorType={inhibitorType} originalVmax={vmax} originalKm={km} />
                     </div>
                     <div className="grid sm:grid-cols-4 gap-2 mt-2">
                         <MetricCard label="Velocity" value={`${velocity}/sec`} tone="text-rose-700" />
-                        <MetricCard label="Vmax" value={`${vmax}/sec`} tone="text-slate-700" />
-                        <MetricCard label="Km" value={`${km}`} tone="text-indigo-700" />
+                        <MetricCard label="Vmax" value={`${effectiveVmax}/sec`} tone="text-slate-700" />
+                        <MetricCard label="Km" value={`${apparentKm.toFixed(0)}`} tone="text-indigo-700" />
                         <MetricCard label="Half Vmax" value={`${halfVmax}/sec`} tone="text-amber-700" />
                     </div>
                 </div>
@@ -109,6 +118,21 @@ const EnzymesLab: React.FC<EnzymesLabProps> = ({ topic, onExit }) => {
                         <ShieldAlert size={15} /> Inhibitor
                     </button>
                 </div>
+
+                {inhibitorOn && (
+                    <div>
+                        <div className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-2">Inhibitor Type</div>
+                        <div className="grid grid-cols-2 gap-2">
+                            {(['Competitive', 'Non-competitive'] as const).map(type => (
+                                <button key={type} onClick={() => setInhibitorType(type)}
+                                    className={`rounded-xl border px-3 py-3 text-xs font-bold transition-all ${inhibitorType === type ? 'bg-red-700 text-white border-red-700' : 'bg-white text-slate-700 border-slate-200 hover:border-red-300'}`}>
+                                    {type}
+                                    <div className="text-[10px] font-normal mt-0.5 opacity-80">{type === 'Competitive' ? 'Km↑, Vmax same' : 'Vmax↓, Km same'}</div>
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+                )}
 
                 <div className="grid md:grid-cols-2 gap-3">
                     <FactTile icon={<Activity size={15} className="text-violet-600" />} title="Catalytic Cycle">
@@ -159,17 +183,26 @@ const EnzymeSceneSVG = ({ substrate, inhibitorOn, slowMotion, saturation }: { su
     );
 };
 
-const VelocityGraphSVG = ({ substrate, velocity, vmax, km, inhibitorOn }: { substrate: number; velocity: number; vmax: number; km: number; inhibitorOn: boolean }) => {
+const VelocityGraphSVG = ({ substrate, velocity, vmax, km, inhibitorOn, inhibitorType, originalVmax, originalKm }: { substrate: number; velocity: number; vmax: number; km: number; inhibitorOn: boolean; inhibitorType?: 'Competitive' | 'Non-competitive'; originalVmax?: number; originalKm?: number }) => {
     const plotX = 58 + Math.min(substrate, 220) / 220 * 500;
     const plotY = 222 - Math.min(velocity, vmax) / Math.max(vmax, 1) * 165;
-    const vmaxY = 222 - (inhibitorOn ? 0.55 : 1) * 165;
+    const vmaxY = 222 - 165; // Vmax reference line at top
+    // Active (possibly modified) curve
     const points = Array.from({ length: 22 }).map((_, i) => {
         const s = i * 10;
-        const v = (vmax * s / (km + s)) * (inhibitorOn ? 0.55 : 1);
+        const v = vmax * s / (km + s);
         const x = 58 + s / 220 * 500;
         const y = 222 - Math.min(v, vmax) / Math.max(vmax, 1) * 165;
         return `${x},${y}`;
     }).join(' ');
+    // Reference curve (uninhibited, grey dashed, shown when inhibitor is on)
+    const refPoints = (inhibitorOn && originalVmax && originalKm) ? Array.from({ length: 22 }).map((_, i) => {
+        const s = i * 10;
+        const v = originalVmax * s / (originalKm + s);
+        const x = 58 + s / 220 * 500;
+        const y = 222 - Math.min(v, originalVmax) / Math.max(originalVmax, 1) * 165;
+        return `${x},${y}`;
+    }).join(' ') : null;
     return (
         <svg viewBox="0 0 640 260" className="w-full h-full" aria-label="Enzyme velocity graph">
             <rect width="640" height="260" rx="14" fill="#fff1f2" />
@@ -181,6 +214,10 @@ const VelocityGraphSVG = ({ substrate, velocity, vmax, km, inhibitorOn }: { subs
             <text x="530" y={vmaxY - 8} fontSize="12" fontWeight="900" fill="#be123c">Vmax</text>
             <line x1={58 + km / 220 * 500} y1="222" x2={58 + km / 220 * 500} y2="142" stroke="#f59e0b" strokeWidth="3" strokeDasharray="5 5" />
             <text x={58 + km / 220 * 500} y="137" textAnchor="middle" fontSize="12" fontWeight="900" fill="#92400e">Km</text>
+            {/* Reference curve when inhibitor is on */}
+            {refPoints && <polyline points={refPoints} fill="none" stroke="#94a3b8" strokeWidth="3" strokeDasharray="6 5" strokeLinecap="round" strokeLinejoin="round" opacity="0.7" />}
+            {inhibitorOn && <text x="400" y="60" fontSize="11" fontWeight="700" fill="#94a3b8">--- Normal</text>}
+            {inhibitorOn && inhibitorType && <text x="400" y="78" fontSize="11" fontWeight="700" fill="#e11d48">— Inhibited ({inhibitorType})</text>}
             <polyline points={points} fill="none" stroke="#e11d48" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" />
             <circle cx={plotX} cy={plotY} r="8" fill="#e11d48" stroke="white" strokeWidth="3" />
         </svg>

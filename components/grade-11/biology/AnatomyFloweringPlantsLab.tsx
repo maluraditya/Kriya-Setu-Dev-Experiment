@@ -89,7 +89,7 @@ const AnatomyFloweringPlantsLab: React.FC<AnatomyFloweringPlantsLabProps> = ({ t
                 </InfoCard>
                 <InfoCard title="Cambium Activity" icon={<Gauge size={16} className="text-sky-600" />}>
                     <p>{cambiumSummary}</p>
-                    <p className="mt-2">Secondary xylem is produced in larger quantity than secondary phloem, so wood accumulates toward the inside.</p>
+                    <p className="mt-2">Secondary xylem is produced in larger quantity than secondary phloem, so wood accumulates toward the inside. Each year of secondary growth produces one <strong>annual ring</strong> visible in cross-section of timber.</p>
                 </InfoCard>
                 <InfoCard title="Differentiation Lens" icon={<ScanEye size={16} className="text-amber-600" />}>
                     <DifferentiationStrip />
@@ -268,6 +268,9 @@ const SecondaryGrowthScene = ({
             <text x="256" y="88" fontSize="12" fontWeight="700" fill="#1d4ed8">Secondary phloem</text>
             <text x="248" y="132" fontSize="12" fontWeight="700" fill="#dc2626">Secondary xylem</text>
             <text x="70" y="204" fontSize="12" fontWeight="700" fill="#92400e">{xrayOn ? 'Outer tissues transparent' : 'Outer tissues visible'}</text>
+            <text x="170" y="228" textAnchor="middle" fontSize="11" fontWeight="700" fill="#d97706">
+                {`${ageYears} annual rings (1 ring per year)`}
+            </text>
         </svg>
     );
 };

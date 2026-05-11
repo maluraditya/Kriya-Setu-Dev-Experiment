@@ -21,8 +21,8 @@ const MorphologyFloweringPlantsLab: React.FC<MorphologyFloweringPlantsLabProps> 
 
     const rootLength = useMemo(() => 8 + growthLevel * 0.8, [growthLevel]);
     const rootLogic = selectedSeed === 'Mustard'
-        ? 'The radicle persists and forms a deep primary root with lateral branches.'
-        : 'The primary root becomes short-lived and many roots arise from the stem base.';
+        ? 'The radicle persists and forms a tap root. It grows deeper with lateral branches. This is the tap root system characteristic of dicotyledons like Mustard.'
+        : 'The primary root is short-lived. Many adventitious roots arise from the base of the stem, forming a fibrous root system. This is characteristic of monocotyledons like Wheat.';
 
     const shadowScore = useMemo(() => {
         if (phyllotaxy === 'Alternate') return 'Low overlap, good light exposure';
@@ -279,7 +279,7 @@ const RootScene = ({
                         />
                     ))}
                     <text x="112" y="116" fontSize="12" fontWeight="700" fill="#5b3716">Primary root short-lived</text>
-                    <text x="194" y="172" fontSize="12" fontWeight="700" fill="#5b3716">Fibrous roots from stem base</text>
+                    <text x="194" y="172" fontSize="12" fontWeight="700" fill="#5b3716">Adventitious roots from stem base</text>
                 </>
             )}
         </svg>

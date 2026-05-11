@@ -45,8 +45,8 @@ const FrogsLab: React.FC<FrogsLabProps> = ({ topic, onExit }) => {
         if (systemView === 'Respiratory') return respirationText;
         if (systemView === 'Circulatory') return 'The frog has a closed vascular system. Its three-chambered heart has two atria and one ventricle. Sinus venosus receives deoxygenated blood before it enters the right atrium.';
         if (systemView === 'Nervous') return 'The brain is protected inside the cranium. CNS, PNS and ANS coordinate movement, sense organs, and body functions.';
-        if (sex === 'Male') return 'Male anatomy shows testes attached near kidneys by mesorchium. Vasa efferentia enter the kidney and communicate with Bidder\'s canal and urinogenital duct.';
-        return 'Female anatomy shows ovaries near the kidneys but without functional connection. Oviducts open separately into the cloaca.';
+        if (sex === 'Male') return 'Male frog: testes lie attached to kidneys by a mesorchium. Vasa efferentia carry sperms from testes into the kidney, then through the Bidder\'s canal and urinogenital duct to the cloaca. Fertilisation is external — sperms are shed into water.';
+        return 'Female frog: ovaries lie near the kidneys but are not directly connected to them. Mature eggs fall into the body cavity, are collected by ciliated funnels, and pass through the oviducts to the cloaca. Eggs are laid in water where external fertilisation occurs.';
     }, [digestiveText, respirationText, sex, systemView]);
 
     const oxygenSource = environment === 'Water' ? 'Skin' : 'Lungs';
@@ -187,7 +187,7 @@ const FrogsLab: React.FC<FrogsLabProps> = ({ topic, onExit }) => {
                         {environment === 'Water' ? 'Water mode: cutaneous respiration through moist skin.' : 'Land mode: pulmonary respiration through lungs.'}
                     </FactTile>
                     <FactTile icon={<VenusAndMars size={15} className="text-emerald-600" />} title="Reproduction">
-                        {sex === 'Male' ? 'Male path: testes to vasa efferentia to Bidder\'s canal.' : 'Female path: ovaries release ova; oviduct opens into cloaca.'}
+                        {sex === 'Male' ? 'Male: testes → vasa efferentia → Bidder\'s canal → cloaca. Fertilisation is external.' : 'Female: ovaries → body cavity → oviduct → cloaca. Eggs laid in water; external fertilisation.'}
                     </FactTile>
                 </div>
 

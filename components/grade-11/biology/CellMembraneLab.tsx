@@ -20,6 +20,8 @@ const CellMembraneLab: React.FC<CellMembraneLabProps> = ({ topic, onExit }) => {
 
     const gradient = outsideCount > insideCount ? 'outside to inside' : outsideCount < insideCount ? 'inside to outside' : 'balanced';
     const activePossible = proteinMode === 'Active Pump' && molecule === 'Ion' && atp > 0;
+    // NCERT: active transport moves ions against gradient (from low to high concentration)
+    const pumpDirection = insideCount >= outsideCount ? 'outward' : 'inward'; // against gradient means pumping to the already-higher side
 
     const transportStatus = useMemo(() => {
         if (molecule === 'Neutral' && proteinMode === 'Simple Bilayer') {
@@ -35,7 +37,7 @@ const CellMembraneLab: React.FC<CellMembraneLabProps> = ({ topic, onExit }) => {
             return 'Charged ions cannot cross the non-polar lipid core on their own. They need a membrane pump or channel.';
         }
         if (activePossible) {
-            return 'ATP powers the pump, so ions can move against the concentration gradient from low concentration to high concentration.';
+            return `ATP powers the pump: ions move against the concentration gradient — from lower concentration (outside: ${outsideCount}) to higher concentration (inside: ${insideCount}). This is active transport.`;
         }
         return 'The pump is present, but it cannot run without ATP energy.';
     }, [activePossible, molecule, proteinMode]);
@@ -61,8 +63,17 @@ const CellMembraneLab: React.FC<CellMembraneLabProps> = ({ topic, onExit }) => {
             return;
         }
         if (molecule === 'Ion' && proteinMode === 'Active Pump' && atp > 0) {
-            setOutsideCount(v => Math.max(0, v - 1));
-            setInsideCount(v => v + 1);
+            // NCERT: Active transport moves ions AGAINST the gradient (low → high)
+            // We pump from outside into inside to raise inside concentration (against gradient)
+            // even if inside is already higher — that is the defining property of active transport
+            if (outsideCount > 0) {
+                setOutsideCount(v => Math.max(0, v - 1));
+                setInsideCount(v => v + 1);
+            } else {
+                // Pump in reverse when outside is empty — demonstrate bidirectionality
+                setInsideCount(v => Math.max(0, v - 1));
+                setOutsideCount(v => v + 1);
+            }
             setAtp(v => Math.max(0, v - 1));
         }
     };
@@ -92,7 +103,7 @@ const CellMembraneLab: React.FC<CellMembraneLabProps> = ({ topic, onExit }) => {
                         <MetricCard label="Outside" value={`${outsideCount} particles`} tone="text-sky-700" />
                         <MetricCard label="Inside" value={`${insideCount} particles`} tone="text-emerald-700" />
                         <MetricCard label="Gradient" value={gradient} tone="text-slate-700" />
-                        <MetricCard label="ATP" value={`${atp}/6`} tone={atp > 0 ? 'text-amber-700' : 'text-red-600'} />
+                        <MetricCard label="ATP" value={atp > 0 ? `${atp} units` : 'Depleted'} tone={atp > 0 ? 'text-amber-700' : 'text-red-600'} />
                     </div>
                 </div>
 
@@ -150,9 +161,10 @@ const CellMembraneLab: React.FC<CellMembraneLabProps> = ({ topic, onExit }) => {
                     <input type="range" min="0" max="12" value={insideCount} onChange={(e) => setInsideCount(parseInt(e.target.value, 10))} className="w-full accent-emerald-600" />
                 </SliderBlock>
 
-                <SliderBlock label="Fluidity Tug" value={`${fluidity}%`} minLabel="Rigid" maxLabel="Fluid">
-                    <input type="range" min="0" max="100" value={fluidity} onChange={(e) => setFluidity(parseInt(e.target.value, 10))} className="w-full accent-violet-600" />
-                </SliderBlock>
+                {/* Fluidity slider removed — not in NCERT Class 11 scope */}
+                <div className="rounded-xl border border-violet-200 bg-violet-50 p-3 text-xs text-violet-800">
+                    <strong>NCERT Note:</strong> The cell membrane is described as a <em>quasi-fluid</em> structure (Fluid Mosaic Model by Singer and Nicolson, 1972). Phospholipids can move laterally, allowing proteins to be embedded and move within the bilayer.
+                </div>
 
                 <div className="grid sm:grid-cols-3 gap-2">
                     <button onClick={runTransport} className="rounded-xl border border-slate-900 bg-slate-900 px-4 py-3 text-sm font-bold text-white hover:bg-slate-800 transition-colors">
@@ -167,8 +179,8 @@ const CellMembraneLab: React.FC<CellMembraneLabProps> = ({ topic, onExit }) => {
                 </div>
 
                 <div className="grid md:grid-cols-2 gap-3">
-                    <FactTile icon={<Shuffle size={15} className="text-violet-600" />} title="Fluid Mosaic">
-                        Proteins can move laterally in the quasi-fluid lipid bilayer.
+                    <FactTile icon={<Shuffle size={15} className="text-violet-600" />} title="Fluid Mosaic Model">
+                        Singer &amp; Nicolson (1972): Proteins float like icebergs in a quasi-fluid phospholipid sea.
                     </FactTile>
                     <FactTile icon={<SlidersHorizontal size={15} className="text-teal-600" />} title="Selective Permeability">
                         Neutral molecules pass easily; polar molecules and ions need help.

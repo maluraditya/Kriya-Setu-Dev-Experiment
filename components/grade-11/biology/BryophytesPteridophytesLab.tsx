@@ -13,10 +13,10 @@ interface BryophytesPteridophytesLabProps {
 const STAGES: LifeStage[] = ['Spore', 'Gametophyte', 'Fertilisation', 'Sporophyte'];
 
 const stageDescriptions: Record<LifeStage, string> = {
-    Spore: 'The life cycle begins with spores. These spores germinate when conditions are suitable.',
-    Gametophyte: 'Bryophytes have a large, visible gametophyte. In pteridophytes, the gametophyte is a small prothallus.',
-    Fertilisation: 'Water is needed so that male gametes can swim to the archegonium for fertilisation.',
-    Sporophyte: 'Bryophyte sporophyte remains attached to the gametophyte, while pteridophyte sporophyte becomes the dominant plant body.',
+    Spore: 'The haploid spores germinate to form the gametophyte. In bryophytes, spores form the protonema first. In pteridophytes, each spore directly forms the prothallus.',
+    Gametophyte: 'Bryophytes have a large, visible gametophyte (dominant phase). In pteridophytes, the gametophyte is a small, inconspicuous, heart-shaped structure called the prothallus (independent, free-living, photosynthetic).',
+    Fertilisation: 'Water is essential for fertilisation in both groups: male gametes (antherozoids) must swim through a film of water to reach the archegonium.',
+    Sporophyte: 'The sporophyte is dependent on gametophyte in bryophytes. In pteridophytes, the sporophyte is the dominant, independent plant body. Some pteridophytes (e.g., Selaginella) produce two kinds of spores — microspores and megaspores — a phenomenon called heterospory.',
 };
 
 const BryophytesPteridophytesLab: React.FC<BryophytesPteridophytesLabProps> = ({ topic, onExit }) => {
@@ -27,10 +27,11 @@ const BryophytesPteridophytesLab: React.FC<BryophytesPteridophytesLabProps> = ({
     const [stageIndex, setStageIndex] = useState(1);
 
     const stage = STAGES[stageIndex];
-    const bryophyteLimit = 34 + soilMoisture * 0.22;
-    const bryophyteActualHeight = Math.min(targetHeight, bryophyteLimit);
+    // NCERT: Bryophytes have no vascular tissue so water cannot be transported efficiently at height.
+    // The simulation shows this qualitatively — bryophytes always stay shorter than pteridophytes.
+    const bryophyteActualHeight = Math.min(targetHeight, Math.round(targetHeight * 0.45)); // always cap at ~45% of target to show height limit
     const pteridophyteActualHeight = targetHeight;
-    const bryophyteWilts = targetHeight > bryophyteLimit + 4;
+    const bryophyteWilts = targetHeight > 60; // arbitrary threshold removed — wilts whenever height is significant
     const waterReady = soilMoisture >= 45;
 
     const focusSummary = useMemo(() => {
@@ -39,8 +40,8 @@ const BryophytesPteridophytesLab: React.FC<BryophytesPteridophytesLabProps> = ({
                 title: 'Bryophyte Focus',
                 dominantPhase: 'Dominant phase: Gametophyte (n)',
                 transport: bryophyteWilts
-                    ? 'Height challenge fails because water transport is limited without vascular tissue.'
-                    : 'Short plant body survives because water can move over small distances.',
+                    ? 'Bryophytes cannot grow tall because they lack vascular tissue (xylem and phloem). Water cannot be transported efficiently over long distances in the plant body.'
+                    : 'The short plant body survives because water can move over the small distances involved without needing vascular tissue.',
                 structure: 'No true roots, stems, or leaves. Rhizoids are present instead of true roots.',
             };
         }
@@ -138,7 +139,7 @@ const BryophytesPteridophytesLab: React.FC<BryophytesPteridophytesLabProps> = ({
         <div className="bg-white rounded-xl border border-slate-200 shadow-sm w-full h-full">
             <div className="p-4 md:p-5 flex flex-col gap-3">
                 <div className="rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-xs text-emerald-900">
-                    <strong>Core Idea:</strong> Bryophytes stay short (no xylem/phloem). Pteridophytes grow taller via vascular tissue.
+                    <strong>Core Idea:</strong> Bryophytes lack vascular tissue and stay short (called the "amphibians of the plant kingdom"). Pteridophytes have xylem and phloem and grow taller.
                 </div>
 
                 {/* Row 1: Focus buttons + Vascular + Reset */}
