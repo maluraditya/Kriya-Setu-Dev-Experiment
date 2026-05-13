@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { Info, ArrowLeft, Play } from 'lucide-react';
 import { Topic } from '../types';
 import TextbookContent from './TextbookContent';
@@ -13,6 +13,59 @@ interface TopicLayoutContainerProps {
     // Optional status badge (e.g., staggered/eclipsed warning)
     StatusBadgeComponent?: React.ReactNode;
 }
+
+const DESIGN_STAGE_WIDTH = 1280;
+const DESIGN_STAGE_HEIGHT = 760;
+
+const DynamicSimulationStage: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+    const viewportRef = useRef<HTMLDivElement>(null);
+    const [size, setSize] = useState({ width: 0, height: 0 });
+
+    useLayoutEffect(() => {
+        const viewport = viewportRef.current;
+        if (!viewport) return;
+
+        const updateSize = () => {
+            const rect = viewport.getBoundingClientRect();
+            setSize({
+                width: Math.max(0, rect.width),
+                height: Math.max(0, rect.height)
+            });
+        };
+
+        updateSize();
+
+        if (typeof ResizeObserver === 'undefined') {
+            window.addEventListener('resize', updateSize);
+            return () => window.removeEventListener('resize', updateSize);
+        }
+
+        const observer = new ResizeObserver(updateSize);
+        observer.observe(viewport);
+        return () => observer.disconnect();
+    }, []);
+
+    const scale = useMemo(() => {
+        if (!size.width || !size.height) return 1;
+        return Math.min(size.width / DESIGN_STAGE_WIDTH, size.height / DESIGN_STAGE_HEIGHT);
+    }, [size.height, size.width]);
+
+    return (
+        <div ref={viewportRef} className="relative w-full h-full min-h-0 overflow-hidden">
+            <div
+                className="absolute left-1/2 top-1/2 origin-center"
+                style={{
+                    width: DESIGN_STAGE_WIDTH,
+                    height: DESIGN_STAGE_HEIGHT,
+                    transform: `translate(-50%, -50%) scale(${scale})`,
+                    ['--simulation-scale' as string]: scale
+                }}
+            >
+                {children}
+            </div>
+        </div>
+    );
+};
 
 const TopicLayoutContainer: React.FC<TopicLayoutContainerProps> = ({
     topic,
@@ -34,7 +87,7 @@ const TopicLayoutContainer: React.FC<TopicLayoutContainerProps> = ({
             </div>
 
             {/* 1. Main Interaction Area (Left Side Desktop / Top Half Mobile) */}
-            <div className="relative h-[55vh] flex-none lg:h-full lg:flex-1 flex flex-col items-center justify-start shrink-0 border-b lg:border-b-0 lg:border-r border-white/10 overflow-hidden bg-slate-900/50" id="tour-simulation">
+            <div className="relative h-[58dvh] min-h-[360px] max-h-[72dvh] flex-none lg:h-full lg:min-h-0 lg:max-h-none lg:flex-1 flex flex-col items-center justify-start shrink-0 border-b lg:border-b-0 lg:border-r border-white/10 overflow-hidden bg-slate-900/50" id="tour-simulation">
 
                 {/* Optional Floating Top Nav */}
                 {FloatingNavComponent && (
@@ -52,16 +105,18 @@ const TopicLayoutContainer: React.FC<TopicLayoutContainerProps> = ({
 
                 {/* Visual Canvas containing the Simulation element */}
                 {/* flex-1 allows it to take up all remaining space ABOVE the controls without overlapping them */}
-                <div className="flex-1 w-full flex items-center justify-center pointer-events-auto z-10 p-4 lg:p-6 relative min-h-0">
-                    <div className="w-full h-full max-w-[1600px] max-h-[1600px] relative flex items-center justify-center">
-                        {SimulationComponent}
+                <div className="flex-1 w-full flex items-center justify-center pointer-events-auto z-10 p-3 sm:p-4 lg:p-6 relative min-h-0">
+                    <div className="w-full h-full max-w-[1800px] max-h-[1200px] relative flex items-center justify-center min-h-0">
+                        <DynamicSimulationStage>
+                            {SimulationComponent}
+                        </DynamicSimulationStage>
                     </div>
                 </div>
 
                 {/* Bottom Control Bar / Overlay naturally flowing at the bottom */}
                 {ControlsComponent && (
-                    <div className="w-full px-4 pb-4 lg:px-6 lg:pb-6 shrink-0 flex justify-center z-30 pointer-events-auto">
-                        <div className="w-full lg:w-[600px] xl:w-[700px] 2xl:w-[800px] bg-slate-900/90 backdrop-blur-2xl border border-white/10 shadow-2xl rounded-3xl p-4 md:p-6 flex flex-col gap-4">
+                    <div className="w-full px-3 pb-3 sm:px-4 sm:pb-4 lg:px-6 lg:pb-6 shrink-0 flex justify-center z-30 pointer-events-auto">
+                        <div className="w-full max-w-[min(100%,800px)] max-h-[34dvh] lg:max-h-[42dvh] overflow-y-auto overscroll-contain bg-slate-900/90 backdrop-blur-2xl border border-white/10 shadow-2xl rounded-2xl md:rounded-3xl p-3 md:p-5 flex flex-col gap-3 md:gap-4">
                             {ControlsComponent}
                         </div>
                     </div>
